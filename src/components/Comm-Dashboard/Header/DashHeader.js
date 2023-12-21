@@ -2,8 +2,15 @@
 import React from 'react';
 import './DashHeader.css';
 import Table from '../../Table/Table';
+import { Box, Button } from '@chakra-ui/react';
+import { useDisclosure } from '@chakra-ui/react';
+import Form from '../../Form/Form.tsx';
 
 const DashHeader = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const openForm = () => {
+    onOpen();
+  };
   const columns = [
     { Header: 'Name', accessor: 'Name' },
     {
@@ -78,9 +85,21 @@ const DashHeader = () => {
       <div className="HeaderContainer">
         <p>Hi ,Chetan Kudnekar</p>
       </div>
+
       <div className="TableContainer">
+        <Box position={'absolute'} right={20} top={40}>
+          <Button
+            color={'#0777FF'}
+            backgroundColor={'#FFFFFF'}
+            borderRadius={'18px'}
+            border={'1.4px solid #0777FF'}
+            onClick={openForm}>
+            Add Community
+          </Button>
+        </Box>
         <Table data={data} columns={columns} />
       </div>
+      <Form isOpen={isOpen} onClose={onClose} />
     </div>
   );
 };
