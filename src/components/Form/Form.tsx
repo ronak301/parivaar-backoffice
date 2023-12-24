@@ -16,12 +16,12 @@ import { getFirebaseAppRemoteConfig } from '../../firebase';
 
 import { AddIcon } from '@chakra-ui/icons';
 import { useForm } from 'react-hook-form';
-import formImg from '../../assets/Component.png';
+
 import { Button } from '@chakra-ui/react';
 
 import { Select } from '@chakra-ui/react';
 import { Image } from '@chakra-ui/react';
-
+import formImg from '../../assets/user.jpg';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormControl, FormLabel, FormErrorMessage } from '@chakra-ui/react';
 import { Input } from '@chakra-ui/react';
@@ -34,21 +34,23 @@ const Form = ({ isOpen, onClose }) => {
 
     setPreviewImage(URL.createObjectURL(selectedFiles?.[0]));
   };
-
   const schema = z.object({
-    name: z.string().min(3, { message: 'name must be at least 3 characters' }),
-    Description: z.string().min(5, { message: 'minimum 5 word of description is needed' }),
+    name: z.string().refine((val) => val.length >= 3, {
+      message: 'Name must be at least 3 characters',
+    }),
+    Description: z.string().refine((val) => val.length >= 5, {
+      message: 'Minimum 5 words of description are needed',
+    }),
     Type: z.string(),
-    SubType: z.string()
+    SubType: z.string(),
   });
   type ValidationSchemaType = z.infer<typeof schema>;
   const {
     register,
     handleSubmit,
-
     watch,
-    formState: { errors }
-  } = useForm<ValidationSchemaType>({
+    formState: { errors },
+  } = useForm<ValidationSchemaType>({ 
     resolver: zodResolver(schema)
   });
   function onSubmit(values) {
@@ -118,13 +120,14 @@ const Form = ({ isOpen, onClose }) => {
           </DrawerHeader>
           <form onSubmit={handleSubmit(onSubmit)}>
             <DrawerBody>
-              <Box width={'200px'} position={'relative'} onClick={handleClick}>
-                <FormLabel fontSize={'18px'}>Logo</FormLabel>
+              <Box width={'300px'} position={'relative'}  onClick={handleClick}>
+                <FormLabel  textAlign={'left'}    fontSize={'18px'}>Logo</FormLabel>
                 <Image
                   borderRadius="full"
-                  boxSize="150px"
-                  src={previewImage ? previewImage : formImg}
-                  alt="Dan Abramov"></Image>
+                  textAlign={'left'}
+                  boxSize={200}
+
+                  src={previewImage ? previewImage : formImg}/>
                 <Input
                   type="file"
                   accept="image/*"
@@ -134,14 +137,14 @@ const Form = ({ isOpen, onClose }) => {
                 />
                 <Box
                   position={'absolute'}
-                  right={'60px'}
+                  right={'140px'}
                   backgroundColor={'#0777FF'}
                   opacity={'0.9'}
                   color={'white'}
                   width={'25px'}
                   height={'25px'}
                   borderRadius={'full'}
-                  top={'140px'}>
+                  top={'170px'}>
                   <AddIcon position={'absolute'} right={1} top={1} />
                 </Box>
               </Box>

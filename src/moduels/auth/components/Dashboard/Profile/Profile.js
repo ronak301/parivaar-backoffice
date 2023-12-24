@@ -1,6 +1,5 @@
 import { Box, Text, Image, Input } from '@chakra-ui/react';
 import React from 'react';
-import formImg from '../../../../../assets/Component.png';
 
 const Profile = () => {
   return (
@@ -19,7 +18,7 @@ const Profile = () => {
         <Text color={'black'} fontSize={'17px'} fontWeight={400} pl={3}>
           Profile Picture
         </Text>
-        <Image borderRadius="full" boxSize="150px" src={formImg} alt="Dan Abramov" />
+        <Image borderRadius="full" boxSize="150px" src={''} alt="Dan Abramov" />
       </Box>
       <Box display={'flex'} gap={800} alignItems={'flex-start'}>
         <Box

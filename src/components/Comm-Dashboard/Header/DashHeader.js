@@ -1,6 +1,8 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useState } from 'react';
 import './DashHeader.css';
+import { useEffect } from 'react';
+import axios from 'axios';
 import Table from '../../Table/Table';
 import { Box, Button } from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/react';
@@ -23,6 +25,15 @@ const DashHeader = () => {
 
       Cell: ({ value }) => (
         <div style={value === 'Active' ? activeCellStyle : pendingCellStyle}>{value}</div>
+      )
+    },
+    {
+      Header: 'Link',
+      accessor: 'id',
+      Cell: ({ value }) => (
+        <a href={`http://localhost:3000/invite/${value}`} target="_blank" rel="noopener noreferrer">
+          http://localhost:3000/invite/{value}
+        </a>
       )
     }
   ];
@@ -56,30 +67,23 @@ const DashHeader = () => {
     borderRadius: '11px',
     background: '#FFF9E2'
   };
-  const data = [
-    { Name: 'Tapasvi', ActivatedMembers: 123456789, Status: 'Active' },
-    { Name: 'Tapasvi', ActivatedMembers: 223456789, Status: 'Active' },
-    { Name: 'Tapasvi', ActivatedMembers: 323456789, Status: 'Active' },
-    { Name: 'Tapasvi', ActivatedMembers: 423456789, Status: 'Active' },
-    { Name: 'Tapasvi', ActivatedMembers: 523456789, Status: 'Active' },
-    { Name: 'Tapasvi', ActivatedMembers: 623456789, Status: 'Active' },
-    { Name: 'Tapasvi', ActivatedMembers: 723456789, Status: 'Active' },
-    { Name: 'Tapasvi', ActivatedMembers: 823456789, Status: 'Active' },
-    { Name: 'Tapasvi', ActivatedMembers: 923456789, Status: 'Active' },
-    { Name: 'Tapasvi', ActivatedMembers: 1234567890, Status: 'Active' },
-    { Name: 'Tapasvi', ActivatedMembers: 1234567891, Status: 'Active' },
-    { Name: 'Tapasvi', ActivatedMembers: 1234567892, Status: 'Pending Activation' },
-    { Name: 'Tapasvi', ActivatedMembers: 1234567893, Status: 'Pending Activation' },
-    { Name: 'Tapasvi', ActivatedMembers: 1234567894, Status: 'Pending Activation' },
-    { Name: 'Tapasvi', ActivatedMembers: 1234567895, Status: 'Pending Activation' },
-    { Name: 'Tapasvi', ActivatedMembers: 1234567896, Status: 'Pending Activation' },
-    { Name: 'Tapasvi', ActivatedMembers: 1234567897, Status: 'Pending Activation' },
-    { Name: 'Tapasvi', ActivatedMembers: 1234567898, Status: 'Pending Activation' },
-    { Name: 'Tapasvi', ActivatedMembers: 1234567899, Status: 'Pending Activation' },
-    { Name: 'Tapasvi', ActivatedMembers: 2234567890, Status: 'Pending Activation' },
-    { Name: 'Tapasvi', ActivatedMembers: 2234567891, Status: 'Pending Activation' },
-    { Name: 'Tapasvi', ActivatedMembers: 2234567892, Status: 'Pending Activation' }
-  ];
+  const [data, setData] = useState([{}]);
+  useEffect(() => {
+    const fetchdata = async () => {
+      const res = await axios.get('https://api.parivaarapp.in/community/all');
+      console.log(res.data);
+      const datas = res.data.communities.map((item) => ({
+        Name: item.name || 'Tapasvi',
+        ActivatedMembers: parseInt(item.totalMembers) || 0,
+        Status: item.status || 'Pending Activation',
+        id: item.id || ''
+      }));
+      setData(datas);
+      console.log(data);
+    };
+
+    fetchdata();
+  }, []);
   return (
     <div className="MainC">
       <div className="HeaderContainer">

@@ -4,16 +4,19 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Form from '../components/Form/Form.tsx';
 import MainPanel from '../components/MainPanel(Dashboard)/MainPanel';
 import Profile from '../moduels/auth/components/Dashboard/Profile/Profile.js';
-import Fire from '../components/Fire.js';
+
+import Demo from '../components/CommForm.tsx';
+import CreateUser from '../components/CreateUser.js';
 function App() {
   return (
     <ChakraProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/dash" element={<MainPanel />} />
+          <Route path="/dashboard" element={<MainPanel />} />
           <Route path="/form" element={<Form />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/fire" element={<Fire />} />
+          <Route path="/invite/:id" element={<CreateUser />} />
+          <Route path="/invite/:id/member" element={<Demo />} />
         </Routes>
       </BrowserRouter>
     </ChakraProvider>

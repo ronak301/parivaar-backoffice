@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getFirebaseAppRemoteConfig } from '../firebase';
-const Fire = () => {
+const useFireBase = () => {
   const [typeSubtypes, setTypeSubtypes] = useState({});
 
   useEffect(() => {
@@ -14,8 +14,6 @@ const Fire = () => {
             const subtypes = type.subTypes?.map((subtype) => subtype.id) || [];
             typeSubtypesObj[type.id] = subtypes;
           });
-
-          console.log(typeSubtypesObj);
           setTypeSubtypes(typeSubtypesObj);
         } else {
           console.error('Invalid or missing data structure in configData.');
@@ -31,7 +29,7 @@ const Fire = () => {
     console.log(typeSubtypes);
   }, [typeSubtypes]);
 
-  return <div>Fire bbbb</div>;
+  return <div></div>;
 };
 
-export default Fire;
+export default useFireBase;
