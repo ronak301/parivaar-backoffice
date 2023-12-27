@@ -9,14 +9,17 @@ import {
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
-  Box
+  Box,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription
 } from '@chakra-ui/react';
+
 import { z } from 'zod';
 import { getFirebaseAppRemoteConfig } from '../../firebase';
-
 import { AddIcon } from '@chakra-ui/icons';
 import { useForm } from 'react-hook-form';
-
 import { Button } from '@chakra-ui/react';
 
 import { Select } from '@chakra-ui/react';
@@ -27,6 +30,7 @@ import { FormControl, FormLabel, FormErrorMessage } from '@chakra-ui/react';
 import { Input } from '@chakra-ui/react';
 
 const Form = ({ isOpen, onClose }) => {
+  const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState<string>('');
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,25 +40,41 @@ const Form = ({ isOpen, onClose }) => {
   };
   const schema = z.object({
     name: z.string().refine((val) => val.length >= 3, {
-      message: 'Name must be at least 3 characters',
+      message: 'Name must be at least 3 characters'
     }),
     Description: z.string().refine((val) => val.length >= 5, {
-      message: 'Minimum 5 words of description are needed',
+      message: 'Minimum 5 words of description are needed'
     }),
     Type: z.string(),
-    SubType: z.string(),
+    SubType: z.string()
   });
   type ValidationSchemaType = z.infer<typeof schema>;
   const {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
-  } = useForm<ValidationSchemaType>({ 
+    formState: { errors }
+  } = useForm<ValidationSchemaType>({
     resolver: zodResolver(schema)
   });
   function onSubmit(values) {
-    console.log(values);
+    const name = values.name;
+    const Description = values.Description;
+    const Type = values.Type;
+    const SubType = values.SubType;
+    setLoading(true);
+    if (loading) {
+      console.log('h');
+    }
+    console.log(name);
+    console.log(Description);
+    console.log(Type);
+    console.log(SubType);
+    let success = true;
+    if (success) {
+      console.log('success');
+      setLoading(false);
+    }
   }
   const fileRef = useRef<HTMLInputElement>(null);
   const handleClick = () => {
@@ -77,7 +97,6 @@ const Form = ({ isOpen, onClose }) => {
   useEffect(() => {
     console.log('hu');
     console.log(watch('Type'));
-
   }, [watch('Type')]);
   useEffect(() => {
     const fetchData = async () => {
@@ -112,6 +131,11 @@ const Form = ({ isOpen, onClose }) => {
   return (
     <>
       <Drawer isOpen={isOpen} onClose={onClose} size={size}>
+        <Alert status="success">
+          <AlertIcon />
+          <AlertTitle>Form Submitted succesfully</AlertTitle>
+          <AlertDescription>Community created successfuly</AlertDescription>
+        </Alert>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
@@ -120,14 +144,16 @@ const Form = ({ isOpen, onClose }) => {
           </DrawerHeader>
           <form onSubmit={handleSubmit(onSubmit)}>
             <DrawerBody>
-              <Box width={'300px'} position={'relative'}  onClick={handleClick}>
-                <FormLabel  textAlign={'left'}    fontSize={'18px'}>Logo</FormLabel>
+              <Box width={'300px'} position={'relative'} onClick={handleClick}>
+                <FormLabel textAlign={'left'} fontSize={'18px'}>
+                  Logo
+                </FormLabel>
                 <Image
                   borderRadius="full"
                   textAlign={'left'}
                   boxSize={200}
-
-                  src={previewImage ? previewImage : formImg}/>
+                  src={previewImage ? previewImage : formImg}
+                />
                 <Input
                   type="file"
                   accept="image/*"

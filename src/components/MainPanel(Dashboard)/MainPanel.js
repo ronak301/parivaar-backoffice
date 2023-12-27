@@ -11,6 +11,8 @@ import Logo6 from '../../assets/vector2.png';
 import logo7 from '../../assets/V2.png';
 import DashHeader from '../Comm-Dashboard/Header/DashHeader';
 
+import DashHead from '../Comm-Dashboard/DashHead';
+
 const MainPanel = () => {
   const [selectedItem, setSelectedItem] = useState('AllCommunities');
 
@@ -36,7 +38,16 @@ const MainPanel = () => {
 
   return (
     <>
-      <DashHeader />
+      {selectedItem === 'AllCommunities' && (
+        <>
+          <DashHeader />
+        </>
+      )}
+      {selectedItem === 'MyProfile' && (
+        <>
+          <DashHead selected={selectedItem} />
+        </>
+      )}
 
       <div className="MainContainer">
         <div className="SubContainer1">

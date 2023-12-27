@@ -3,7 +3,7 @@ import React from 'react';
 
 const Profile = () => {
   return (
-    <Box display={'flex'} flexDirection={'column'} gap={10} pl={5}>
+    <Box display={'flex'} flexDirection={'column'} gap={3} pl={5}>
       <Box>
         <Text color={'black'} fontWeight={'600'} fontSize={'20px'} fontFamily={'Arial'}>
           Personal Information
@@ -18,9 +18,9 @@ const Profile = () => {
         <Text color={'black'} fontSize={'17px'} fontWeight={400} pl={3}>
           Profile Picture
         </Text>
-        <Image borderRadius="full" boxSize="150px" src={''} alt="Dan Abramov" />
+        <Image borderRadius="full" boxSize="150px" src={''} />
       </Box>
-      <Box display={'flex'} gap={800} alignItems={'flex-start'}>
+      <Box display={'flex'} gap={400} alignItems={'flex-start'}>
         <Box
           display={'flex'}
           justifyContent={'flex-start'}
@@ -51,7 +51,7 @@ const Profile = () => {
           />
         </Box>
       </Box>
-      <Box display={'flex'} gap={800} alignItems={'flex-start'}>
+      <Box display={'flex'} gap={400} alignItems={'flex-start'}>
         <Box>
           <Text color={'black'}>Date of Birth</Text>
           <Input
@@ -77,7 +77,7 @@ const Profile = () => {
           />
         </Box>
       </Box>
-      <Box display={'flex'} gap={800} alignItems={'flex-start'}>
+      <Box display={'flex'} gap={400} alignItems={'flex-start'}>
         <Box>
           <Text color={'black'}>Blood Group</Text>
           <Input
@@ -100,7 +100,7 @@ const Profile = () => {
           Business Information
         </Text>
       </Box>
-      <Box display={'flex'} gap={800} alignItems={'flex-start'}>
+      <Box display={'flex'} gap={400} alignItems={'flex-start'}>
         <Box>
           <Text color={'black'}>Name</Text>
           <Input
@@ -126,7 +126,7 @@ const Profile = () => {
           />
         </Box>
       </Box>
-      <Box display={'flex'} gap={800} alignItems={'flex-start'}>
+      <Box display={'flex'} gap={400} alignItems={'flex-start'}>
         <Box>
           <Text color={'black'}>Address</Text>
           <Input
@@ -152,7 +152,7 @@ const Profile = () => {
           />
         </Box>
       </Box>
-      <Box display={'flex'} gap={800} alignItems={'flex-start'}>
+      <Box display={'flex'} gap={400} alignItems={'flex-start'}>
         <Box>
           <Text color={'black'}>Web Site</Text>
           <Input
