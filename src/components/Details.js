@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Box, Flex, Image, FormLabel, Input, Text, Textarea, Heading } from '@chakra-ui/react';
-import { DatePicker, Stack } from 'rsuite';
+import { Box, Flex, Image, Text, Heading } from '@chakra-ui/react';
 
 import 'rsuite/dist/rsuite.css';
 const Details = ({ values, imgurl, communityName, commDescription, dateValue }) => {
@@ -33,120 +32,116 @@ const Details = ({ values, imgurl, communityName, commDescription, dateValue }) 
   } = values;
   console.log('Dob is', DOB);
   return (
-    <Box backgroundColor={'#e9f2ed'} pt={10} pb={10}>
-      <form>
+    <Box pt={10} pb={10}>
+      <Flex
+        flexDirection={'column'}
+        gap={10}
+        width={'50%'}
+        pt={10}
+        pb={10}
+        justifyContent={'center'}
+        margin={'auto'}
+        backgroundColor="#ffffff"
+        borderRadius="8px"
+        boxShadow="0 4px 8px rgba(0, 0, 0, 0.1)"
+        padding={6}>
+        <Box display={'flex'} flexDirection={'row'} gap={100} alignItems={'center'}>
+          <Image src={imgurl} width={'140px'} height={'140px'} />
+          <Box display={'flex'} flexDirection={'column'} gap={5} justifyContent={'center'}>
+            <Text color="black" fontSize={'40'} fontWeight={'500'} lineHeight={1}>
+              {communityName}
+            </Text>
+            <Text width={'350px'} color={'black'} lineHeight={2}>
+              {commDescription}
+            </Text>
+          </Box>
+        </Box>
+
+        <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+          First Name: {name}
+        </Text>
+        <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+          Last Name: {lastname}
+        </Text>
+        <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+          Mobile Number: {MobileNumber}
+        </Text>
+        <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+          Date of Birth: {dateValue}
+        </Text>
+        <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+          Gender: {gender}
+        </Text>
+        <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+          Blood Group: {bloodGrp}
+        </Text>
+        <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+          Guardian Name: {gname}
+        </Text>
+        <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+          Wedding Date: {weddingDate}
+        </Text>
+        <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+          Email: {email}
+        </Text>
+        <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+          Education: {Education}
+        </Text>
+        <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+          Landline: {Landline}
+        </Text>
+        <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+          Native Place: {NativePlace}
+        </Text>
+        <Heading>Address</Heading>
+        <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+          Full Address: {FullAddress}
+        </Text>
+        <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+          City: {City}
+        </Text>
+        <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+          State: {State}
+        </Text>
+        <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+          Pincode: {Pincode}
+        </Text>
+        <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+          Locality: {Locality}
+        </Text>
+
         <Flex
           flexDirection={'column'}
           gap={10}
-          width={'50%'}
+          width={'100%'}
           pt={10}
           pb={10}
-          justifyContent={'center'}
-          margin={'auto'}
-          backgroundColor="#ffffff"
-          borderRadius="8px"
-          boxShadow="0 4px 8px rgba(0, 0, 0, 0.1)"
-          padding={6}>
-          <Box display={'flex'} flexDirection={'row'} gap={100} alignItems={'center'}>
-            <Image src={imgurl} width={'140px'} height={'140px'} />
-            <Box display={'flex'} flexDirection={'column'} gap={5} justifyContent={'center'}>
-              <Text color="black" fontSize={'40'} fontWeight={'500'} lineHeight={1}>
-                {communityName}
-              </Text>
+          justifyContent={'center'}>
+          <Heading>Business</Heading>
 
-              <Text width={'350px'} color={'black'} lineHeight={2}>
-                {commDescription}
-              </Text>
-            </Box>
-          </Box>
-
-          <FormLabel>First Name</FormLabel>
-          <Input value={name} type="name" />
-
-          <FormLabel>Last Name</FormLabel>
-          <Input type="name" value={lastname} />
-
-          <FormLabel>Mobile Number</FormLabel>
-          <Input value={MobileNumber} />
-
-          <FormLabel>Date of Birth</FormLabel>
-          <Stack direction="column" alignItems="flex-start" spacing={6}>
-            <DatePicker format="MM/dd/yyyy" value={dateValue} />
-          </Stack>
-
-          <FormLabel>Gender</FormLabel>
-          <Input value={gender} />
-
-          <FormLabel>Blood Group</FormLabel>
-          <Input value={bloodGrp} />
-
-          <FormLabel>Guardian Name</FormLabel>
-          <Input type="name" value={gname} />
-
-          <FormLabel>Wedding Date</FormLabel>
-          <Stack direction="column" alignItems="flex-start" spacing={6}>
-            <DatePicker format="MM/dd/yyyy" value={weddingDate} />
-          </Stack>
-
-          <FormLabel>Email</FormLabel>
-          <Input type="email" value={email} />
-
-          <FormLabel>Education</FormLabel>
-          <Input value={Education} />
-
-          <FormLabel>Landline</FormLabel>
-          <Input value={Landline} />
-
-          <FormLabel>Native Place</FormLabel>
-          <Input value={NativePlace} />
-
-          <Heading>Address</Heading>
-
-          <FormLabel>Full Address</FormLabel>
-          <Input value={FullAddress} />
-
-          <FormLabel>City</FormLabel>
-          <Input value={City} />
-          <FormLabel>State</FormLabel>
-          <Input value={State} />
-
-          <FormLabel>Pincode</FormLabel>
-          <Input type="number" value={Pincode} />
-
-          <FormLabel>Locality</FormLabel>
-          <Input value={Locality} />
-          <Flex
-            flexDirection={'column'}
-            gap={10}
-            width={'100%'}
-            pt={10}
-            pb={10}
-            justifyContent={'center'}>
-            <Heading>Business</Heading>
-
-            <FormLabel>Name</FormLabel>
-            <Input type="text" value={bname} />
-
-            <FormLabel>Business Type</FormLabel>
-            <Input value={bType} />
-
-            <FormLabel>Business SubType</FormLabel>
-            <Input value={SubType} />
-
-            <FormLabel>Website</FormLabel>
-            <Input value={website} />
-
-            <FormLabel>Business Phone</FormLabel>
-            <Input type="number" value={bphone} />
-
-            <FormLabel>Address</FormLabel>
-            <Input type="text" value={baddress} />
-
-            <FormLabel>Description</FormLabel>
-            <Textarea value={description} />
-          </Flex>
+          <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+            Name: {bname}
+          </Text>
+          <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+            Business Type: {bType}
+          </Text>
+          <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+            Business SubType: {SubType}
+          </Text>
+          <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+            Website: {website}
+          </Text>
+          <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+            Business Phone: {bphone}
+          </Text>
+          <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+            Address: {baddress}
+          </Text>
+          <Text fontSize="xl" fontWeight={'300'} color={'black'}>
+            Description: {description}
+          </Text>
         </Flex>
-      </form>
+      </Flex>
     </Box>
   );
 };

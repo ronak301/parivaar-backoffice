@@ -1,13 +1,14 @@
 /* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import { DatePicker, Stack } from 'rsuite';
-import { useLocation, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import 'rsuite/dist/rsuite.css';
 import { Image, Text } from '@chakra-ui/react';
 import { Box, Flex } from '@chakra-ui/react';
+
 import { FormControl, FormLabel, Input, Select, useDisclosure } from '@chakra-ui/react';
 import { Heading } from '@chakra-ui/react';
-import Details from "./Details.js";
+import Details from './Details.js';
 
 import {
   Textarea,
@@ -27,12 +28,13 @@ import { Alert, AlertIcon } from '@chakra-ui/react';
 import axios from 'axios';
 import CreateUser from './CreateUser';
 import { Spinner } from '@chakra-ui/react';
-
+import ProfileCard from './ProfileCard.js';
 
 const Demo = () => {
   const [loading, setLoading] = useState(false);
   const [readOnly, setReadOnly] = useState(false);
-  const [formValues,setFormValues] = useState(null);
+  const [formValues, setFormValues] = useState(null);
+  const navigate = useNavigate();
   const [success, setSuccess] = useState(false);
   const { id } = useParams();
   const BloodGrp = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
@@ -123,8 +125,6 @@ const Demo = () => {
         userId: userId
       });
       console.log('in join community', resj.data);
-
-
     } catch (error) {
       console.log(error);
     }
@@ -164,11 +164,9 @@ const Demo = () => {
     formState: { errors }
   } = useForm<IFormInput>();
   const [userId, setuserId] = useState('');
-  const handleAddClick=()=>{
+  const handleAddClick = () => {
     window.location.reload();
-
-
-  }
+  };
   const onSubmit = async (values) => {
     setFormValues(values);
     console.log(values.MobileNumber);
@@ -181,7 +179,7 @@ const Demo = () => {
       console.log(userId);
     } else {
       setLoading(true);
-      let uid=await createUser(values.name,values.lastname,values.MobileNumber);
+      let uid = await createUser(values.name, values.lastname, values.MobileNumber);
       await JoinCommunity(uid);
       setSuccess(true);
     }
@@ -206,52 +204,61 @@ const Demo = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
-  const [dateValue,setDatevalue]=useState(null);
-  const dateChange=(value,event)=>{
+  const [dateValue, setDatevalue] = useState(null);
+  const dateChange = (value, event) => {
     setDatevalue(value);
-
-
-    
-  }
+  };
 
   return (
     <>
       {!loading ? (
         success ? (
           <>
-            <Alert status="success" mt={4}>
-              <AlertIcon />
-              Form submitted successfully
-            </Alert>
-            <Details values={formValues}
-            imgurl={imgurl}
-            communityName={communityName}
-            commDescription={commDescription}
-            dateValue={dateValue} 
-            
-            />
             <Box
-              position="relative"
-              bottom="0"
-              height={'20%'}
-              width={'50%'}
-              left="50%"
-              transform="translateX(-50%)"
-              mb="10"
-              mt="5"
-              p="4" 
-              backgroundColor={'#dce5f2'}
-              borderRadius="md"
-              boxShadow="md"
+              display={'flex'}
+              flexDirection={'row'}
               justifyContent={'center'}
-              display="flex"
-              alignItems="center">
-              <Text color={'black'} fontSize={25} mr="4">Want to add more numbers?</Text>
-              <Button
-                colorScheme="teal" 
-                onClick={handleAddClick}>
-                ADD+
-              </Button>
+              alignItems={'center'}
+              width={'100%'}
+              height={'400px'}
+              // border={'2px solid red'}
+            >
+              <Box
+                display={'flex'}
+                flexDirection={'column'}
+                gap={10}
+                justifyContent={'center'}
+                alignItems={'center'}
+                // border={'2px solid red'}
+              >
+                <Text color={'black'} fontSize={['24px', '32px', '40px']}>
+                  Thank you for submitting the form !
+                </Text>
+                <Button
+                  colorScheme="twitter"
+                  fontSize={['16px', '20px']}
+                  onClick={() => {
+                    navigate(`/invite/${id}`);
+                  }}>
+                  Submit another response
+                </Button>
+              </Box>
+            </Box>
+            <Box>
+              <Text
+                color={'black'}
+                fontWeight={300}
+                textAlign={'center'}
+                fontSize={['24px', '32px', '40px']}>
+                Here are your filled Details
+              </Text>
+              <Details
+                values={formValues}
+                imgurl={imgurl}
+                communityName={communityName}
+                commDescription={commDescription}
+                dateValue={dateValue}
+              />
             </Box>
           </>
         ) : (
@@ -261,7 +268,7 @@ const Demo = () => {
                 <Flex
                   flexDirection={'column'}
                   gap={10}
-                  width={'50%'}
+                  width={['80%', '80%', '50%']}
                   pt={10}
                   pb={10}
                   justifyContent={'center'}
@@ -284,46 +291,62 @@ const Demo = () => {
                       <AlertDialogHeader>User Exits</AlertDialogHeader>
                       <AlertDialogCloseButton />
                       <AlertDialogBody>
-                        User Already exist are you sure you want to join this community
+                        <Text color={'black'}>
+                          User Already exist are you sure you want to join this community
+                        </Text>
                       </AlertDialogBody>
                       <AlertDialogFooter>
-                        <Button onClick={onClose} ref={cancelRef}>
+                        <Button onClick={onClose} fontSize={['16px', '20px']} ref={cancelRef}>
                           No
                         </Button>
-                        <Button colorScheme="red" ml={3} onClick={() => JoinCommunity(userId)}>
+                        <Button
+                          colorScheme="red"
+                          ml={3}
+                          fontSize={['16px', '20px']}
+                          onClick={() => JoinCommunity(userId)}>
                           Yes
                         </Button>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
-                  <Box display={'flex'} flexDirection={'row'} gap={100} alignItems={'center'}>
-                    <Image src={imgurl} width={'140px'} height={'140px'} />
+                  <Box display={'flex'} flexDirection={'row'} gap={0} alignItems={'center'}>
+                    <Image src={imgurl} alt="img" maxWidth={['30%', '80%', '150px']} />
                     <Box
+                      pl={5}
                       display={'flex'}
                       flexDirection={'column'}
                       gap={5}
                       justifyContent={'center'}>
-                      <Text color="black" fontSize={'40'} fontWeight={'500'} lineHeight={1}>
+                      <Text
+                        color="black"
+                        fontSize={['10px', '20px', '20px']}
+                        fontWeight={'500'}
+                        lineHeight={1}>
                         {communityName}
                       </Text>
 
-                      <Text width={'350px'} color={'black'} lineHeight={2}>
+                      <Text
+                        width={'200px'}
+                        fontSize={['10px', '20px', '20px']}
+                        color={'black'}
+                        lineHeight={2}>
                         {commDescription}
                       </Text>
                     </Box>
                   </Box>
 
                   <FormControl isRequired>
-                    <FormLabel>First Name</FormLabel>
-                    <Input {...register('name')} type="name" />
+                    <FormLabel fontSize={['10px', '20px', '20px']}>First Name</FormLabel>
+                    <Input {...register('name')}  type="name" size={['xs','sm','md']} />
                   </FormControl>
                   <FormControl isRequired>
-                    <FormLabel>Last Name</FormLabel>
-                    <Input type="name" {...register('lastname')} />
+                    <FormLabel fontSize={['10px', '20px', '20px']}>Last Name</FormLabel>
+                    <Input type="name" {...register('lastname')} size={['xs','sm','md']} />
                   </FormControl>
                   <FormControl isRequired isInvalid={!!errors.MobileNumber ?? false}>
-                    <FormLabel>Mobile Number</FormLabel>
+                    <FormLabel fontSize={['10px', '20px', '20px']}>Mobile Number</FormLabel>
                     <Input
+                    size={['xs','sm','md']}
                       isRequired
                       type="tel"
                       {...register('MobileNumber', {
@@ -338,21 +361,21 @@ const Demo = () => {
                     </FormErrorMessage>
                   </FormControl>
                   <FormControl {...register('DOB')}>
-                    <FormLabel>Date of Birth</FormLabel>
+                    <FormLabel fontSize={['10px', '20px', '20px']}>Date of Birth</FormLabel>
                     <Stack direction="column" alignItems="flex-start" spacing={6}>
-                      <DatePicker format="MM/dd/yyyy" value={dateValue} onChange={dateChange} />
+                      <DatePicker format="MM/dd/yyyy" value={dateValue} onChange={dateChange}/>
                     </Stack>
                   </FormControl>
                   <FormControl>
-                    <FormLabel>Gender</FormLabel>
-                    <Select placeholder="Select option" {...register('gender')}>
+                    <FormLabel fontSize={['10px', '20px', '20px']}>Gender</FormLabel>
+                    <Select placeholder="Select option" {...register('gender')} size={['xs','sm','md']}>
                       <option value="male">male</option>
                       <option value="female">female</option>
                     </Select>
                   </FormControl>
                   <FormControl>
-                    <FormLabel>Blood Group</FormLabel>
-                    <Select placeholder="Select option" {...register('bloodGrp')}>
+                    <FormLabel fontSize={['10px', '20px', '20px']}>Blood Group</FormLabel>
+                    <Select placeholder="Select option" {...register('bloodGrp')} size={['xs','sm','md']}>
                       {BloodGrp &&
                         BloodGrp.map((item, index) => (
                           <option key={index} value={item}>
@@ -362,18 +385,19 @@ const Demo = () => {
                     </Select>
                   </FormControl>
                   <FormControl>
-                    <FormLabel>Guardian Name</FormLabel>
-                    <Input type="name" {...register('gname')} />
+                    <FormLabel fontSize={['10px', '20px', '20px']}>Guardian Name</FormLabel>
+                    <Input type="name" {...register('gname')}  size={['xs','sm','md']}/>
                   </FormControl>
                   <FormControl {...register('weddingDate')}>
-                    <FormLabel>Wedding Date</FormLabel>
+                    <FormLabel fontSize={['10px', '20px', '20px']}>Wedding Date</FormLabel>
                     <Stack direction="column" alignItems="flex-start" spacing={6}>
-                      <DatePicker format="MM/dd/yyyy"  />
+                      <DatePicker format="MM/dd/yyyy" />
                     </Stack>
                   </FormControl>
                   <FormControl isInvalid={!!errors.email ?? false}>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel fontSize={['10px', '20px', '20px']}>Email</FormLabel>
                     <Input
+                    size={['xs','sm','md']}
                       type="email"
                       {...register('email', {
                         pattern: {
@@ -384,12 +408,15 @@ const Demo = () => {
                     />
                   </FormControl>
                   <FormControl>
-                    <FormLabel>Education</FormLabel>
-                    <Input type="text" {...register('Education')} />
+                    <FormLabel fontSize={['10px', '20px', '20px']}>Education</FormLabel>
+                    <Input type="text" {...register('Education')} 
+                    size={['xs','sm','md']}
+                    />
                   </FormControl>
                   <FormControl isInvalid={!!errors.Landline ?? false}>
-                    <FormLabel>Landline</FormLabel>
+                    <FormLabel fontSize={['10px', '20px', '20px']}>Landline</FormLabel>
                     <Input
+                    size={['xs','sm','md']}
                       type="tel"
                       {...register('Landline', {
                         pattern: {
@@ -401,17 +428,21 @@ const Demo = () => {
                     <FormErrorMessage>{errors.Landline?.message}</FormErrorMessage>
                   </FormControl>
                   <FormControl>
-                    <FormLabel>Native Place</FormLabel>
-                    <Input type="text" {...register('NativePlace')} />
+                    <FormLabel fontSize={['10px', '20px', '20px']}>Native Place</FormLabel>
+                    <Input type="text" {...register('NativePlace')}
+                    size={['xs','sm','md']}
+                    />
                   </FormControl>
-                  <Heading>Address</Heading>
+                  <Heading fontSize={['24px', '32px', '40px']}>Address</Heading>
                   <FormControl>
-                    <FormLabel>Full Address</FormLabel>
-                    <Input type="text" {...register('FullAddress')} />
+                    <FormLabel fontSize={['10px', '20px', '20px']}>Full Address</FormLabel>
+                    <Input type="text" {...register('FullAddress')} 
+                    size={['xs','sm','md']}
+                    />
                   </FormControl>
                   <FormControl>
-                    <FormLabel>City</FormLabel>
-                    <Select placeholder="Select option" {...register('City')}>
+                    <FormLabel fontSize={['10px', '20px', '20px']}>City</FormLabel>
+                    <Select placeholder="Select option" {...register('City')} size={['xs','sm','md']}>
                       {City &&
                         City.map((item, index) => (
                           <option key={index} value={item}>
@@ -421,8 +452,8 @@ const Demo = () => {
                     </Select>
                   </FormControl>
                   <FormControl>
-                    <FormLabel>State</FormLabel>
-                    <Select placeholder="Select option" {...register('State')}>
+                    <FormLabel fontSize={['10px', '20px', '20px']}>State</FormLabel>
+                    <Select placeholder="Select option" {...register('State')} size={['xs','sm','md']}>
                       {State &&
                         State.map((item, index) => (
                           <option key={index} value={item}>
@@ -432,12 +463,14 @@ const Demo = () => {
                     </Select>
                   </FormControl>
                   <FormControl>
-                    <FormLabel>Pincode</FormLabel>
-                    <Input type="number" {...register('Pincode')} />
+                    <FormLabel fontSize={['10px', '20px', '20px']}>Pincode</FormLabel>
+                    <Input type="number" {...register('Pincode')} 
+                    size={['xs','sm','md']}
+                    />
                   </FormControl>
                   <FormControl>
-                    <FormLabel>Locality</FormLabel>
-                    <Select placeholder="Select option" {...register('Locality')}>
+                    <FormLabel fontSize={['10px', '20px', '20px']}>Locality</FormLabel>
+                    <Select placeholder="Select option" {...register('Locality')} size={['xs','sm','md']}>
                       {Locality &&
                         Locality.map((item, index) => (
                           <option key={index} value={item}>
@@ -447,7 +480,7 @@ const Demo = () => {
                     </Select>
                   </FormControl>
                   <FormControl display="flex" alignItems="center">
-                    <FormLabel htmlFor="email-alerts" mb="0">
+                    <FormLabel fontSize={['10px', '20px', '20px']} htmlFor="email-alerts" mb="0">
                       Do you have business?
                     </FormLabel>
                     <Switch
@@ -462,6 +495,8 @@ const Demo = () => {
                     colorScheme="blue"
                     type="submit"
                     size="lg"
+                    fontSize={['10px', '20px']}
+                    width={'80%'}
                     alignSelf={'center'}
                     variant="outline">
                     Submit
@@ -520,14 +555,16 @@ export const Business = ({ register, errors }) => {
         pt={10}
         pb={10}
         justifyContent={'center'}>
-        <Heading>Business</Heading>
+        <Heading fontSize={['24px', '32px', '40px']}>Business</Heading>
         <FormControl>
-          <FormLabel>Name</FormLabel>
-          <Input type="text" {...register('bname')} />
+          <FormLabel fontSize={['10px', '20px', '20px']}>Name</FormLabel>
+          <Input type="text" {...register('bname')}
+          size={['xs','sm','md']}
+          />
         </FormControl>
         <FormControl>
-          <FormLabel>Business Type</FormLabel>
-          <Select placeholder="Type" {...register('bType')}>
+          <FormLabel fontSize={['10px', '20px', '20px']}>Business Type</FormLabel>
+          <Select placeholder="Type" {...register('bType')} size={['xs','sm','md']}>
             {Btype &&
               Btype.map((item, index) => (
                 <option key={index} value={item}>
@@ -537,8 +574,8 @@ export const Business = ({ register, errors }) => {
           </Select>
         </FormControl>
         <FormControl>
-          <FormLabel>Business SubType</FormLabel>
-          <Select placeholder="SubType" {...register('SubType')}>
+          <FormLabel fontSize={['10px', '20px', '20px']}>Business SubType</FormLabel>
+          <Select placeholder="SubType" {...register('SubType')} size={['xs','sm','md']}>
             {Subtype &&
               Subtype.map((item, index) => (
                 <option key={index} value={item}>
@@ -548,8 +585,9 @@ export const Business = ({ register, errors }) => {
           </Select>
         </FormControl>
         <FormControl isInvalid={!!errors.website ?? false}>
-          <FormLabel>Website</FormLabel>
+          <FormLabel fontSize={['10px', '20px', '20px']}>Website</FormLabel>
           <Input
+          size={['xs','sm','md']}
             {...register('website', {
               pattern: {
                 value: /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i,
@@ -560,16 +598,19 @@ export const Business = ({ register, errors }) => {
           <FormErrorMessage>{errors.website?.message}</FormErrorMessage>
         </FormControl>
         <FormControl isInvalid={!!errors.bphone ?? false}>
-          <FormLabel>Business Phone</FormLabel>
-          <Input type="number" {...register('bphone')} />
+          <FormLabel fontSize={['10px', '20px', '20px']}>Business Phone</FormLabel>
+          <Input type="number" {...register('bphone')}
+          size={['xs','sm','md']} />
           <FormErrorMessage>{errors.bphone?.message}</FormErrorMessage>
         </FormControl>
         <FormControl>
-          <FormLabel>Address</FormLabel>
-          <Input type="text" {...register('baddress')} />
+          <FormLabel fontSize={['10px', '20px', '20px']}>Address</FormLabel>
+          <Input type="text" {...register('baddress')} 
+          size={['xs','sm','md']}
+          />
         </FormControl>
         <FormControl>
-          <FormLabel>Description</FormLabel>
+          <FormLabel fontSize={['10px', '20px', '20px']}>Description</FormLabel>
           <Textarea
             {...register('description')}
             placeholder="Here is a sample placeholder"
@@ -582,3 +623,5 @@ export const Business = ({ register, errors }) => {
 };
 
 export default Demo;
+
+

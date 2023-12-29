@@ -11,6 +11,7 @@ import {
   Text
 } from '@chakra-ui/react';
 import { Spinner } from '@chakra-ui/react';
+import ProfileCard from './ProfileCard';
 import {
   Modal,
   ModalOverlay,
@@ -28,6 +29,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 const CreateUser = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [loading, setLoading] = useState(false);
+  const [userId, setuserId] = useState(null);
   const {
     handleSubmit,
     register,
@@ -48,7 +50,9 @@ const CreateUser = () => {
         skip: 0,
         limit: 10
       });
-
+      if (response) {
+        setuserId(response.data.members.count > 0 ? response.data.members.rows[0].id : null);
+      }
       console.log('hi');
 
       if (response.data) {
@@ -57,6 +61,7 @@ const CreateUser = () => {
         if (responseData.members.count > 0) {
           onOpen();
         } else {
+          console.log('hi');
           navigate(`/invite/${id}/member`);
         }
       }
@@ -79,15 +84,15 @@ const CreateUser = () => {
             width={['90%', '80%', '60%']}
             mx="auto">
             <Box textAlign="center">
-              <Heading size="lg">Add User To Community </Heading>
-              <Text mt={2} color="gray.500">
+              <Heading size={['md', 'lg', 'xl']}>Add User To Community </Heading>
+              <Text mt={2} color="gray.500" fontSize={['sm', 'md', 'lg']}>
                 Enter your details
               </Text>
             </Box>
             <Divider my={5} />
             <form onSubmit={handleSubmit(onSubmit)}>
               <FormControl isRequired mt={10}>
-                <FormLabel>Username</FormLabel>
+                <FormLabel fontSize={['sm', 'md', 'lg']}>Username</FormLabel>
                 <Input
                   type="text"
                   placeholder="Enter your username"
@@ -102,7 +107,7 @@ const CreateUser = () => {
                 <span style={{ color: 'red' }}>{errors.username?.message}</span>
               </FormControl>
               <FormControl mt={10} isRequired>
-                <FormLabel>Phone Number</FormLabel>
+                <FormLabel fontSize={['sm', 'md', 'lg']}>Phone Number</FormLabel>
                 <Input
                   type="tel"
                   placeholder="Enter your phone number"
@@ -117,7 +122,7 @@ const CreateUser = () => {
                 <span style={{ color: 'red' }}>{errors.phoneNumber?.message}</span>
               </FormControl>
               <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                <Button colorScheme="blue" width="20%" mt={10} type="submit">
+                <Button colorScheme="blue" mt={10} width={['80%', '60%', '40%']} type="submit">
                   Add
                 </Button>
               </Box>
@@ -128,12 +133,17 @@ const CreateUser = () => {
           <Modal onClose={onClose} isOpen={isOpen} isCentered>
             <ModalOverlay />
             <ModalContent>
-              <ModalHeader color={'black'}>Already the member of this community</ModalHeader>
+              <ModalHeader fontSize={['md', 'lg', 'xl']} color={'black'}>
+                Already the member of this community
+              </ModalHeader>
               <ModalCloseButton />
               <ModalBody>
-                <Text color={'black'} fontWeight={'100'}>
+                <Text color={'black'} fontWeight={'100'} fontSize={['sm', 'md', 'lg']}>
                   Please Try Again with other phone number
                 </Text>
+                <Box mt={10}>
+                  {userId && <ProfileCard uid={userId} fontSize={['sm', 'md', 'lg']} />}
+                </Box>
               </ModalBody>
               <ModalFooter>
                 <Button onClick={onClose}>Ok</Button>

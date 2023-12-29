@@ -6,6 +6,8 @@ import MainPanel from '../components/MainPanel(Dashboard)/MainPanel';
 
 import Demo from '../components/CommForm.tsx';
 import CreateUser from '../components/CreateUser.js';
+import LeftHead from '../components/ChakraDash/LeftHead.js';
+
 function App() {
   return (
     <ChakraProvider>
@@ -13,9 +15,9 @@ function App() {
         <Routes>
           <Route path="/dashboard" element={<MainPanel />} />
           <Route path="/form" element={<Form />} />
-
           <Route path="/invite/:id" element={<CreateUser />} />
           <Route path="/invite/:id/member" element={<Demo />} />
+          <Route path="/" element={<LeftHead />} />
         </Routes>
       </BrowserRouter>
     </ChakraProvider>
