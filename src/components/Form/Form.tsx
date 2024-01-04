@@ -10,10 +10,10 @@ import {
   DrawerContent,
   DrawerCloseButton,
   Box,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription
+  // Alert,
+  // AlertIcon,
+  // AlertTitle,
+  // AlertDescription
 } from '@chakra-ui/react';
 
 import { z } from 'zod';
@@ -131,11 +131,11 @@ const Form = ({ isOpen, onClose }) => {
   return (
     <>
       <Drawer isOpen={isOpen} onClose={onClose} size={size}>
-        <Alert status="success">
+        {/* <Alert status="success">
           <AlertIcon />
           <AlertTitle>Form Submitted succesfully</AlertTitle>
           <AlertDescription>Community created successfuly</AlertDescription>
-        </Alert>
+        </Alert> */}
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />

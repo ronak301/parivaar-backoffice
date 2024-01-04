@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-key */
 import React from 'react';
-import { useTable, useSortBy, usePagination } from 'react-table';
+import { useTable, useSortBy, usePagination, useRowSelect } from 'react-table';
 import styled from 'styled-components';
-const Table = ({ columns, data }) => {
+const Table = ({ columns, data, onRowClick }) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -17,11 +17,18 @@ const Table = ({ columns, data }) => {
     state: { pageIndex },
     pageCount,
     gotoPage
-  } = useTable({ columns, data, initialState: { pageSize: 8 } }, useSortBy, usePagination);
+  } = useTable(
+    { columns, data, initialState: { pageSize: 8 } },
+    useSortBy,
+    usePagination,
+    useRowSelect
+  );
 
   return (
     <Styles>
-      <div className="tabh">
+      <div
+        className="tabh"
+        style={{ borderRadius: '1rem', border: '1px solid #EAEAEA', padding: 0 }}>
         <table {...getTableProps()}>
           <thead>
             {headerGroups.map((headerGroup) => (
@@ -43,7 +50,10 @@ const Table = ({ columns, data }) => {
             {page.map((row) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()}>
+                <tr
+                  {...row.getRowProps()}
+                  onClick={() => onRowClick && onRowClick(row)}
+                  style={{ cursor: 'pointer' }}>
                   {row.cells.map((cell) => {
                     return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
                   })}
