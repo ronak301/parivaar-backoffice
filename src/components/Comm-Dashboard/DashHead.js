@@ -1,11 +1,9 @@
 import React from 'react';
 import { Box } from '@chakra-ui/react';
-import Profile from '../../moduels/auth/components/Dashboard/Profile/Profile';
+
 import Communities from '../../moduels/auth/components/Dashboard/Communities/Communities.js';
 
-import Edituser from '../EditUser.js/Edituser.js';
-
-import Member from '../Member/Member.js';
+// import Member from '../Member/Member.js';
 
 // eslint-disable-next-line react/prop-types
 const DashHead = ({ selected }) => {
@@ -26,9 +24,8 @@ const DashHead = ({ selected }) => {
         top={0}
         zIndex={50}
       />
-
       <Box backgroundColor={'#FBFBFB'} height={'100%'}>
-        {selected === 'AboutUs' && <Member />}
+        {/* {selected === 'AboutUs' && <Member />} */}
         {/* edit user */}
         {/* <Box
           style={{
@@ -73,9 +70,9 @@ const DashHead = ({ selected }) => {
         </Box> */}
         {/* edit user end */}
 
-        {selected === 'MyProfile' && <Profile />}
+        {/* {selected === 'MyProfile' && <Profile />} */}
         {selected === 'AllCommunities' && <Communities />}
-        {selected === 'HelpCenter' && <Edituser />}
+        {/* {selected === 'HelpCenter' && <Edituser />}  */}
       </Box>
     </Box>
   );

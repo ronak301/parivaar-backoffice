@@ -51,24 +51,27 @@ const Member = ({ communityId }) => {
 
   useEffect(() => {
     const memberData = async () => {
-      const response = await axios.post(
-        `https://api.parivaarapp.in/community/members/${communityId}`,
-        {
-          query: '',
-          filter: {},
-          skip: 0,
-          limit: 100
-        }
-      );
-      console.log(response.data);
-      setData(
-        response.data.members.rows.map((member) => ({
-          FullName: `${member.firstName} ${member.lastName}`,
-          PhoneNumber: member.phone,
-          BloodGroup: member.bloodGroup,
-          profilePicture: member.profilePicture
-        }))
-      );
+      if (communityId) {
+        const response = await axios.post(
+          `https://api.parivaarapp.in/community/members/${communityId}`,
+          {
+            query: '',
+            filter: {},
+            skip: 0,
+            limit: 100
+          }
+        );
+        console.log(response.data);
+
+        setData(
+          response.data.members.rows.map((member) => ({
+            FullName: `${member.firstName} ${member.lastName}`,
+            PhoneNumber: member.phone,
+            BloodGroup: member.bloodGroup,
+            profilePicture: member.profilePicture
+          }))
+        );
+      }
     };
 
     memberData();

@@ -109,10 +109,10 @@ const AddUserForm = ({ isOpen, onClose }) => {
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader fontSize="3xl" fontFamily={'Arial'}>
-            Add Community
+            Add Member
           </DrawerHeader>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <DrawerBody>
+          <form style={{overflowY:'auto'}} onSubmit={handleSubmit(onSubmit)}>
+            <DrawerBody >
               <Box width={'300px'} position={'relative'} onClick={handleClick}>
                 <FormLabel textAlign={'left'} fontSize={'18px'}>
                   Logo
