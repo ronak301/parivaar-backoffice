@@ -3,6 +3,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import CommunityDetailScreen from "./modules/directory/CommunityDetailScreen";
 import Wrapper from "./components/Wrapper";
+import InviteMember from "./modules/directory/InviteMember";
 
 function App() {
   const router = createBrowserRouter([
@@ -15,10 +16,14 @@ function App() {
           element: <Dashboard />,
         },
         {
-          path: "/community/:id",
+          path: "/dashboard/community/:id",
           element: <CommunityDetailScreen />,
         },
       ],
+    },
+    {
+      path: "/community/:id/add-member/invite",
+      element: InviteMember,
     },
   ]);
 

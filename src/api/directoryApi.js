@@ -15,9 +15,9 @@ export const getCommunityDetailsForId = (id) => {
 
 export const getCommunityMembersForCommunityId = (
   id,
-  skip,
-  limit,
-  query,
+  skip = 0,
+  limit = 10,
+  query = "",
   filter = {}
 ) => {
   return axios.post(
