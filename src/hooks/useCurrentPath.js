@@ -1,6 +1,7 @@
 import { matchRoutes, useLocation } from "react-router-dom";
 
 const routes = [
+  { path: "/" },
   { path: "/dashboard" },
   { path: "/dashboard/community/:id" },
   { path: `/dashboard/community/:communityId/member/:memberId` },

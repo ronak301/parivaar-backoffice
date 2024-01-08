@@ -1,5 +1,4 @@
 import {
-  Button,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -7,33 +6,32 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
-  Input,
 } from "@chakra-ui/react";
 
-export const SidePane = ({ isOpen, onOpen, onClose }) => {
+export const SidePane = ({ heading, children, footer, isOpen, onClose }) => {
   return (
     <>
       <Drawer isOpen={isOpen} onClose={onClose} size="md">
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Create your account</DrawerHeader>
+          <DrawerHeader>{heading}</DrawerHeader>
 
           <DrawerBody>
             <form
               id="my-form"
               onSubmit={(e) => {
                 e.preventDefault();
-                console.log("submitted");
               }}>
-              <Input name="nickname" placeholder="Type here..." />
+              {children}
             </form>
           </DrawerBody>
 
           <DrawerFooter>
-            <Button type="submit" form="my-form">
+            {footer}
+            {/* <Button type="submit" form="my-form">
               Save
-            </Button>
+            </Button> */}
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

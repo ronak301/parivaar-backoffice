@@ -8,29 +8,17 @@ export default function MemberSearchFilterComponent({
   setFilter,
 }) {
   return (
-    <Box
-      mx={16}
-      mb={4}
-      borderColor={"rgb(234,234,234)"}
-      borderWidth={1}
-      px={8}
-      py={8}
-      borderRadius={8}>
-      <Flex>
+    <Box mx={8} mb={2} px={2} py={2}>
+      <Flex alignItems={"center"}>
         <Box>
-          <Text mb="8px">Search</Text>
           <Input
             w={400}
             onChange={(e) => setQuery(e?.target?.value)}
             placeholder="Search name or phone number"
           />
         </Box>
-        <Center
-          flexDirection={"column"}
-          ml={6}
-          alignItems={"center"}
-          justifyContent={"center"}>
-          <Text mb="8px">Show All Family Members</Text>
+        <Flex ml={8}>
+          <Text mr={2}>Show All Family Members</Text>
           <Switch
             isChecked={showOnlyFamilyHeads}
             onChange={(val) => {
@@ -51,7 +39,7 @@ export default function MemberSearchFilterComponent({
             colorScheme="teal"
             size="lg"
           />
-        </Center>
+        </Flex>
       </Flex>
     </Box>
   );

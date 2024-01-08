@@ -17,7 +17,7 @@ import {
   getCommunityMembersForCommunityId,
   removeFromCommunity,
 } from "../../../api/directoryApi";
-import { isEmpty } from "lodash";
+import { camelCase, isEmpty, lowerCase } from "lodash";
 import Loading from "../../../components/Loading";
 import Nodata from "../../../components/Nodata";
 import { useNavigate, useParams } from "react-router-dom";
@@ -43,7 +43,7 @@ export default function MemberList() {
 
   const [showOnlyFamilyHeads, setShowOnlyFamilyHeads] = React.useState(true);
   const [filter, setFilter] = React.useState({
-    limit: 10,
+    limit: 100,
     skip: 0,
   });
 
@@ -135,18 +135,11 @@ export default function MemberList() {
         setFilter={setFilter}
       />
       <Text
-        mx={16}
+        mx={8}
         pb={2}
         pt={2}>{`Showing ${data?.members?.count} members`}</Text>
       <List
-        columns={[
-          "Image",
-          "Name",
-          "Business/Job",
-          "Number",
-          "Guardian Name",
-          "",
-        ]}
+        columns={["Name", "Business/Job", "Number", "Guardian Name", ""]}
         data={data?.members?.rows}
         renderRow={({ item }) => {
           return (
@@ -155,28 +148,28 @@ export default function MemberList() {
                 const url = `/dashboard/community/${communityId}/member/${item?.id}`;
                 navigate(url);
               }}>
-              <RowCell>
+              {/* <RowCell>
                 {item?.profilePicture ? (
-                  <Image
-                    src={item?.profilePicture}
-                    w={12}
-                    h={12}
-                    rounded={999}
-                  />
+                  <Image src={item?.profilePicture} w={6} h={6} rounded={999} />
                 ) : (
-                  <Center w={12} h={12} bg="green.300" borderRadius={999}>
-                    <Text color="white">{`${item?.firstName?.charAt(
+                  <Center w={6} h={6} bg="green.300" borderRadius={999}>
+                    <Text
+                      color="white"
+                      fontSize={8}>{`${item?.firstName?.charAt(
                       0
                     )}${item?.lastName?.charAt(0)}`}</Text>
                   </Center>
                 )}
-              </RowCell>
-              <RowCell value={`${item?.firstName} ${item?.lastName}`} />
+              </RowCell> */}
+              <RowCell
+                value={`${lowerCase(`${item?.firstName} ${item?.lastName}`)}`}
+              />
               <RowCell value={`${item?.business?.name || ""}`} />
               <RowCell value={item?.phone} />
               <RowCell value={item?.guardianName} />
               <RowCell>
                 <Button
+                  size={"sm"}
                   onClick={(e) => {
                     e?.stopPropagation();
                     setUserToRemove(item);
