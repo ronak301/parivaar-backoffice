@@ -17,7 +17,7 @@ export default function List({ data, renderRow, columns }) {
       overflowY="auto"
       maxH={500}
       borderRadius={8}
-      mx={32}
+      mx={16}
       borderColor={"gray.200"}
       borderWidth={1}>
       <Table variant="simple" borderRadius={8}>

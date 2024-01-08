@@ -4,6 +4,9 @@ import Dashboard from "./components/Dashboard";
 import CommunityDetailScreen from "./modules/directory/CommunityDetailScreen";
 import Wrapper from "./components/Wrapper";
 import InviteMember from "./modules/directory/InviteMember";
+import MemberDetailsScreen from "./modules/directory/MemberDetailsScreen";
+import AllUsers from "./modules/directory/components/AllUsers";
+import LeadsScreen from "./modules/leads/LeadsScreen";
 
 function App() {
   const router = createBrowserRouter([
@@ -19,11 +22,23 @@ function App() {
           path: "/dashboard/community/:id",
           element: <CommunityDetailScreen />,
         },
+        {
+          path: `/dashboard/community/:communityId/member/:memberId`,
+          element: <MemberDetailsScreen />,
+        },
+        {
+          path: `/all-users`,
+          element: <AllUsers />,
+        },
+        {
+          path: `/leads`,
+          element: <LeadsScreen />,
+        },
       ],
     },
     {
       path: "/community/:id/add-member/invite",
-      element: InviteMember,
+      element: <InviteMember />,
     },
   ]);
 

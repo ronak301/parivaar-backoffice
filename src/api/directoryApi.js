@@ -61,6 +61,15 @@ export const addToCommunity = (communityId, userId) => {
   });
 };
 
+export const removeFromCommunity = (communityId, userId) => {
+  return client.delete(`/community/member/delete`, {
+    data: {
+      communityId,
+      userId,
+    },
+  });
+};
+
 export const createRelation = (userId, relativeId, relationshipType) => {
   return client.post(`/relationship/relation/new`, {
     userId,

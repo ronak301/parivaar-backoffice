@@ -14,7 +14,7 @@ export const useApi = (apiFunc) => {
 
       setData(result.data);
       return result;
-    } catch (error: any) {
+    } catch (error) {
       // Sentry.Native.captureException(error);
       // console.log("Error is", error);
       setError(error.message || "Unexpeted Error!!");

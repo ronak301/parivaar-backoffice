@@ -9,7 +9,7 @@ export default function MemberSearchFilterComponent({
 }) {
   return (
     <Box
-      mx={32}
+      mx={16}
       mb={4}
       borderColor={"rgb(234,234,234)"}
       borderWidth={1}

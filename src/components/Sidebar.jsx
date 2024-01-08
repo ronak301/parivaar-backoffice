@@ -29,14 +29,14 @@ export default function Sidebar({ children }) {
 
 export function SidebarItem({ icon, text, to }) {
   const currentPath = useCurrentPath();
-  console.log("currentPathcurrentPath", currentPath, to);
   const isSelected = currentPath?.includes(to);
   const backgroundColor = isSelected ? "rgb(48,59,73)" : "black";
   return (
     <ChakraLink to={to} as={ReactRouterLink}>
       <Flex
-        p={4}
+        p={2}
         m={2}
+        mx={4}
         borderRadius={"md"}
         alignItems="center"
         backgroundColor={backgroundColor}
@@ -46,7 +46,7 @@ export function SidebarItem({ icon, text, to }) {
           color: "teal.500",
         }}>
         <Box color="white">{icon}</Box>
-        <Box ml={2} color="white">
+        <Box ml={2} color="white" fontSize={12}>
           {text}
         </Box>
       </Flex>
