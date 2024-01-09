@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Text, Image } from "@chakra-ui/react";
+import { property } from "lodash";
 
 const DetailBox = ({ item, style, properties }) => {
   return (
@@ -15,7 +16,6 @@ const DetailBox = ({ item, style, properties }) => {
       }}
     >
       {properties.map((property, indx) => {
-        const [key, heading] = Object.entries(property)[0];
         return (
           <Box key={indx}>
             <Box style={{ display: "flex", flexDirection: "column" }}>
@@ -34,32 +34,24 @@ const DetailBox = ({ item, style, properties }) => {
                     fontWeight: 500,
                     lineHeight: "24px",
                     width: "15rem",
-                    fontFamily: "Clash Display",
+                    fontFamily: "Arial",
                     color: "#666666",
                   }}
                 >
-                  {heading}
+                  {property}
                 </Text>
-                {key === "logo" ? (
-                  <Image
-                    src={item[key]}
-                    alt={`Logo for ${key}`}
-                    borderRadius={"5rem"}
-                    boxSize="100px"
-                  />
-                ) : (
-                  <Text
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: 500,
-                      lineHeight: "24px",
-                      fontFamily: "Clash Display",
-                      color: "#000000",
-                    }}
-                  >
-                    {item[key]}
-                  </Text>
-                )}
+
+                <Text
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: 500,
+                    lineHeight: "24px",
+                    fontFamily: "Arial",
+                    color: "#000000",
+                  }}
+                >
+                  {item.find((entry) => entry.key === property)?.value}
+                </Text>
               </Box>
             </Box>
           </Box>

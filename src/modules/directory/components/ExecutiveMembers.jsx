@@ -7,6 +7,7 @@ import { Image, Center, Text } from "@chakra-ui/react";
 import { getCommunityDetailsForId } from "../../../api/directoryApi";
 import MemberSearchFiltterComponent from "../MemberSearchFilterComponent";
 import { useDebounce } from "use-debounce";
+import SearchFilterComponent from "../SearchFilterComponents";
 export default function ExecutiveMembers({ communityId }) {
   const { id } = useParams();
   const [data, setData] = React.useState([]);
@@ -26,40 +27,34 @@ export default function ExecutiveMembers({ communityId }) {
       setLoading(true);
       try {
         const res = await getCommunityDetailsForId(id);
-        
         setData(res?.data);
         setLoading(false);
-
       } catch (err) {
         setError(err?.message);
         setLoading(false);
       }
     };
     fetchData();
-
   }, [id]);
   useEffect(() => {
     const filtered = data?.executives?.filter((executive) => {
-      const fullName =`${executive?.firstName}${executive?.lastName}`.replace(/\s/g, '').toLowerCase();
+      const fullName = `${executive?.firstName}${executive?.lastName}`
+        .replace(/\s/g, "")
+        .toLowerCase();
       console.log(debouncedText);
       const phone = (executive?.phone || "").toLowerCase();
-      return fullName.startsWith(debouncedText.toLowerCase()) || phone.includes(debouncedText.toLowerCase());
+      return (
+        fullName.startsWith(debouncedText.toLowerCase()) ||
+        phone.includes(debouncedText.toLowerCase())
+      );
     });
-    setFilteredExecutives(filtered); 
-
-
-}, [data?.executives, debouncedText]);
-  
-
-
-
-
-
+    setFilteredExecutives(filtered);
+  }, [data?.executives, debouncedText]);
 
   // console.log("id", id);
   return (
     <CommonBox
-      title={`Executive Members(${(data?.executives?.length)})`}
+      title={`Executive Members(${data?.executives?.length})`}
       buttons={[
         {
           text: `Add Executive Member`,
@@ -69,11 +64,7 @@ export default function ExecutiveMembers({ communityId }) {
         },
       ]}
     >
-      <MemberSearchFiltterComponent
-        setQuery={setQuery}
-        setFilter={setFilter}
-        setShowOnlyFamilyHeads={setShowOnlyFamilyHeads}
-      />
+      <SearchFilterComponent setQuery={setQuery} setFilter={setFilter} />
       <List
         columns={["Full Name", "Blood Group", "Profile", "Phone", "Role"]}
         data={filteredExecutives}
@@ -106,7 +97,6 @@ export default function ExecutiveMembers({ communityId }) {
               <RowCell value={item?.phone} />
               <RowCell value={item?.executive?.roles[0]} />
             </Row>
-
           );
         }}
       />

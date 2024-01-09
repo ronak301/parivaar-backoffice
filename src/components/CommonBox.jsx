@@ -6,7 +6,7 @@ export default function CommonBox({ children, title, buttons }) {
     <Box mt={1} bg="white" py={4} borderRadius={"lg"} shadow={"lg"}>
       <Box
         style={{
-          width:"95%",
+          width: "95%",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -29,20 +29,27 @@ export default function CommonBox({ children, title, buttons }) {
                   justifyContent: "center",
                   flexDirection: "row",
                   borderRadius: "1.125rem",
-                  border: button.border|| "1px solid #0777FF",
+                  border: button.border || "1px solid #0777FF",
                   gap: "6px",
                   ...button.style,
                 }}
               >
                 {button.icon && <Box>{button.icon}</Box>}
-                <Box style={{display:"flex",flexDirection:"row",justifyContent:"center",alignItems:"center",gap:"0.4rem"}}>
-                <Text
+                <Box
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: "0.4rem",
+                  }}
+                >
+                  <Text
                     style={{
                       color: button.textColor || "#0777FF",
-                      fontFamily: "Clash Display",
+                      fontFamily: "Arial",
                       fontSize: "0.75rem",
-                      fontWeight: 600
-
+                      fontWeight: 600,
                     }}
                   >
                     {button.symbol}
@@ -50,11 +57,9 @@ export default function CommonBox({ children, title, buttons }) {
                   <Text
                     style={{
                       color: button.textColor || "#0777FF",
-                      fontFamily: "Clash Display",
+                      fontFamily: "Arial",
                       fontSize: "0.75rem",
-                      fontWeight: 600
-
-
+                      fontWeight: 600,
                     }}
                   >
                     {button.text || "Button"}

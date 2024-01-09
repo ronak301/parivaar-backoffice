@@ -122,7 +122,8 @@ export default function MemberList() {
                 } finally {
                   setIsRemovingUser(false);
                 }
-              }}>
+              }}
+            >
               Remove
             </Button>
           </ModalFooter>
@@ -137,7 +138,8 @@ export default function MemberList() {
       <Text
         mx={8}
         pb={2}
-        pt={2}>{`Showing ${data?.members?.count} members`}</Text>
+        pt={2}
+      >{`Showing ${data?.members?.count} members`}</Text>
       <List
         columns={["Name", "Business/Job", "Number", "Guardian Name", ""]}
         data={data?.members?.rows}
@@ -147,7 +149,8 @@ export default function MemberList() {
               onClick={() => {
                 const url = `/dashboard/community/${communityId}/member/${item?.id}`;
                 navigate(url);
-              }}>
+              }}
+            >
               {/* <RowCell>
                 {item?.profilePicture ? (
                   <Image src={item?.profilePicture} w={6} h={6} rounded={999} />
@@ -175,7 +178,8 @@ export default function MemberList() {
                     setUserToRemove(item);
                     setOverlay(<Overlay />);
                     onOpen();
-                  }}>
+                  }}
+                >
                   Remove
                 </Button>
               </RowCell>
