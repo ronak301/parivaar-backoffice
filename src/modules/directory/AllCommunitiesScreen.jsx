@@ -47,7 +47,8 @@ export default function AllCommunitiesScreen() {
                 onClick={() => {
                   const url = `/dashboard/community/${item?.id}`;
                   navigate(url);
-                }}>
+                }}
+              >
                 <RowCell value={item?.name} />
                 <RowCell value={item?.totalMembers} />
                 <RowCell
