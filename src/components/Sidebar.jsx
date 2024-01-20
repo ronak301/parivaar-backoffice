@@ -4,8 +4,8 @@ import { useCurrentPath } from "../hooks/useCurrentPath";
 
 export default function Sidebar({ children }) {
   return (
-    <aside style={{ position: "fixed" }}>
-      <Box backgroundColor="black" flex={1} h="100vh" w={260} pt={4}>
+    <aside w="100%">
+      <Box backgroundColor="black" flex={1} h="100vh" w={"100%"} pt={4}>
         <nav className="h-full flex flex-col bg-white border-r shadow-sm ">
           <div className="mt-16 p-4 pb-2 flex justify-between items-center">
             <Text
@@ -46,7 +46,7 @@ export function SidebarItem({ icon, text, to }) {
           color: "teal.500",
         }}>
         <Box color="white">{icon}</Box>
-        <Box ml={2} color="white" fontSize={12}>
+        <Box ml={2} color="white" fontSize={16}>
           {text}
         </Box>
       </Flex>

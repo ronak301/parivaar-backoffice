@@ -8,7 +8,7 @@ import { Outlet } from "react-router-dom";
 export default function Wrapper() {
   return (
     <Flex>
-      <Box w="15%" h="100vh">
+      <Box w="20%" h="100vh">
         <Sidebar>
           <SidebarItem
             icon={<LayoutDashboard size={20} />}

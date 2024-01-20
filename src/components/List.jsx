@@ -57,9 +57,3 @@ export const RowCell = ({ value, children, ...rest }) => {
     <Td {...rest}>{children || <Text fontWeight={"500"}>{value}</Text>}</Td>
   );
 };
-
-// color={"blue"}
-//         onClick={(e) => {
-//           e?.stopPropagation();
-//           navigate(`/community/${item?.id}/add-member/invite`);
-//         }}

@@ -7,10 +7,10 @@ export const useApi = (apiFunc) => {
   const request = async (...args) => {
     setLoading(true);
     try {
-      console.log("requets is", apiFunc, ...args);
+      // console.log("requets is", apiFunc, ...args);
       const result = await apiFunc(...args);
 
-      console.log("request was", result?.config?.data);
+      // console.log("request was", result?.config?.data);
 
       setData(result.data);
       return result;
