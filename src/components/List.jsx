@@ -8,10 +8,23 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { map } from "lodash";
+import { map, set } from "lodash";
 import React from "react";
 
-export default function List({ data, renderRow, columns }) {
+export default function List({
+  data,
+  renderRow,
+  columns,
+  sortBy,
+  setSortBy,
+  setSortDirection,
+  sortDirection,
+}) {
+  const handleSort = (id) => () => {
+    setSortBy(id);
+    setSortDirection(!sortDirection);
+    console.log("direction is ", sortDirection);
+  };
   return (
     <TableContainer
       overflowY="auto"
@@ -19,14 +32,16 @@ export default function List({ data, renderRow, columns }) {
       borderRadius={8}
       mx={8}
       borderColor={"gray.200"}
-      borderWidth={1}>
+      borderWidth={1}
+    >
       <Table variant="simple" borderRadius={8}>
         <Thead scrollBehavior={"auto"}>
           <Tr h="28px" bg="black">
             {map(columns, (c) => (
-              <Th camelCase>
+              <Th camelCase onClick={handleSort(c)}>
                 <Text fontSize={14} fontWeight={"500"} color="white">
-                  {c}
+                  {c} {}{" "}
+                  {sortBy === c ? <>{sortDirection ? "▲" : "▼"}</> : <></>}
                 </Text>
               </Th>
             ))}
@@ -46,7 +61,8 @@ export const Row = ({ onClick, children, ...rest }) => {
       _hover={{
         cursor: "pointer",
         backgroundColor: "rgb(240,240,240)",
-      }}>
+      }}
+    >
       {children}
     </Tr>
   );

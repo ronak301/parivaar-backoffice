@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import List, { Row, RowCell } from "../../components/List";
 import Base from "../../components/Base";
 import CommonBox from "../../components/CommonBox";
+
 import LoadingWrapper from "../../components/LoadingWrapper";
 
 export default function AllCommunitiesScreen() {
@@ -39,7 +40,8 @@ export default function AllCommunitiesScreen() {
                   onClick={() => {
                     const url = `/dashboard/community/${item?.id}`;
                     navigate(url);
-                  }}>
+                  }}
+                >
                   <RowCell value={item?.name} />
                   <RowCell value={item?.totalMembers} />
                   <RowCell

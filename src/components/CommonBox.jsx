@@ -3,10 +3,19 @@ import React from "react";
 
 export default function CommonBox({ children, title, buttons }) {
   return (
-    <Box mt={1} bg="white" py={4} borderRadius={"lg"} shadow={"lg"}>
+    <Box
+      mt={1}
+      bg="white"
+      marginLeft={10}
+      py={4}
+      borderRadius={"lg"}
+      shadow={"lg"}
+      overflowY={"auto"}
+    >
       <Box
         style={{
           width: "95%",
+
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -20,6 +29,7 @@ export default function CommonBox({ children, title, buttons }) {
           <Box style={{ display: "flex" }}>
             {buttons.map((button, index) => (
               <Button
+                onClick={button.onClick || ""}
                 key={index}
                 style={{
                   padding: "1rem",
