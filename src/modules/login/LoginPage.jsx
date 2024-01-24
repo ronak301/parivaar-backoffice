@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { Button, Grid, GridItem, Text } from "@chakra-ui/react";
 import login from "../../assets/re.png";
-import { Image } from "@chakra-ui/react";
+import {
+  Image,
+  FormLabel,
+  FormControl,
+  FormErrorMessage,
+} from "@chakra-ui/react";
 import { Box } from "@chakra-ui/react";
 import { Input } from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
 import Logo from "../../assets/Log.png";
 import { useForm } from "react-hook-form";
 import { sendOtp } from "../../api/authApi";
 import { useNavigate } from "react-router-dom";
-import {
-  InputAddon,
-  InputGroup,
-  InputAddonProps,
-  InputLeftAddon,
-} from "@chakra-ui/react";
-import { Spinner } from "@chakra-ui/react";
+import { InputGroup, InputLeftAddon } from "@chakra-ui/react";
 
 const SubmitForm = ({ setSuccess, setLoading, setPhoneNumber, loading }) => {
-  const [sub, setSub] = useState(false);
-  const [otpSent, setOtpSent] = useState(false);
+  const toast = useToast();
 
   const onSubmit = (data) => {
     console.log("in submit");
@@ -31,18 +30,26 @@ const SubmitForm = ({ setSuccess, setLoading, setPhoneNumber, loading }) => {
       const response = await sendOtp(data.phoneNumber);
       console.log(response);
 
-      setOtpSent(true);
-      setTimeout(() => {
-        setOtpSent(false);
-        setLoading(false);
-        setSuccess(true);
-      }, 3000);
+      setLoading(false);
+
+      setSuccess(true);
+      toast({
+        title: "Otp Sent ",
+        description: "We've successfully sent otp to your phone number",
+        status: "success",
+        duration: 1100,
+        isClosable: true,
+      });
     };
 
     submitOtp();
   };
 
-  const { register, handleSubmit, formState } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     mode: "onChange",
   });
   return (
@@ -61,72 +68,40 @@ const SubmitForm = ({ setSuccess, setLoading, setPhoneNumber, loading }) => {
         <Box
           style={{
             display: "flex",
-            justifyContent: "flex-start",
+            justifyContent: "center",
             alignItems: "center",
             padding: "2rem",
-
-            width: "100%",
             gap: "2rem",
-            marginInline: "auto",
           }}
         >
-          <Box style={{ width: "100%" }}>
-            <Text
-              style={{
-                color: "#767070",
-                fontSize: "0.7rem",
-                fontWeight: "400",
-                textAlign: "center",
-                width: "100%",
-                lineHeight: "normal",
-                paddingBottom: "0.5rem",
-              }}
-            >
-              Please Enter your Number
-            </Text>
-            {sub && !formState.isValid && (
-              <Text
+          <FormControl isRequired isInvalid={errors.phoneNumber}>
+            <FormLabel>Enter Phone Number</FormLabel>
+            <InputGroup>
+              <InputLeftAddon children="+91" />
+              <Input
+                type="tel"
+                placeholder="00000-00000"
+                {...register("phoneNumber", {
+                  required: "Phone number is required",
+                  pattern: {
+                    value: /^[0-9]{10}$/,
+                    message: "Invalid Phone Number Format",
+                  },
+                })}
                 style={{
-                  color: "red",
-                  width: "100%",
-                  fontSize: "0.7rem",
+                  width: "15rem",
+                  fontSize: "1.2rem",
+                  paddingInline: "1rem",
+                  fontWeight: "400",
+                  fontFamily: "Arial",
+                  background: "#F5F7F9",
                 }}
-              >
-                Invalid phone number
-              </Text>
-            )}
-          </Box>
-
-          <InputGroup>
-            <InputLeftAddon children="+91" />
-            <Input
-              type="tel"
-              placeholder="00000-00000"
-              {...register("phoneNumber", {
-                pattern: /^[0-9]{10}$/,
-              })}
-              style={{
-                color: "#8897AE",
-                width: "17rem",
-                height: "2.5rem",
-                fontSize: "1.3rem",
-                fontWeight: "400",
-                fontFamily: "Arial",
-                background: "#F5F7F9",
-              }}
-            />
-          </InputGroup>
-
-          <Text
-            style={{
-              color: "red",
-              fontSize: "0.7rem",
-              opacity: "0",
-              width: "80%",
-            }}
-          >
-            Invalid phone number
-          </Text>
+              />
+            </InputGroup>
+            <FormErrorMessage>
+              {!!errors.phoneNumber && errors.phoneNumber.message}
+            </FormErrorMessage>
+          </FormControl>
         </Box>
 
         <Button
@@ -134,26 +109,16 @@ const SubmitForm = ({ setSuccess, setLoading, setPhoneNumber, loading }) => {
           isLoading={loading}
           loadingText="Loading"
           spinnerPlacement="start"
-          onClick={() => {
-            setSub(true);
-          }}
           style={{
             backgroundColor: "#0777FF",
             color: "white",
-            width: "10rem",
+            width: "30%",
             borderRadius: "0.5rem",
           }}
         >
           Get Otp
         </Button>
       </form>
-      {otpSent && (
-        <Box style={{ position: "sticky" }}>
-          <Text style={{ color: "green", marginTop: "1rem" }}>
-            OTP has been sent to your phone number successfuly!
-          </Text>
-        </Box>
-      )}
     </>
   );
 };

@@ -1,14 +1,14 @@
 import React from "react";
 import { Input, FormControl, FormLabel } from "@chakra-ui/react";
 
-const Phone = ({ text, register, errors }) => {
+const Phone = ({ text, register, errors, field }) => {
   return (
     <FormControl>
       <FormLabel fontSize={"18px"} color={"black"}>
         {text}
       </FormLabel>
       <Input
-        {...register(text, {
+        {...register(field, {
           required: `${text} is required`,
           maxLength: {
             value: 10,
@@ -28,7 +28,7 @@ const Phone = ({ text, register, errors }) => {
         backgroundColor={"#F5F7F9"}
         border={"0.6px solid #F0F0F0"}
       />
-      <span style={{ color: "red" }}>{errors[text]?.message}</span>
+      <span style={{ color: "red" }}>{errors[field]?.message}</span>
     </FormControl>
   );
 };

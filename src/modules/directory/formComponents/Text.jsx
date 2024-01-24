@@ -1,15 +1,20 @@
 import React from "react";
-import { Input, FormControl, FormLabel } from "@chakra-ui/react";
+import {
+  Input,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+} from "@chakra-ui/react";
 
-const Text = ({ text, register, errors, req = "false" }) => {
+const Text = ({ text, register, errors, req = "false", field }) => {
   return (
-    <FormControl>
+    <FormControl isRequired={req} isInvalid={errors.text}>
       <FormLabel fontSize={"18px"} color={"black"}>
         {text}
       </FormLabel>
       <Input
         {...register(
-          text,
+          field,
           req && {
             required: `${text} is required`,
           }
@@ -23,7 +28,9 @@ const Text = ({ text, register, errors, req = "false" }) => {
         backgroundColor={"#F5F7F9"}
         border={"0.6px solid #F0F0F0"}
       />
-      <span style={{ color: "red" }}>{errors[text]?.message}</span>
+      <FormErrorMessage>
+        {!!errors.field && errors.field.message}
+      </FormErrorMessage>
     </FormControl>
   );
 };

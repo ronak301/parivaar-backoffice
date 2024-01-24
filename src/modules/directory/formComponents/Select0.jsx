@@ -1,14 +1,14 @@
 import React from "react";
 import { FormControl, FormLabel } from "@chakra-ui/react";
 import { Select as Chakraselect } from "@chakra-ui/react";
-const Select0 = ({ text, register, options }) => {
+const Select0 = ({ text, register, options, field }) => {
   return (
     <FormControl>
       <FormLabel fontSize={"18px"} color={"black"}>
         {text}
       </FormLabel>
       <Chakraselect
-        {...register(text)}
+        {...register(field)}
         width={"100%"}
         fontSize={"1rem"}
         fontWeight={"500"}
