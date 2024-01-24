@@ -31,29 +31,92 @@ export default function MemberDetailsScreen() {
   };
 
   const field = [
-    { field: "firstName", text: "First Name", type: "text", req: "true" },
-    { field: "lastName", text: "Last Name", type: "text", req: "true" },
-    { field: "dob", text: "Date of Birth", type: "data" },
-    { field: "phone", text: "Phone", type: "phone", req: "true" },
+    {
+      field: "firstName",
+      text: "First Name",
+      type: "text",
+      req: "true",
+      value: data?.data?.firstName || "NA",
+    },
+    {
+      field: "lastName",
+      text: "Last Name",
+      type: "text",
+      req: "true",
+      value: data?.data?.lastName || "NA",
+    },
+    {
+      field: "dob",
+      text: "Date of Birth",
+      type: "data",
+      value: data?.data?.dob || "NA",
+    },
+    {
+      field: "phone",
+      text: "Phone",
+      type: "phone",
+      req: "true",
+      value: data?.data?.phone || "NA",
+    },
     {
       field: "bloodGroup",
       text: "Blood Group",
       type: "select",
+      value: data?.data?.bloodGroup || "NA",
       options: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
     },
   ];
   const businessField = [
-    { field: "name", text: "name", type: "text" },
-    { field: "description", text: "description", type: "text" },
-    { field: "address", text: "address", type: "text" },
-    { field: "phone", text: "phone", type: "text" },
-    { field: "website", text: "website", type: "text" },
+    {
+      field: "name",
+      text: "name",
+      type: "text",
+      value: data?.data?.business?.name || "NA",
+    },
+    {
+      field: "description",
+      text: "description",
+      type: "text",
+      value: data?.data?.business?.description || "NA",
+    },
+    {
+      field: "phone",
+      text: "phone",
+      type: "text",
+      value: data?.data?.business?.phone || "NA",
+    },
+    {
+      field: "website",
+      text: "website",
+      type: "text",
+      value: data?.data?.business?.website || "NA",
+    },
   ];
   const addressField = [
-    { field: "locality", text: "Locality", type: "text" },
-    { field: "state", text: "State", type: "text" },
-    { field: "city", text: "City", type: "text" },
-    { field: "pincode", text: "Pincode", type: "text" },
+    {
+      field: "locality",
+      text: "Locality",
+      type: "text",
+      value: data?.data?.address?.locality || "NA",
+    },
+    {
+      field: "state",
+      text: "State",
+      type: "text",
+      value: data?.data?.address?.state || "NA",
+    },
+    {
+      field: "city",
+      text: "City",
+      type: "text",
+      value: data?.data?.address?.city || "NA",
+    },
+    {
+      field: "pincode",
+      text: "Pincode",
+      type: "text",
+      value: data?.data?.address?.pincode || "NA",
+    },
   ];
   const details = [
     { key: "First Name", value: data?.data?.firstName || "NA" },
@@ -80,7 +143,7 @@ export default function MemberDetailsScreen() {
       value: data?.data?.address?.state || "NA",
     },
     {
-      key: "Phone",
+      key: "Business Phone",
       value: data?.data?.business?.phone || "NA",
     },
     {
@@ -244,7 +307,7 @@ export default function MemberDetailsScreen() {
             <DetailBox
               item={details}
               style={{}}
-              properties={["Phone", "Description"]}
+              properties={["Business Phone", "Description"]}
             />
           </Box>
           <Divider

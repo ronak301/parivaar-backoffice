@@ -10,7 +10,7 @@ import { useParams } from "react-router-dom";
 import { useToast } from "@chakra-ui/react";
 const BusinessForm = React.forwardRef(({ field, id }, ref) => {
   const defaultValues = field.reduce((acc, field) => {
-    acc[field.field.replace(/\s+/g, "_")] = null;
+    acc[field.field.replace(/\s+/g, "_")] = field.value;
     return acc;
   }, {});
   console.log("defaultValues is ", defaultValues);

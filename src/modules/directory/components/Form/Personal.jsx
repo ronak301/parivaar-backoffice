@@ -13,7 +13,7 @@ const Personal = React.forwardRef(({ field }, ref) => {
 
   const { communityId, memberId } = useParams();
   const defaultValues = field.reduce((acc, field) => {
-    acc[field.field.replace(/\s+/g, "_")] = null;
+    acc[field.field.replace(/\s+/g, "_")] = field.value;
     return acc;
   }, {});
 
