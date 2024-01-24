@@ -1,13 +1,13 @@
 import React from "react";
 import { Input, FormControl, FormLabel } from "@chakra-ui/react";
-const Date = ({ text, register }) => {
+const Date = ({ text, register, field }) => {
   return (
     <FormControl>
       <FormLabel fontSize={"18px"} color={"black"}>
         {text}
       </FormLabel>
       <Input
-        {...register(text)}
+        {...register(field)}
         width={"100%"}
         fontSize={"1rem"}
         fontWeight={"500"}

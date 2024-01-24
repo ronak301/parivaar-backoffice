@@ -14,10 +14,12 @@ import { Image } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { setAuthToken } from "../../redux/authReducer";
+import { useToast } from "@chakra-ui/react";
 
 const VerifyOtp = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const number = location.state ? location.state.phoneNumber : null;
   console.log(number);
@@ -46,22 +48,33 @@ const VerifyOtp = () => {
           dispatch(setAuthToken(authToken));
           setLoading(false);
           setSuccess(true);
+          toast({
+            title: "Success",
+            description: "You are successfully logged in",
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+          });
         }
       };
       verify();
+      setLoading(false);
     } else {
-      setShowAlert(true);
+      toast({
+        title: "Error",
+        description: "Invalid Otp entered",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
       console.log("Invalid OTP");
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     if (success) {
-      const timeoutId = setTimeout(() => {
-        navigate("/");
-      }, 3000);
-
-      return () => clearTimeout(timeoutId);
+      navigate("/dashboard");
     }
   }, [success, navigate]);
 
@@ -69,29 +82,6 @@ const VerifyOtp = () => {
   console.log(isOtpValid);
   return (
     <>
-      {success && (
-        <Box
-          style={{
-            padding: "1rem",
-            position: "sticky",
-            top: "0",
-
-            right: "0",
-            backgroundColor: "#DFF2E4",
-            borderRadius: "0.5rem",
-          }}
-        >
-          <Text style={{ color: "#007547", fontWeight: "bold" }}>
-            Verification Successful! You are now logged in.
-          </Text>
-        </Box>
-      )}
-      {showAlert && (
-        <Alert status="error" marginTop="0rem">
-          <AlertIcon />
-          Invalid OTP. Please enter a 6-digit OTP.
-        </Alert>
-      )}
       <Grid templateColumns="repeat(2, 1fr)" gap={0}>
         <GridItem overflowY="auto" width={"100%"} h="100%">
           <Image src={login} alt="login" />

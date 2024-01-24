@@ -7,8 +7,8 @@ import InviteMember from "./modules/directory/InviteMember";
 import MemberDetailsScreen from "./modules/directory/MemberDetailsScreen";
 import AllUsers from "./modules/directory/components/AllUsers";
 import LeadsScreen from "./modules/leads/LeadsScreen";
-import LoginPage from "./modules/login/LoginPage.tsx";
-import VerifyOtp from "./modules/login/VerifyOtp.tsx";
+import LoginPage from "./modules/login/LoginPage.jsx";
+import VerifyOtp from "./modules/login/VerifyOtp.jsx";
 import PrivateRoutes from "./PrivateRoutes.js";
 import { Routes, Route } from "react-router-dom";
 
