@@ -6,6 +6,7 @@ import Text from "../../formComponents/Text";
 import Date from "../../formComponents/Date";
 import Select0 from "../../formComponents/Select0";
 import { updateBusiness } from "../../../../api/directoryApi";
+import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useToast } from "@chakra-ui/react";
 const BusinessForm = React.forwardRef(({ field, id }, ref) => {
@@ -39,14 +40,18 @@ const BusinessForm = React.forwardRef(({ field, id }, ref) => {
               isClosable: true,
             });
           } else {
-            toast({
-              title: "business not found",
-              description: "business does not exist ",
-              status: "error",
-              duration: 1100,
-              isClosable: true,
-            });
-            // console.log("business does not exist");
+            const createBusiness = {
+              ownerId: memberId,
+              ...data,
+            };
+            console.log("createBusiness is ", createBusiness);
+            const create = async () => {
+              const res = await axios.post(
+                "https://api.parivaarapp.in/business/new",
+                createBusiness
+              );
+            };
+            create();
           }
         } catch (error) {
           console.log(error);

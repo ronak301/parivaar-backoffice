@@ -76,13 +76,12 @@ function App() {
               />
               <Route element={<AllUsers />} path="/all-users" />
               <Route element={<LeadsScreen />} path="/leads" />
-              <Route
-                element={<InviteMember />}
-                path="/community/:id/add-member/invite"
-              />
             </Route>
           </Route>
-
+          <Route
+            element={<InviteMember />}
+            path="/community/:id/add-member/invite"
+          />
           <Route element={<LoginPage />} path="/login" />
           <Route element={<VerifyOtp />} path="/login/verify" />
         </Routes>

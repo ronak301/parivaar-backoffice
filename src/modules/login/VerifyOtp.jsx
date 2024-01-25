@@ -3,8 +3,9 @@ import { Button, Grid, Text } from "@chakra-ui/react";
 import { HStack } from "@chakra-ui/react";
 import { verifyOtp } from "../../api/authApi";
 import { PinInput, PinInputField } from "@chakra-ui/react";
-import Logo from "../../assets/Log.png";
+import Logo from "../../api/logo.jpg";
 import { Box } from "@chakra-ui/react";
+import { Avatar } from "@chakra-ui/react";
 import { Alert, AlertIcon } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import login from "../../assets/re.png";
@@ -138,7 +139,7 @@ const VerifyOtp = () => {
                 paddingBottom: "1rem",
               }}
             >
-              <Image src={Logo} height={100} />
+              <Avatar src={Logo} size="xl" />
             </Text>
             <Text
               style={{

@@ -9,9 +9,7 @@ import {
 const Text = ({ text, register, errors, req = "false", field }) => {
   return (
     <FormControl isRequired={req} isInvalid={errors.text}>
-      <FormLabel fontSize={"18px"} color={"black"}>
-        {text}
-      </FormLabel>
+      <FormLabel color={"black"}>{text}</FormLabel>
       <Input
         {...register(
           field,
@@ -20,10 +18,8 @@ const Text = ({ text, register, errors, req = "false", field }) => {
           }
         )}
         width={"100%"}
-        fontSize={"1rem"}
         type="text"
-        fontWeight={"500"}
-        p={1}
+        p={2}
         borderRadius={"0.375rem"}
         backgroundColor={"#F5F7F9"}
         border={"0.6px solid #F0F0F0"}

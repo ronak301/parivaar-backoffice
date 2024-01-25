@@ -9,6 +9,7 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { map, set } from "lodash";
+import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
 import React from "react";
 
 export default function List({
@@ -21,9 +22,10 @@ export default function List({
   sortDirection,
 }) {
   const handleSort = (id) => () => {
-    setSortBy(id);
-    setSortDirection(!sortDirection);
-    console.log("direction is ", sortDirection);
+    if (id === "time") {
+      setSortBy(id);
+      setSortDirection(!sortDirection);
+    }
   };
   return (
     <TableContainer
@@ -41,7 +43,17 @@ export default function List({
               <Th camelCase onClick={handleSort(c)}>
                 <Text fontSize={14} fontWeight={"500"} color="white">
                   {c} {}{" "}
-                  {sortBy === c ? <>{sortDirection ? "▲" : "▼"}</> : <></>}
+                  {sortBy === c ? (
+                    <>
+                      {sortDirection ? (
+                        <TriangleDownIcon />
+                      ) : (
+                        <TriangleUpIcon />
+                      )}
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </Text>
               </Th>
             ))}

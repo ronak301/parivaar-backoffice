@@ -10,7 +10,8 @@ import {
 import { Box } from "@chakra-ui/react";
 import { Input } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
-import Logo from "../../assets/Log.png";
+import Logo from "../../api/logo.jpg";
+import { Avatar } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { sendOtp } from "../../api/authApi";
 import { useNavigate } from "react-router-dom";
@@ -161,11 +162,11 @@ const LoginPage = () => {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                gap: "2rem",
+                gap: "0rem",
                 padding: "2rem",
               }}
             >
-              <Box style={{ textAlign: "center" }}>
+              <Box style={{ textAlign: "center", marginTop: "5rem" }}>
                 <Text style={{ fontWeight: "600", fontSize: "2.3rem" }}>
                   Welcome to Parivaar App
                 </Text>
@@ -173,24 +174,23 @@ const LoginPage = () => {
                   style={{
                     display: "flex",
                     justifyContent: "center",
-                    alignItems: "center",
+
                     paddingTop: "1rem",
                   }}
                 >
-                  <Image src={Logo} style={{ width: "50", height: "50" }} />
+                  <Avatar src={Logo} size="xl" />
                 </Box>
               </Box>
 
               <Box
                 style={{
+                  padding: "0",
                   display: "flex",
                   flexDirection: "column",
-
                   gap: "1rem",
-                  paddingTop: "1.4rem",
                   width: "109%",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  justifyContent: "flex-start",
+                  alignItems: "flex-start",
                 }}
               >
                 <SubmitForm
