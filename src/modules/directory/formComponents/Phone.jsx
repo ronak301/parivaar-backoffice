@@ -4,9 +4,7 @@ import { Input, FormControl, FormLabel } from "@chakra-ui/react";
 const Phone = ({ text, register, errors, field }) => {
   return (
     <FormControl>
-      <FormLabel fontSize={"18px"} color={"black"}>
-        {text}
-      </FormLabel>
+      <FormLabel color={"black"}>{text}</FormLabel>
       <Input
         {...register(field, {
           required: `${text} is required`,
@@ -20,10 +18,8 @@ const Phone = ({ text, register, errors, field }) => {
           },
         })}
         width={"100%"}
-        fontSize={"1rem"}
-        fontWeight={"500"}
         type="number"
-        p={1}
+        p={2}
         borderRadius={"0.375rem"}
         backgroundColor={"#F5F7F9"}
         border={"0.6px solid #F0F0F0"}

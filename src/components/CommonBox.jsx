@@ -1,12 +1,30 @@
 import { Box, Text, Button } from "@chakra-ui/react";
+import { Badge } from "@chakra-ui/react";
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowBackIcon } from "@chakra-ui/icons";
 
-export default function CommonBox({ children, title, buttons }) {
+export default function CommonBox({
+  children,
+  title,
+  buttons,
+  isSuperAdmin,
+  approvalStatus,
+}) {
+  const navigate = useNavigate();
+
+  const handleBackButtonClick = () => {
+    navigate(-1);
+  };
+
   return (
     <Box
       mt={1}
       bg="white"
-      marginLeft={10}
+      width={"99%"}
+      height={"99%"}
+      marginLeft={2}
+      px={1}
       py={4}
       borderRadius={"lg"}
       shadow={"lg"}
@@ -22,9 +40,38 @@ export default function CommonBox({ children, title, buttons }) {
           paddingRight: "4rem",
         }}
       >
-        <Text mx={8} fontWeight={"700"} fontSize={16}>
-          {title}
-        </Text>
+        <Box style={{ display: "flex", alignItems: "center", padding: "1rem" }}>
+          <Box>
+            <ArrowBackIcon
+              onClick={handleBackButtonClick}
+              style={{ fontSize: "1.2rem" }}
+            >
+              Back
+            </ArrowBackIcon>
+          </Box>
+          <Box>
+            <Text mx={8} fontWeight={"700"} fontSize={16}>
+              {title}{" "}
+              {isSuperAdmin === true && (
+                <Badge
+                  colorScheme="blue"
+                  style={{ padding: "0.2rem", marginLeft: "0.5rem" }}
+                >
+                  Super Admin
+                </Badge>
+              )}{" "}
+              {approvalStatus === "APPROVED" && (
+                <Badge
+                  colorScheme="green"
+                  style={{ padding: "0.2rem", marginLeft: "0.2rem" }}
+                >
+                  Approved
+                </Badge>
+              )}
+            </Text>
+          </Box>
+        </Box>
+
         {buttons && (
           <Box style={{ display: "flex" }}>
             {buttons.map((button, index) => (
@@ -81,7 +128,7 @@ export default function CommonBox({ children, title, buttons }) {
         )}
       </Box>
 
-      <Box mb={4} mt={4}>
+      <Box mb={4} mt={4} style={{}}>
         {children}
       </Box>
     </Box>

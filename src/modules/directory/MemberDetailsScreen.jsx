@@ -10,10 +10,19 @@ import { getMemberDetails } from "../../api/directoryApi";
 import Loading from "../../components/Loading";
 import DetailBox from "./components/DetailBox";
 import { useRef } from "react";
+
 import deafultImage from "../../api/836.jpg";
 import { Divider, Text, Image } from "@chakra-ui/react";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+} from "@chakra-ui/react";
 import BusinessForm from "./components/Form/BusinessForm";
 import AddressForm from "./components/Form/AddressForm";
+import UserCard from "../../components/Card";
 
 export default function MemberDetailsScreen() {
   const { communityId, memberId } = useParams();
@@ -48,7 +57,7 @@ export default function MemberDetailsScreen() {
     {
       field: "dob",
       text: "Date of Birth",
-      type: "data",
+      type: "date",
       value: data?.data?.dob || "NA",
     },
     {
@@ -57,6 +66,37 @@ export default function MemberDetailsScreen() {
       type: "phone",
       req: "true",
       value: data?.data?.phone || "NA",
+    },
+    {
+      field: "guardianName",
+      text: "Guardian Name",
+      type: "text",
+      value: data?.data?.guardianName || "NA",
+    },
+    {
+      field: "nativePlace",
+      text: "Native Place",
+      type: "text",
+      value: data?.data?.nativePlace || "NA",
+    },
+    {
+      field: "gender",
+      text: "Gender",
+      type: "select",
+      value: data?.data?.gender || "NA",
+      options: ["Male", "Female", "Other"],
+    },
+    {
+      field: "weddingDate",
+      text: "Wedding Date",
+      type: "date",
+      value: data?.data?.weddingDate || "NA",
+    },
+    {
+      field: "education",
+      text: "Education",
+      type: "text",
+      value: data?.data?.education || "NA",
     },
     {
       field: "bloodGroup",
@@ -69,25 +109,25 @@ export default function MemberDetailsScreen() {
   const businessField = [
     {
       field: "name",
-      text: "name",
+      text: "Name",
       type: "text",
       value: data?.data?.business?.name || "NA",
     },
     {
       field: "description",
-      text: "description",
+      text: "Description",
       type: "text",
       value: data?.data?.business?.description || "NA",
     },
     {
       field: "phone",
-      text: "phone",
+      text: "Phone",
       type: "text",
       value: data?.data?.business?.phone || "NA",
     },
     {
       field: "website",
-      text: "website",
+      text: "Website",
       type: "text",
       value: data?.data?.business?.website || "NA",
     },
@@ -124,12 +164,19 @@ export default function MemberDetailsScreen() {
     { key: "Date of Birth", value: data?.data?.dob || "NA" },
     { key: "Phone", value: data?.data?.phone || "NA" },
     { key: "Blood Group", value: data?.data?.bloodGroup || "NA" },
+    { key: "Guardian Name", value: data?.data?.guardianName || "NA" },
+    { key: "Gender", value: data?.data?.gender || "NA" },
+    { key: "Education", value: data?.data?.education || "NA" },
+    { key: "Native Place", value: data?.data?.nativePlace || "NA" },
+    { key: "Wedding Date", value: data?.data?.weddingDate || "NA" },
+    { key: "Email", value: data?.data?.email || "NA" },
     { key: "Name", value: data?.data?.business?.name || "NA" },
     { key: "Description", value: data?.data?.business?.description || "NA" },
     {
       key: "Pincode",
       value: data?.data?.address?.pincode || "NA",
     },
+
     {
       key: "City",
       value: data?.data?.address?.city || "NA",
@@ -167,7 +214,7 @@ export default function MemberDetailsScreen() {
   return (
     <Base>
       <SidePane isOpen={isOpen} onClose={onClose}>
-        <Box style={{ overflowY: "scroll", height: "90%" }}>
+        <Box style={{ overflowY: "scroll", height: "90%", width: "100%" }}>
           <Personal ref={personalRef} field={field} />
           <AddressForm
             ref={addressRef}
@@ -209,144 +256,261 @@ export default function MemberDetailsScreen() {
             onClick: onOpen,
           },
         ]}
+        style={{ display: "flex", flexDirection: "row" }}
+        isSuperAdmin={data?.data?.isSuperAdmin || false}
+        approvalStatus={data?.data?.approvalStatus || false}
       >
         <Box
           style={{
             display: "flex",
-            margin: "auto",
-            flexDirection: "column",
-            overflowY: "scroll",
-            padding: "1rem",
-            height: "40rem",
-
-            borderRadius: "10px",
-            width: "98%",
+            justifyContent: "space-between",
           }}
         >
-          <Text
-            style={{
-              fontSize: "1.2rem",
-              fontWeight: "600",
-              paddingInline: "1rem",
-            }}
-          >
-            Personal Information
-          </Text>
           <Box
             style={{
-              paddingInline: "1rem",
-              padding: "0.5rem",
               display: "flex",
-              alignItems: "center",
-              width: "12%",
-              paddingTop: "2rem",
               flexDirection: "column",
+              overflowY: "scroll",
+              padding: "1rem",
+              alignItems: "flex-start",
+              overflowX: "hidden",
+              height: "40rem",
+              borderRadius: "10px",
+              width: "80%",
             }}
           >
-            <Text>Profile Picture</Text>
-            <Image
-              src={data?.data?.profilePicture || deafultImage}
-              alt="profile"
-              style={{ borderRadius: "50%" }}
-            />
-          </Box>
-          <Box
-            style={{
-              display: "flex",
-              alignItems: "flex-start",
-              justifyContent: "center",
-              paddingInline: "1rem",
+            <Text
+              style={{
+                fontSize: "1.2rem",
+                fontWeight: "600",
+              }}
+            >
+              Personal Information
+            </Text>
 
-              gap: "25rem",
-            }}
-          >
-            <DetailBox
-              item={details}
-              style={{}}
-              properties={["First Name", "Date of Birth", "Blood Group"]}
+            <Box
+              style={{
+                padding: "1rem",
+                paddingLeft: "0.5rem",
+                display: "flex",
+                width: "100%",
+                alignItems: "flex-start",
+                justifyContent: "center",
+                paddingTop: "2rem",
+                flexDirection: "column",
+              }}
+            >
+              <Text>Profile Picture</Text>
+              <Image
+                src={data?.data?.profilePicture || deafultImage}
+                alt="profile"
+                style={{
+                  borderRadius: "50%",
+                  width: "4rem",
+                  height: "4rem",
+                }}
+              />
+            </Box>
+
+            <Box
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                justifyContent: "center",
+                paddingInline: "1rem",
+                gap: "25rem",
+              }}
+            >
+              <DetailBox
+                item={details}
+                style={{}}
+                properties={["First Name", "Date of Birth", "Blood Group"]}
+              />
+              <DetailBox
+                item={details}
+                style={{}}
+                properties={["Last Name", "Phone"]}
+              />
+            </Box>
+            <Box
+              style={{
+                width: "100%",
+                marginTop: "1rem",
+              }}
+            >
+              <Accordion
+                allowToggle
+                style={{
+                  justifyContent: "center",
+                  display: "flex",
+                  border: "2px solid white",
+                  width: "100%",
+                }}
+              >
+                <AccordionItem style={{ width: "100%" }}>
+                  <h2>
+                    <AccordionButton
+                      style={{
+                        fontSize: "12px",
+                        color: "black",
+                        backgroundColor: "whitesmoke",
+                        margin: "auto",
+                        borderRadius: "8px",
+                        width: "12%",
+                        textAlign: "center",
+                        padding: "0.4rem 0.4rem",
+                        marginBottom: "0.5rem",
+                      }}
+                    >
+                      <Box as="span" flex="1" textAlign="center">
+                        Show More
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                  </h2>
+                  <AccordionPanel style={{ width: "100%", padding: 0 }}>
+                    <Box
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        alignItems: "flex-start",
+                        justifyContent: "center",
+                        marginLeft: "4rem",
+                        gap: "25rem",
+                      }}
+                    >
+                      <DetailBox
+                        item={details}
+                        style={{}}
+                        properties={["Guardian Name", "Gender", "Education"]}
+                      />
+                      <DetailBox
+                        item={details}
+                        style={{}}
+                        properties={["Native Place", "Wedding Date", "Email"]}
+                      />
+                    </Box>
+                  </AccordionPanel>
+                </AccordionItem>
+              </Accordion>
+            </Box>
+
+            <Divider
+              orientation="horizontal"
+              style={{
+                color: "#EAEAEA",
+                paddingTop: "1rem",
+                paddingBottom: "1rem",
+              }}
             />
-            <DetailBox
-              item={details}
-              style={{}}
-              properties={["Last Name", "Phone"]}
+            <Text
+              style={{
+                fontSize: "1.2rem",
+                fontWeight: "600",
+                paddingInline: "1rem",
+                paddingTop: "1rem",
+              }}
+            >
+              Business Information
+            </Text>
+            <Box
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                justifyContent: "center",
+                paddingInline: "1rem",
+                gap: "25rem",
+              }}
+            >
+              <DetailBox
+                item={details}
+                style={{}}
+                properties={["Name", "Website"]}
+              />
+              <DetailBox
+                item={details}
+                style={{}}
+                properties={["Business Phone", "Description"]}
+              />
+            </Box>
+            <Divider
+              orientation="horizontal"
+              style={{
+                color: "#EAEAEA",
+                paddingTop: "1rem",
+                paddingBottom: "1rem",
+              }}
             />
+            <Text
+              style={{
+                fontSize: "1.2rem",
+                fontWeight: "600",
+                paddingInline: "1rem",
+                paddingTop: "1rem",
+              }}
+            >
+              Address Information
+            </Text>
+            <Box
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                justifyContent: "center",
+                paddingInline: "1rem",
+                gap: "25rem",
+              }}
+            >
+              <DetailBox
+                item={details}
+                style={{}}
+                properties={["Pincode", "City"]}
+              />
+              <DetailBox
+                item={details}
+                style={{}}
+                properties={["Locality", "State"]}
+              />
+            </Box>
           </Box>
 
-          <Divider
-            orientation="horizontal"
-            style={{
-              color: "#EAEAEA",
-              paddingTop: "1rem",
-              paddingBottom: "1rem",
-            }}
-          />
-          <Text
-            style={{
-              fontSize: "1.2rem",
-              fontWeight: "600",
-              paddingInline: "1rem",
-              paddingTop: "1rem",
-            }}
-          >
-            Business Information
-          </Text>
           <Box
             style={{
-              display: "flex",
-              alignItems: "flex-start",
-              justifyContent: "center",
-              paddingInline: "1rem",
-              gap: "25rem",
+              border: "2x solid red",
+              width: "30%",
+              marginTop: "1.2rem",
+              overflowX: "hidden",
+              overflowY: "scroll",
+              height: "40rem",
             }}
           >
-            <DetailBox
-              item={details}
-              style={{}}
-              properties={["Name", "Website"]}
-            />
-            <DetailBox
-              item={details}
-              style={{}}
-              properties={["Business Phone", "Description"]}
-            />
-          </Box>
-          <Divider
-            orientation="horizontal"
-            style={{
-              color: "#EAEAEA",
-              paddingTop: "1rem",
-              paddingBottom: "1rem",
-            }}
-          />
-          <Text
-            style={{
-              fontSize: "1.2rem",
-              fontWeight: "600",
-              paddingInline: "1rem",
-              paddingTop: "1rem",
-            }}
-          >
-            Address Information
-          </Text>
-          <Box
-            style={{
-              display: "flex",
-              alignItems: "flex-start",
-              justifyContent: "center",
-              paddingInline: "1rem",
-              gap: "25rem",
-            }}
-          >
-            <DetailBox
-              item={details}
-              style={{}}
-              properties={["Pincode", "City"]}
-            />
-            <DetailBox
-              item={details}
-              style={{}}
-              properties={["Locality", "State"]}
-            />
+            <Text
+              style={{
+                fontSize: "1.2rem",
+                textAlign: "center",
+                fontWeight: "600",
+                marginBottom: "1rem",
+              }}
+            >
+              Family Members
+            </Text>
+            {data?.data ? (
+              <>
+                {data?.data?.relatives.map((item) => (
+                  <UserCard
+                    name={item?.firstName + " " + item?.lastName}
+                    phone={item?.phone}
+                    education={item?.education}
+                    id={item?.id}
+                    uimg={item?.profilePicture}
+                    relation={item?.relationship?.type}
+                  />
+                ))}
+              </>
+            ) : (
+              <>
+                <Loading />
+              </>
+            )}
           </Box>
         </Box>
       </CommonBox>
