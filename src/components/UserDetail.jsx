@@ -1,18 +1,14 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
-import CommonBox from "../../components/CommonBox";
-import Base from "../../components/Base";
-import Personal from "./components/Form/Personal";
-import { SidePane } from "../../components/SidePane";
-import { Button, useDisclosure, Box } from "@chakra-ui/react";
-import { useApi } from "../../api/useApi";
-import { getMemberDetails } from "../../api/directoryApi";
-import Loading from "../../components/Loading";
-import DetailBox from "./components/DetailBox";
-import { useRef } from "react";
-
-import deafultImage from "../../api/836.jpg";
+import React from "react";
+import CommonBox from "./CommonBox";
 import { Divider, Text, Image } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useState } from "react";
+import Loading from "./Loading";
+import deafultImage from "../api/836.jpg";
+import axios from "axios";
+import DetailBox from "../modules/directory/components/DetailBox";
 import {
   Accordion,
   AccordionItem,
@@ -20,144 +16,9 @@ import {
   AccordionPanel,
   AccordionIcon,
 } from "@chakra-ui/react";
-import BusinessForm from "./components/Form/BusinessForm";
-import AddressForm from "./components/Form/AddressForm";
-import UserCard from "../../components/Card";
 
-export default function MemberDetailsScreen() {
-  const { communityId, memberId } = useParams();
-  const { isOpen, onClose, onOpen } = useDisclosure();
-  const [data, setData] = useState({});
-  const businessRef = useRef(null);
-  const personalRef = useRef(null);
-  const addressRef = useRef(null);
-
-  const { request, loading } = useApi(getMemberDetails);
-  const handleFormSubmit = () => {
-    personalRef.current?.click();
-    businessRef.current?.click();
-    addressRef.current?.click();
-  };
-
-  const field = [
-    {
-      field: "firstName",
-      text: "First Name",
-      type: "text",
-      req: "true",
-      value: data?.data?.firstName || "NA",
-    },
-    {
-      field: "lastName",
-      text: "Last Name",
-      type: "text",
-      req: "true",
-      value: data?.data?.lastName || "NA",
-    },
-    {
-      field: "dob",
-      text: "Date of Birth",
-      type: "date",
-      value: data?.data?.dob || "NA",
-    },
-    {
-      field: "phone",
-      text: "Phone",
-      type: "phone",
-      req: "true",
-      value: data?.data?.phone || "NA",
-    },
-    {
-      field: "guardianName",
-      text: "Guardian Name",
-      type: "text",
-      value: data?.data?.guardianName || "NA",
-    },
-    {
-      field: "nativePlace",
-      text: "Native Place",
-      type: "text",
-      value: data?.data?.nativePlace || "NA",
-    },
-    {
-      field: "gender",
-      text: "Gender",
-      type: "select",
-      value: data?.data?.gender || "NA",
-      options: ["Male", "Female", "Other"],
-    },
-    {
-      field: "weddingDate",
-      text: "Wedding Date",
-      type: "date",
-      value: data?.data?.weddingDate || "NA",
-    },
-    {
-      field: "education",
-      text: "Education",
-      type: "text",
-      value: data?.data?.education || "NA",
-    },
-    {
-      field: "bloodGroup",
-      text: "Blood Group",
-      type: "select",
-      value: data?.data?.bloodGroup || "NA",
-      options: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
-    },
-  ];
-  const businessField = [
-    {
-      field: "name",
-      text: "Name",
-      type: "text",
-      value: data?.data?.business?.name || "NA",
-    },
-    {
-      field: "description",
-      text: "Description",
-      type: "text",
-      value: data?.data?.business?.description || "NA",
-    },
-    {
-      field: "phone",
-      text: "Phone",
-      type: "text",
-      value: data?.data?.business?.phone || "NA",
-    },
-    {
-      field: "website",
-      text: "Website",
-      type: "text",
-      value: data?.data?.business?.website || "NA",
-    },
-  ];
-  const addressField = [
-    {
-      field: "locality",
-      text: "Locality",
-      type: "text",
-      value: data?.data?.address?.locality || "NA",
-    },
-    {
-      field: "state",
-      text: "State",
-      type: "text",
-      value: data?.data?.address?.state || "NA",
-    },
-    {
-      field: "city",
-      text: "City",
-      type: "text",
-      value: data?.data?.address?.city || "NA",
-    },
-    {
-      field: "pincode",
-      text: "Pincode",
-      type: "text",
-      value: data?.data?.address?.pincode || "NA",
-    },
-  ];
+const UserDetail = () => {
+  const [data, setData] = useState([{}]);
   const details = [
     { key: "First Name", value: data?.data?.firstName || "NA" },
     { key: "Last Name", value: data?.data?.lastName || "NA" },
@@ -198,64 +59,51 @@ export default function MemberDetailsScreen() {
       value: data?.data?.business?.website || "NA",
     },
   ];
-
+  const { phoneNumber } = useParams();
+  console.log(phoneNumber);
   React.useEffect(() => {
     const fetchDeatils = async () => {
-      const response = await request(memberId);
-      if (response) {
-        setData(response.data);
+      if (phoneNumber) {
+        const user = await axios.post(
+          "https://api.parivaarapp.in/user/search",
+          {
+            query: phoneNumber,
+            filter: {
+              parentNode: null,
+            },
+            limit: 10000,
+            skip: 0,
+          }
+        );
+        console.log("user is", user);
+
+        if (user.data) {
+          const userId = user?.data?.data?.rows[0]?.id;
+          console.log("userId is", userId);
+          if (userId) {
+            const member = await axios.get(
+              `https://api.parivaarapp.in/user/${userId}`
+            );
+            console.log("member is", member);
+            if (member.data) {
+              setData(member.data);
+              console.log("data is", data);
+            }
+          }
+        }
       }
     };
     fetchDeatils();
-  }, [memberId]);
-
-  if (loading) return <Loading />;
-
+  }, [phoneNumber]);
   return (
-    <Base>
-      <SidePane isOpen={isOpen} onClose={onClose}>
-        <Box style={{ overflowY: "scroll", height: "90%", width: "100%" }}>
-          <Personal ref={personalRef} field={field} />
-          <AddressForm
-            ref={addressRef}
-            field={addressField}
-            id={data?.data?.address?.id || null}
-          />
-          <BusinessForm
-            ref={businessRef}
-            id={data?.data?.business?.id || null}
-            field={businessField}
-          />
-        </Box>
-        <Button
-          style={{
-            borderRadius: "1rem",
-            border: "1px solid #0777FF",
-            backgroundColor: "#0777FF",
-            width: "100%",
-            p: "1rem",
-            marginTop: "2.5rem",
-            position: "sticky",
-            color: "white",
-          }}
-          onClick={handleFormSubmit}
-        >
-          Submit
-        </Button>
-      </SidePane>
+    <Box
+      style={{ marginTop: "0rem", backgroundColor: "#EAEAEA", height: "100vh" }}
+    >
+      <Box style={{ height: "1vh" }}></Box>
       <CommonBox
         title={
           data?.data?.firstName + " " + data?.data?.lastName || "Member Details"
         }
-        buttons={[
-          {
-            text: `Edit Information`,
-            backgroundColor: "white",
-            textColor: "#0777FF",
-            symbol: "+",
-            onClick: onOpen,
-          },
-        ]}
         style={{ display: "flex", flexDirection: "row" }}
         isSuperAdmin={data?.data?.isSuperAdmin || false}
         approvalStatus={data?.data?.approvalStatus || false}
@@ -264,6 +112,7 @@ export default function MemberDetailsScreen() {
           style={{
             display: "flex",
             justifyContent: "space-between",
+            width: "100%",
           }}
         >
           <Box
@@ -273,10 +122,9 @@ export default function MemberDetailsScreen() {
               overflowY: "scroll",
               padding: "1rem",
               alignItems: "flex-start",
-              overflowX: "hidden",
-              height: "40rem",
+              height: "80vh",
               borderRadius: "10px",
-              width: "95%",
+              width: "100%",
             }}
           >
             <Text
@@ -318,7 +166,7 @@ export default function MemberDetailsScreen() {
                 alignItems: "flex-start",
                 justifyContent: "center",
                 paddingInline: "1rem",
-                gap: "25rem",
+                gap: "50rem",
               }}
             >
               <DetailBox
@@ -423,7 +271,7 @@ export default function MemberDetailsScreen() {
                 alignItems: "flex-start",
                 justifyContent: "center",
                 paddingInline: "1rem",
-                gap: "25rem",
+                gap: "50rem",
               }}
             >
               <DetailBox
@@ -461,7 +309,7 @@ export default function MemberDetailsScreen() {
                 alignItems: "flex-start",
                 justifyContent: "center",
                 paddingInline: "1rem",
-                gap: "25rem",
+                gap: "50rem",
               }}
             >
               <DetailBox
@@ -476,48 +324,10 @@ export default function MemberDetailsScreen() {
               />
             </Box>
           </Box>
-
-          <Box
-            style={{
-              border: "2x solid red",
-              width: "30%",
-              marginTop: "1.2rem",
-              overflowX: "hidden",
-              overflowY: "scroll",
-              height: "40rem",
-            }}
-          >
-            <Text
-              style={{
-                fontSize: "1.2rem",
-                textAlign: "center",
-                fontWeight: "600",
-                marginBottom: "1rem",
-              }}
-            >
-              Family Members
-            </Text>
-            {data?.data ? (
-              <>
-                {data?.data?.relatives.map((item) => (
-                  <UserCard
-                    name={item?.firstName + " " + item?.lastName}
-                    phone={item?.phone}
-                    education={item?.education}
-                    id={item?.id}
-                    uimg={item?.profilePicture}
-                    relation={item?.relationship?.type}
-                  />
-                ))}
-              </>
-            ) : (
-              <>
-                <Loading />
-              </>
-            )}
-          </Box>
         </Box>
       </CommonBox>
-    </Base>
+    </Box>
   );
-}
+};
+
+export default UserDetail;

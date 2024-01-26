@@ -3,7 +3,7 @@ import { Button, Grid, Text } from "@chakra-ui/react";
 import { HStack } from "@chakra-ui/react";
 import { verifyOtp } from "../../api/authApi";
 import { PinInput, PinInputField } from "@chakra-ui/react";
-import Logo from "../../api/logo.jpg";
+import Logo from "../../assets/head.jpg";
 import { Box } from "@chakra-ui/react";
 import { Avatar } from "@chakra-ui/react";
 import { Alert, AlertIcon } from "@chakra-ui/react";

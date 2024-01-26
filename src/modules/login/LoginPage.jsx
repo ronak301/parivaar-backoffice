@@ -10,7 +10,7 @@ import {
 import { Box } from "@chakra-ui/react";
 import { Input } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
-import Logo from "../../api/logo.jpg";
+import Logo from "../../assets/head.jpg";
 import { Avatar } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { sendOtp } from "../../api/authApi";
