@@ -3,7 +3,7 @@ import CommonBox from "./CommonBox";
 import { Divider, Text, Image } from "@chakra-ui/react";
 import { Box } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";
+
 import { useState } from "react";
 import Loading from "./Loading";
 import deafultImage from "../api/836.jpg";
@@ -11,13 +11,6 @@ import axios from "axios";
 import moment from "moment";
 
 import DetailBox from "../modules/directory/components/DetailBox";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-} from "@chakra-ui/react";
 
 const UserDetail = () => {
   const [data, setData] = useState([{}]);
