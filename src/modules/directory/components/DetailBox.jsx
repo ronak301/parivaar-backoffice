@@ -29,6 +29,7 @@ const DetailBox = ({ item, style, properties }) => {
                 }}
               >
                 <Text
+                  noOfLines={1}
                   style={{
                     fontSize: "14px",
                     fontWeight: 500,

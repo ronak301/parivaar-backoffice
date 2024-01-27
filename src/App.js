@@ -3,6 +3,8 @@ import { BrowserRouter } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import CommunityDetailScreen from "./modules/directory/CommunityDetailScreen";
 import Wrapper from "./components/Wrapper";
+import SearchUser from "./components/Search.jsx";
+import UserDetail from "./components/UserDetail.jsx";
 import InviteMember from "./modules/directory/InviteMember";
 import MemberDetailsScreen from "./modules/directory/MemberDetailsScreen";
 import AllUsers from "./modules/directory/components/AllUsers";
@@ -84,6 +86,8 @@ function App() {
           />
           <Route element={<LoginPage />} path="/login" />
           <Route element={<VerifyOtp />} path="/login/verify" />
+          <Route element={<SearchUser />} path="/search/user" />
+          <Route element={<UserDetail />} path="/search/user/:phoneNumber" />
         </Routes>
       </BrowserRouter>
     </div>
