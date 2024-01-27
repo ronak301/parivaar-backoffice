@@ -9,6 +9,8 @@ export default function CommonBox({
   title,
   buttons,
   isSuperAdmin,
+  width,
+  height,
   approvalStatus,
 }) {
   const navigate = useNavigate();
