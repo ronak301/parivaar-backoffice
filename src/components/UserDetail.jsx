@@ -3,63 +3,68 @@ import CommonBox from "./CommonBox";
 import { Divider, Text, Image } from "@chakra-ui/react";
 import { Box } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";
+
 import { useState } from "react";
 import Loading from "./Loading";
 import deafultImage from "../api/836.jpg";
 import axios from "axios";
+import moment from "moment";
+
 import DetailBox from "../modules/directory/components/DetailBox";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-} from "@chakra-ui/react";
 
 const UserDetail = () => {
   const [data, setData] = useState([{}]);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [loading, setLoading] = useState(false);
+  let formattedDateOfBirth = "--";
+
+  if (data?.data?.dob) {
+    formattedDateOfBirth = moment(data?.data?.dob).format("DD MMM YYYY");
+  }
+
   const details = [
-    { key: "First Name", value: data?.data?.firstName || "NA" },
-    { key: "Last Name", value: data?.data?.lastName || "NA" },
-    { key: "Date of Birth", value: data?.data?.dob || "NA" },
-    { key: "Phone", value: data?.data?.phone || "NA" },
-    { key: "Blood Group", value: data?.data?.bloodGroup || "NA" },
-    { key: "Guardian Name", value: data?.data?.guardianName || "NA" },
-    { key: "Gender", value: data?.data?.gender || "NA" },
-    { key: "Education", value: data?.data?.education || "NA" },
-    { key: "Native Place", value: data?.data?.nativePlace || "NA" },
-    { key: "Wedding Date", value: data?.data?.weddingDate || "NA" },
-    { key: "Email", value: data?.data?.email || "NA" },
-    { key: "Name", value: data?.data?.business?.name || "NA" },
-    { key: "Description", value: data?.data?.business?.description || "NA" },
+    { key: "First Name", value: data?.data?.firstName || "--" },
+    { key: "Last Name", value: data?.data?.lastName || "--" },
+    { key: "Date of Birth", value: formattedDateOfBirth || "--" },
+    { key: "Phone", value: data?.data?.phone || "--" },
+    { key: "Blood Group", value: data?.data?.bloodGroup || "--" },
+    { key: "Guardian Name", value: data?.data?.guardianName || "--" },
+    { key: "Gender", value: data?.data?.gender || "--" },
+    { key: "Education", value: data?.data?.education || "--" },
+    { key: "Native Place", value: data?.data?.nativePlace || "--" },
+    { key: "Wedding Date", value: data?.data?.weddingDate || "--" },
+    { key: "Email", value: data?.data?.email || "--" },
+    { key: "Name", value: data?.data?.business?.name || "--" },
+    { key: "Description", value: data?.data?.business?.description || "--" },
     {
       key: "Pincode",
-      value: data?.data?.address?.pincode || "NA",
+      value: data?.data?.address?.pincode || "--",
     },
 
     {
       key: "City",
-      value: data?.data?.address?.city || "NA",
+      value: data?.data?.address?.city || "--",
     },
     {
       key: "Locality",
-      value: data?.data?.address?.locality || "NA",
+      value: data?.data?.address?.locality || "--",
     },
     {
       key: "State",
-      value: data?.data?.address?.state || "NA",
+      value: data?.data?.address?.state || "--",
     },
     {
       key: "Business Phone",
-      value: data?.data?.business?.phone || "NA",
+      value: data?.data?.business?.phone || "--",
     },
     {
       key: "Website",
-      value: data?.data?.business?.website || "NA",
+      value: data?.data?.business?.website || "--",
     },
   ];
+  const toggleExpansion = () => {
+    setIsExpanded(!isExpanded);
+  };
   const { phoneNumber } = useParams();
   console.log(phoneNumber);
   React.useEffect(() => {
@@ -114,30 +119,29 @@ const UserDetail = () => {
       style={{
         marginTop: "0rem",
         width: "100vw",
-        height: "100vh",
+        height: "98vh",
         overflowY: "hidden",
+        overflowX: "hidden",
       }}
     >
-      <Box style={{ height: "1vh" }}></Box>
+      <Box style={{ height: "2vh" }}></Box>
       <CommonBox
         title={
           data?.data?.firstName + " " + data?.data?.lastName || "Member Details"
         }
         style={{ display: "flex", flexDirection: "row" }}
-        isSuperAdmin={data?.data?.isSuperAdmin || false}
-        approvalStatus={data?.data?.approvalStatus || false}
       >
         <Box
           style={{
             display: "flex",
             flexDirection: "column",
-            overflowY: "scroll",
             padding: "1rem",
-            paddingInline: "0.5rem",
-            width: "100vw",
+            paddingInline: "0.8rem",
+            width: "95vw",
             justifyContent: "flex-start",
             alignItems: "flex-start",
             height: "40rem",
+            overflowX: "hidden",
             borderRadius: "10px",
           }}
         >
@@ -158,7 +162,7 @@ const UserDetail = () => {
               width: "100%",
               alignItems: "flex-start",
               justifyContent: "center",
-              paddingInline: "1rem",
+              paddingInline: "0rem",
               paddingTop: "0.2rem",
               flexDirection: "column",
             }}
@@ -178,95 +182,40 @@ const UserDetail = () => {
             style={{
               display: "flex",
               alignItems: "flex-start",
-              paddingInline: "1rem",
-              gap: "3rem",
+              paddingInline: "0rem",
             }}
           >
             <DetailBox
               item={details}
-              style={{ gap: "10px", paddingTop: "0px", width: "11rem" }}
+              style={{ gap: "10px", paddingTop: "0px" }}
               fontSize={{ fontSize: "0.9rem" }}
-              properties={["First Name", "Date of Birth", "Blood Group"]}
+              properties={[
+                "First Name",
+                "Date of Birth",
+                "Blood Group",
+                "Guardian Name",
+                "Gender",
+                "Education",
+              ]}
             />
             <DetailBox
               item={details}
-              style={{ gap: "10px", paddingTop: "0px", width: "11rem" }}
+              style={{ gap: "10px", paddingTop: "0px" }}
               fontSize={{ fontSize: "0.9rem" }}
-              properties={["Last Name", "Phone"]}
+              properties={[
+                "Last Name",
+                "Phone",
+                "Native Place",
+                "Wedding Date",
+                "Email",
+              ]}
             />
-          </Box>
-          <Box
-            style={{
-              width: "100%",
-              marginTop: "1rem",
-              marginInline: "0rem",
-            }}
-          >
-            <Accordion
-              allowToggle
-              style={{
-                justifyContent: "center",
-                display: "flex",
-                border: "2px solid white",
-                width: "100%",
-              }}
-            >
-              <AccordionItem style={{ width: "100%" }}>
-                <h2>
-                  <AccordionButton
-                    style={{
-                      fontSize: "12px",
-                      color: "black",
-                      backgroundColor: "whitesmoke",
-                      margin: "auto",
-                      borderRadius: "8px",
-                      width: "32%",
-                      textAlign: "center",
-                      padding: "0.4rem 0.4rem",
-                      marginBottom: "0.5rem",
-                    }}
-                  >
-                    <Box as="span" flex="1" textAlign="center">
-                      Show More
-                    </Box>
-                    <AccordionIcon />
-                  </AccordionButton>
-                </h2>
-                <AccordionPanel
-                  style={{ width: "100%", padding: 0, paddingInline: "5rem" }}
-                >
-                  <Box
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      marginLeft: "1.7rem",
-                      justifyContent: "center",
-                      gap: "3rem",
-                    }}
-                  >
-                    <DetailBox
-                      item={details}
-                      style={{ gap: "10px", paddingTop: "0px", width: "11rem" }}
-                      fontSize={{ fontSize: "0.9rem" }}
-                      properties={["Guardian Name", "Gender", "Education"]}
-                    />
-                    <DetailBox
-                      item={details}
-                      style={{ gap: "10px", paddingTop: "0px", width: "11rem" }}
-                      fontSize={{ fontSize: "0.9rem" }}
-                      properties={["Native Place", "Wedding Date", "Email"]}
-                    />
-                  </Box>
-                </AccordionPanel>
-              </AccordionItem>
-            </Accordion>
           </Box>
 
           <Text
             style={{
               fontSize: "1rem",
               fontWeight: "600",
-
               paddingTop: "1rem",
             }}
           >
@@ -278,19 +227,18 @@ const UserDetail = () => {
               alignItems: "flex-start",
               paddingTop: "0.2rem",
               justifyContent: "center",
-              paddingInline: "1rem",
-              gap: "3rem",
+              paddingInline: "0rem",
             }}
           >
             <DetailBox
               item={details}
-              style={{ gap: "10px", paddingTop: "0px", width: "11rem" }}
+              style={{ gap: "10px", paddingTop: "0px" }}
               fontSize={{ fontSize: "0.9rem" }}
               properties={["Name", "Website"]}
             />
             <DetailBox
               item={details}
-              style={{ gap: "10px", paddingTop: "0px", width: "11rem" }}
+              style={{ gap: "10px", paddingTop: "0px" }}
               fontSize={{ fontSize: "0.9rem" }}
               properties={["Business Phone", "Description"]}
             />
@@ -320,19 +268,19 @@ const UserDetail = () => {
               alignItems: "flex-start",
               paddingTop: "0.2rem",
               justifyContent: "center",
-              gap: "3rem",
-              paddingInline: "1rem",
+
+              paddingInline: "0rem",
             }}
           >
             <DetailBox
               item={details}
-              style={{ gap: "10px", paddingTop: "0px", width: "11rem" }}
+              style={{ gap: "10px", paddingTop: "0px" }}
               fontSize={{ fontSize: "0.9rem" }}
               properties={["Pincode", "City"]}
             />
             <DetailBox
               item={details}
-              style={{ gap: "10px", paddingTop: "0px", width: "11rem" }}
+              style={{ gap: "10px", paddingTop: "0px" }}
               fontSize={{ fontSize: "0.9rem" }}
               properties={["Locality", "State"]}
             />
