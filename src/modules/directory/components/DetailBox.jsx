@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Text, Image } from "@chakra-ui/react";
 import { property } from "lodash";
 
-const DetailBox = ({ item, style, properties }) => {
+const DetailBox = ({ item, style, properties, fontSize }) => {
   return (
     <Box
       style={{
@@ -37,6 +37,7 @@ const DetailBox = ({ item, style, properties }) => {
                     width: "15rem",
                     fontFamily: "Arial",
                     color: "#666666",
+                    ...fontSize,
                   }}
                 >
                   {property}
@@ -49,6 +50,7 @@ const DetailBox = ({ item, style, properties }) => {
                     lineHeight: "24px",
                     fontFamily: "Arial",
                     color: "#000000",
+                    ...fontSize,
                   }}
                 >
                   {item.find((entry) => entry.key === property)?.value}
