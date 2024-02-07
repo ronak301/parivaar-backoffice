@@ -10,21 +10,22 @@ import { getMemberDetails } from "../../api/directoryApi";
 import Loading from "../../components/Loading";
 import DetailBox from "./components/DetailBox";
 import { useRef } from "react";
+import moment from "moment";
 
 import deafultImage from "../../api/836.jpg";
 import { Divider, Text, Image } from "@chakra-ui/react";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-} from "@chakra-ui/react";
+import List from "../../components/List";
+import { RowCell, Row } from "../../components/List";
+import { useNavigate } from "react-router-dom";
+
 import BusinessForm from "./components/Form/BusinessForm";
 import AddressForm from "./components/Form/AddressForm";
-import UserCard from "../../components/Card";
+
+import { useToast } from "@chakra-ui/react";
 
 export default function MemberDetailsScreen() {
+  const navigate = useNavigate();
+  const toast = useToast();
   const { communityId, memberId } = useParams();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [data, setData] = useState({});
@@ -32,8 +33,15 @@ export default function MemberDetailsScreen() {
   const personalRef = useRef(null);
   const addressRef = useRef(null);
 
+  const [personal, setPersonal] = React.useState(false);
+  const [business, setBusiness] = React.useState(false);
+  const [address, setAddress] = React.useState(false);
+  const [personalsubmit, setPersonalSubmit] = React.useState(false);
+  const [businesssubmit, setBusinessSubmit] = React.useState(false);
+  const [addresssubmit, setAddressSubmit] = React.useState(false);
+
   const { request, loading } = useApi(getMemberDetails);
-  const handleFormSubmit = () => {
+  const handleFormSubmit = async () => {
     personalRef.current?.click();
     businessRef.current?.click();
     addressRef.current?.click();
@@ -45,65 +53,76 @@ export default function MemberDetailsScreen() {
       text: "First Name",
       type: "text",
       req: "true",
-      value: data?.data?.firstName || "NA",
+      value: data?.data?.firstName || null,
     },
     {
       field: "lastName",
       text: "Last Name",
       type: "text",
       req: "true",
-      value: data?.data?.lastName || "NA",
+      value: data?.data?.lastName || null,
     },
     {
       field: "dob",
       text: "Date of Birth",
       type: "date",
-      value: data?.data?.dob || "NA",
+      value: data?.data?.dob || null,
     },
     {
       field: "phone",
       text: "Phone",
       type: "phone",
       req: "true",
-      value: data?.data?.phone || "NA",
+      value: data?.data?.phone || null,
     },
     {
       field: "guardianName",
       text: "Guardian Name",
       type: "text",
-      value: data?.data?.guardianName || "NA",
+      value: data?.data?.guardianName || null,
     },
+
     {
       field: "nativePlace",
       text: "Native Place",
       type: "text",
-      value: data?.data?.nativePlace || "NA",
+      value: data?.data?.nativePlace || null,
     },
     {
       field: "gender",
       text: "Gender",
       type: "select",
-      value: data?.data?.gender || "NA",
+      value: data?.data?.gender || null,
       options: ["Male", "Female", "Other"],
     },
     {
       field: "weddingDate",
       text: "Wedding Date",
       type: "date",
-      value: data?.data?.weddingDate || "NA",
+      value: data?.data?.weddingDate || null,
     },
     {
       field: "education",
       text: "Education",
       type: "text",
-      value: data?.data?.education || "NA",
+      value: data?.data?.education || null,
     },
     {
       field: "bloodGroup",
       text: "Blood Group",
       type: "select",
-      value: data?.data?.bloodGroup || "NA",
+      value: data?.data?.bloodGroup || null,
       options: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+    },
+    {
+      field: "profile_picture",
+      type: "file",
+      value: data?.data?.profilePicture || null,
+    },
+    {
+      field: "path",
+      type: "path",
+      value: data?.data?.imagePath || null,
     },
   ];
   const businessField = [
@@ -111,25 +130,25 @@ export default function MemberDetailsScreen() {
       field: "name",
       text: "Name",
       type: "text",
-      value: data?.data?.business?.name || "NA",
+      value: data?.data?.business?.name || null,
     },
     {
       field: "description",
       text: "Description",
       type: "text",
-      value: data?.data?.business?.description || "NA",
+      value: data?.data?.business?.description || null,
     },
     {
       field: "phone",
       text: "Phone",
       type: "text",
-      value: data?.data?.business?.phone || "NA",
+      value: data?.data?.business?.phone || null,
     },
     {
       field: "website",
       text: "Website",
       type: "text",
-      value: data?.data?.business?.website || "NA",
+      value: data?.data?.business?.website || null,
     },
   ];
   const addressField = [
@@ -137,92 +156,168 @@ export default function MemberDetailsScreen() {
       field: "locality",
       text: "Locality",
       type: "text",
-      value: data?.data?.address?.locality || "NA",
+      value: data?.data?.address?.locality || null,
     },
     {
       field: "state",
       text: "State",
       type: "text",
-      value: data?.data?.address?.state || "NA",
+      value: data?.data?.address?.state || null,
     },
     {
       field: "city",
       text: "City",
       type: "text",
-      value: data?.data?.address?.city || "NA",
+      value: data?.data?.address?.city || null,
     },
     {
       field: "pincode",
       text: "Pincode",
       type: "text",
-      value: data?.data?.address?.pincode || "NA",
+      value: data?.data?.address?.pincode || null,
     },
   ];
+
   const details = [
-    { key: "First Name", value: data?.data?.firstName || "NA" },
-    { key: "Last Name", value: data?.data?.lastName || "NA" },
-    { key: "Date of Birth", value: data?.data?.dob || "NA" },
-    { key: "Phone", value: data?.data?.phone || "NA" },
-    { key: "Blood Group", value: data?.data?.bloodGroup || "NA" },
-    { key: "Guardian Name", value: data?.data?.guardianName || "NA" },
-    { key: "Gender", value: data?.data?.gender || "NA" },
-    { key: "Education", value: data?.data?.education || "NA" },
-    { key: "Native Place", value: data?.data?.nativePlace || "NA" },
-    { key: "Wedding Date", value: data?.data?.weddingDate || "NA" },
-    { key: "Email", value: data?.data?.email || "NA" },
-    { key: "Name", value: data?.data?.business?.name || "NA" },
-    { key: "Description", value: data?.data?.business?.description || "NA" },
+    { key: "First Name", value: data?.data?.firstName || "---" },
+    { key: "Last Name", value: data?.data?.lastName || "---" },
+    {
+      key: "Date of Birth",
+      value: moment(data?.data?.dob).format("LL") || "---",
+    },
+    { key: "Phone", value: data?.data?.phone || "---" },
+    { key: "Blood Group", value: data?.data?.bloodGroup || "---" },
+    { key: "Guardian Name", value: data?.data?.guardianName || "---" },
+    { key: "Gender", value: data?.data?.gender || "---" },
+    { key: "Education", value: data?.data?.education || "---" },
+    { key: "Native Place", value: data?.data?.nativePlace || "---" },
+    {
+      key: "Wedding Date",
+      value: moment(data?.data?.weddingDate).format("LL") || "---",
+    },
+    { key: "Email", value: data?.data?.email || "---" },
+    { key: "Name", value: data?.data?.business?.name || "---" },
+    { key: "Description", value: data?.data?.business?.description || "---" },
     {
       key: "Pincode",
-      value: data?.data?.address?.pincode || "NA",
+      value: data?.data?.address?.pincode || "---",
     },
 
     {
       key: "City",
-      value: data?.data?.address?.city || "NA",
+      value: data?.data?.address?.city || "---",
     },
     {
       key: "Locality",
-      value: data?.data?.address?.locality || "NA",
+      value: data?.data?.address?.locality || "---",
     },
     {
       key: "State",
-      value: data?.data?.address?.state || "NA",
+      value: data?.data?.address?.state || "---",
     },
     {
       key: "Business Phone",
-      value: data?.data?.business?.phone || "NA",
+      value: data?.data?.business?.phone || "---",
     },
     {
       key: "Website",
-      value: data?.data?.business?.website || "NA",
+      value: data?.data?.business?.website || "---",
     },
+    { key: "Full Address", value: data?.data?.address?.fullAddress || "---" },
   ];
+  const [relation, setRelation] = useState(null);
 
   React.useEffect(() => {
     const fetchDeatils = async () => {
       const response = await request(memberId);
       if (response) {
         setData(response.data);
+        const parent = response?.data?.data?.parent;
+        if (parent === null) {
+          setRelation("HEAD");
+        } else {
+          const parentId = response?.data?.data?.parent?.id;
+          const relatives = response?.data?.data?.relatives;
+          setRelation(
+            relatives.find((item) => item.id === parentId)?.relationship?.type
+          );
+        }
       }
     };
     fetchDeatils();
   }, [memberId]);
+  const [show, setShow] = useState(false);
+
+  React.useEffect(() => {
+    if (personalsubmit && businesssubmit && addresssubmit) {
+      if (personal && business && address) {
+        toast({
+          title: "Updated User success",
+          description: "Successfully updated the user profile",
+          status: "success",
+          duration: 4000,
+          isClosable: true,
+        });
+
+        onClose();
+        window.location.reload();
+        setPersonalSubmit(false);
+        setBusinessSubmit(false);
+        setAddressSubmit(false);
+        setAddress(false);
+        setBusiness(false);
+        setPersonal(false);
+      } else {
+        toast({
+          title: "Updated User Error",
+          description: "There was an error updating the user profile",
+          status: "error",
+          duration: 4000,
+          isClosable: true,
+        });
+        onClose();
+        setTimeout(() => window.location.reload(), 2000);
+        setPersonalSubmit(false);
+        setBusinessSubmit(false);
+        setAddressSubmit(false);
+        setAddress(false);
+        setBusiness(false);
+        setPersonal(false);
+      }
+    }
+  }, [
+    addresssubmit,
+    businesssubmit,
+    personalsubmit,
+    address,
+    business,
+    personal,
+  ]);
 
   if (loading) return <Loading />;
+  console.log(relation);
 
   return (
     <Base>
       <SidePane isOpen={isOpen} onClose={onClose}>
         <Box style={{ overflowY: "scroll", height: "90%", width: "100%" }}>
-          <Personal ref={personalRef} field={field} />
+          <Personal
+            ref={personalRef}
+            field={field}
+            setPersonal={setPersonal}
+            setPersonalSubmit={setPersonalSubmit}
+          />
           <AddressForm
             ref={addressRef}
             field={addressField}
             id={data?.data?.address?.id || null}
+            setAddress={setAddress}
+            setAddressSubmit={setAddressSubmit}
           />
           <BusinessForm
+            setBusiness={setBusiness}
             ref={businessRef}
+            setBusinessSubmit={setBusinessSubmit}
             id={data?.data?.business?.id || null}
             field={businessField}
           />
@@ -258,6 +353,7 @@ export default function MemberDetailsScreen() {
         ]}
         style={{ display: "flex", flexDirection: "row" }}
         isSuperAdmin={data?.data?.isSuperAdmin || false}
+        relation={relation}
         approvalStatus={data?.data?.approvalStatus || false}
       >
         <Box
@@ -270,13 +366,13 @@ export default function MemberDetailsScreen() {
             style={{
               display: "flex",
               flexDirection: "column",
-              overflowY: "scroll",
+
               padding: "1rem",
               alignItems: "flex-start",
               overflowX: "hidden",
               height: "40rem",
               borderRadius: "10px",
-              width: "95%",
+              width: "100%",
             }}
           >
             <Text
@@ -294,6 +390,7 @@ export default function MemberDetailsScreen() {
                 paddingLeft: "0.5rem",
                 display: "flex",
                 width: "100%",
+
                 alignItems: "flex-start",
                 justifyContent: "center",
                 paddingTop: "2rem",
@@ -311,14 +408,53 @@ export default function MemberDetailsScreen() {
                 }}
               />
             </Box>
+            {relation !== "HEAD" && (
+              <Box
+                style={{
+                  display: "flex",
+                  width: "100%",
+                  height: "100%",
+                  flexDirection: "column",
+                  gap: "5px",
+                  paddingInline: "1rem",
+                  justifyContent: "center",
+                  alignItems: "flex-start",
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: "14px",
+                    fontWeight: 500,
+                    lineHeight: "24px",
+                    width: "15rem",
+                    fontFamily: "Arial",
+                    color: "#666666",
+                  }}
+                >
+                  Relation Type
+                </Text>
+                <Text
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: 500,
+                    lineHeight: "18px",
+                    fontFamily: "Arial",
+                    width: "100%",
+                    color: "#000000",
+                  }}
+                >
+                  {relation}
+                </Text>
+              </Box>
+            )}
 
             <Box
               style={{
                 display: "flex",
                 alignItems: "flex-start",
-                justifyContent: "center",
+                justifyContent: "space-between",
                 paddingInline: "1rem",
-                gap: "25rem",
+                width: "100%",
               }}
             >
               <DetailBox
@@ -335,70 +471,78 @@ export default function MemberDetailsScreen() {
             <Box
               style={{
                 width: "100%",
+                marginInline: "auto",
                 marginTop: "1rem",
-                marginInline: "0rem",
               }}
             >
-              <Accordion
-                allowToggle
-                style={{
-                  justifyContent: "center",
-                  display: "flex",
-                  border: "2px solid white",
-                  width: "100%",
-                }}
-              >
-                <AccordionItem style={{ width: "100%" }}>
-                  <h2>
-                    <AccordionButton
-                      style={{
-                        fontSize: "12px",
-                        color: "black",
-                        backgroundColor: "whitesmoke",
-                        margin: "auto",
-                        borderRadius: "8px",
-                        width: "12%",
-                        textAlign: "center",
-                        padding: "0.4rem 0.4rem",
-                        marginBottom: "0.5rem",
-                      }}
-                    >
-                      <Box as="span" flex="1" textAlign="center">
-                        Show More
-                      </Box>
-                      <AccordionIcon />
-                    </AccordionButton>
-                  </h2>
-                  <AccordionPanel style={{ width: "100%", padding: 0 }}>
-                    <Box
-                      style={{
-                        width: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        padding: "1rem",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <Box>
-                        <DetailBox
-                          item={details}
-                          style={{}}
-                          properties={["Guardian Name", "Gender", "Education"]}
-                        />
-                      </Box>
-                      <Box>
-                        <DetailBox
-                          item={details}
-                          s
-                          properties={["Native Place", "Wedding Date", "Email"]}
-                        />
-                      </Box>
-                    </Box>
-                  </AccordionPanel>
-                </AccordionItem>
-              </Accordion>
+              {show && (
+                <Box
+                  style={{
+                    width: "100%",
+
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "1rem",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Box>
+                    <DetailBox
+                      item={details}
+                      style={{}}
+                      properties={["Guardian Name", "Gender", "Education"]}
+                    />
+                  </Box>
+                  <Box>
+                    <DetailBox
+                      item={details}
+                      s
+                      properties={["Native Place", "Wedding Date", "Email"]}
+                    />
+                  </Box>
+                </Box>
+              )}
+              <Box style={{ display: "flex", justifyContent: "center" }}>
+                <Button size="sm" onClick={() => setShow(!show)} mt="1rem">
+                  Show {show ? "Less" : "More"}
+                </Button>
+              </Box>
             </Box>
 
+            <Divider
+              orientation="horizontal"
+              style={{
+                color: "#EAEAEA",
+                paddingTop: "1rem",
+                paddingBottom: "1rem",
+              }}
+            />
+
+            <Text
+              style={{
+                fontSize: "1.2rem",
+                fontWeight: "600",
+                paddingInline: "1rem",
+                paddingTop: "1rem",
+              }}
+            >
+              Address Information
+            </Text>
+            <Box
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                paddingInline: "1rem",
+                width: "100%",
+                justifyContent: "space-between",
+              }}
+            >
+              <DetailBox
+                item={details}
+                properties={["Pincode", "City", "Full Address"]}
+              />
+              <DetailBox item={details} properties={["Locality", "State"]} />
+            </Box>
             <Divider
               orientation="horizontal"
               style={{
@@ -421,9 +565,10 @@ export default function MemberDetailsScreen() {
               style={{
                 display: "flex",
                 alignItems: "flex-start",
-                justifyContent: "center",
+                width: "100%",
+                justifyContent: "space-between",
+
                 paddingInline: "1rem",
-                gap: "25rem",
               }}
             >
               <DetailBox
@@ -437,87 +582,31 @@ export default function MemberDetailsScreen() {
                 properties={["Business Phone", "Description"]}
               />
             </Box>
-            <Divider
-              orientation="horizontal"
-              style={{
-                color: "#EAEAEA",
-                paddingTop: "1rem",
-                paddingBottom: "1rem",
-              }}
-            />
-            <Text
-              style={{
-                fontSize: "1.2rem",
-                fontWeight: "600",
-                paddingInline: "1rem",
-                paddingTop: "1rem",
-              }}
-            >
-              Address Information
-            </Text>
-            <Box
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                justifyContent: "center",
-                paddingInline: "1rem",
-                gap: "25rem",
-              }}
-            >
-              <DetailBox
-                item={details}
-                style={{}}
-                properties={["Pincode", "City"]}
-              />
-              <DetailBox
-                item={details}
-                style={{}}
-                properties={["Locality", "State"]}
-              />
-            </Box>
-          </Box>
-
-          <Box
-            style={{
-              border: "2x solid red",
-              width: "30%",
-              marginTop: "1.2rem",
-              overflowX: "hidden",
-              overflowY: "scroll",
-              height: "40rem",
-            }}
-          >
-            <Text
-              style={{
-                fontSize: "1.2rem",
-                textAlign: "center",
-                fontWeight: "600",
-                marginBottom: "1rem",
-              }}
-            >
-              Family Members
-            </Text>
-            {data?.data ? (
-              <>
-                {data?.data?.relatives.map((item) => (
-                  <UserCard
-                    name={item?.firstName + " " + item?.lastName}
-                    phone={item?.phone}
-                    education={item?.education}
-                    id={item?.id}
-                    uimg={item?.profilePicture}
-                    relation={item?.relationship?.type}
-                  />
-                ))}
-              </>
-            ) : (
-              <>
-                <Loading />
-              </>
-            )}
           </Box>
         </Box>
       </CommonBox>
+      <Box paddingTop={"2rem"} paddingBottom={"5rem"}>
+        <CommonBox title={"Family Members"}>
+          <List
+            columns={["Name", "Phone Number", "Relation Type"]}
+            data={data?.data?.relatives}
+            renderRow={({ item }) => {
+              return (
+                <Row
+                  onClick={() => {
+                    const url = `/dashboard/community/${communityId}/member/${item?.id}`;
+                    navigate(url);
+                  }}
+                >
+                  <RowCell value={item?.firstName + "" + item?.lastName} />
+                  <RowCell value={item?.phone} />
+                  <RowCell value={item?.relationship?.type} />
+                </Row>
+              );
+            }}
+          />
+        </CommonBox>
+      </Box>
     </Base>
   );
 }

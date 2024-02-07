@@ -4,6 +4,16 @@ import client, { API_BASE_URL } from "./baseApiClient";
 export const getAllCommunities = () => {
   return client.get("/community/all");
 };
+export const createCommunity = (input) => {
+  return client.post(`community/create`, {
+    ...input,
+  });
+};
+export const updateCommunity = (id, input) => {
+  return client.put(`community/${id}`, {
+    ...input,
+  });
+};
 
 export const getUserCommunities = (userId) => {
   return client.get(`user/communities/${userId}`);

@@ -9,8 +9,8 @@ export default function CommonBox({
   title,
   buttons,
   isSuperAdmin,
-  width,
   height,
+  relation,
   approvalStatus,
 }) {
   const navigate = useNavigate();
@@ -24,7 +24,8 @@ export default function CommonBox({
       mt={1}
       bg="white"
       width={"99%"}
-      height={"99%"}
+      height={height ? height : "auto"}
+      border={"1px solid #E2E8F0"}
       marginLeft={2}
       px={1}
       py={4}
@@ -34,9 +35,9 @@ export default function CommonBox({
     >
       <Box
         style={{
-          width: "95%",
-
+          width: "100%",
           display: "flex",
+
           alignItems: "center",
           justifyContent: "space-between",
           paddingRight: "4rem",
@@ -68,6 +69,14 @@ export default function CommonBox({
                   style={{ padding: "0.2rem", marginLeft: "0.2rem" }}
                 >
                   Approved
+                </Badge>
+              )}{" "}
+              {relation === "HEAD" && (
+                <Badge
+                  colorScheme="purple"
+                  style={{ padding: "0.2rem", marginLeft: "0.2rem" }}
+                >
+                  Family Head
                 </Badge>
               )}
             </Text>

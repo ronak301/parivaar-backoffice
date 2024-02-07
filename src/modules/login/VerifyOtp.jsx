@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Grid, Text } from "@chakra-ui/react";
+import { Button, Grid, Text, Divider } from "@chakra-ui/react";
 import { HStack } from "@chakra-ui/react";
 import { verifyOtp } from "../../api/authApi";
 import { PinInput, PinInputField } from "@chakra-ui/react";
@@ -35,7 +35,9 @@ const VerifyOtp = () => {
   console.log("otp is", otp);
   const [showAlert, setShowAlert] = useState(false);
 
-  const onSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
     setLoading(true);
     if (isOtpValid) {
       setShowAlert(false);
@@ -79,116 +81,189 @@ const VerifyOtp = () => {
     }
   }, [success, navigate]);
 
+  /* <form
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "2rem",
+    padding: "2rem",
+    width: "70%",
+    height: "100%",
+    margin: "auto",
+    marginTop: "0rem",
+    marginBottom: "5rem",
+  }}
+  onSubmit={(e) => {
+    e.preventDefault();
+    onSubmit();
+  }}
+>*/
   const isOtpValid = otp.length === 6;
   console.log(isOtpValid);
   return (
     <>
-      <Grid templateColumns="repeat(2, 1fr)" gap={0}>
-        <GridItem overflowY="auto" width={"100%"} h="100%">
-          <Image src={login} alt="login" />
-        </GridItem>
-
-        <GridItem
-          w="100%"
-          h="100%"
+      <Box style={{ overflowY: "hidden", height: "95vh" }}>
+        <Box
           style={{
+            height: "9.5vh",
+            position: "sticky",
             display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
+            alignItems: "center",
+            border: "1px solid #EAEAEA",
+            top: "0",
+          }}
+          paddingInline={{ base: "1rem", md: "1rem", lg: "2.5rem" }}
+        >
+          <Box
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "flex-start",
+            }}
+            gap={{ base: "0.3rem", md: "0.3rem", lg: "0.7rem" }}
+          >
+            <Image
+              boxSize={{ base: "40px", md: "40px", lg: "60px" }}
+              objectFit="cover"
+              borderRadius={"100px"}
+              src={Logo}
+              alt="logo"
+            />
+            <Text
+              style={{
+                color: "#0777FF",
+                fontWeight: "900",
+              }}
+              fontSize={{ base: "1rem", md: "1.1rem", lg: "1.3rem" }}
+            >
+              Parivaar
+            </Text>
+          </Box>
+        </Box>
+        <Box
+          style={{
+            height: "100vh",
             width: "100%",
+            display: "flex",
+            justifyContent: "center",
+
             alignItems: "center",
           }}
         >
-          <form
+          <Box
             style={{
+              border: "1px solid #999696",
+              borderRadius: "1rem",
               display: "flex",
               flexDirection: "column",
-              justifyContent: "center",
               alignItems: "center",
-              gap: "2rem",
-              padding: "2rem",
-              width: "70%",
-              height: "100%",
-              margin: "auto",
-              marginTop: "0rem",
-              marginBottom: "5rem",
-            }}
-            onSubmit={(e) => {
-              e.preventDefault();
-              onSubmit();
-            }}
-          >
-            <Text
-              style={{
-                color: "#333",
-                fontSize: "1.5rem",
-                fontWeight: "bold",
-                textAlign: "center",
-                paddingBottom: "1rem",
-              }}
-            >
-              WELCOME TO PARIVAAR APP
-            </Text>
 
-            <Text
+              paddingTop: "1rem",
+              paddingBottom: "1.3rem",
+            }}
+            w={[380, 350, 550]}
+            h={[400, 380, 350]}
+          >
+            <Box
               style={{
-                color: "#333",
-                fontSize: "1.5rem",
-                fontWeight: "bold",
-                textAlign: "center",
-                paddingBottom: "1rem",
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.5rem",
+                alignItems: "center",
+                width: "100%",
               }}
             >
-              <Avatar src={Logo} size="xl" />
-            </Text>
-            <Text
+              <Text
+                style={{
+                  color: "#0777FF",
+                  fontWeight: "800",
+                  fontSize: "1.2rem",
+                }}
+              >
+                OTP Verify
+              </Text>
+              <Divider color={"#EAEAEA"} width={"100%"} />
+            </Box>
+            <Box
               style={{
-                color: "#767070",
-                fontSize: "1rem",
-                fontWeight: "400",
-                textAlign: "center",
-                paddingBottom: "0.5rem",
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.2rem",
+                paddingTop: "1rem",
+                width: "100%",
+                paddingInline: "2.2rem",
               }}
             >
-              We have sent an OTP to your registered phone number. Please enter
-              the OTP below to verify.
-            </Text>
-            <HStack spacing="1rem">
-              <PinInput otp>
-                {[...Array(6)].map((_, index) => (
-                  <PinInputField
-                    key={index}
-                    onChange={(value) => handleChange(value, index)}
-                    borderRadius="0.25rem"
-                    borderColor="#ddd"
-                    borderWidth="2px"
-                    fontSize="1.5rem"
-                    textAlign="center"
-                    width="3rem"
-                    height="3rem"
-                  />
-                ))}
-              </PinInput>
-            </HStack>
-            <Button
-              disabled={!isOtpValid}
-              type="submit"
-              isLoading={loading}
-              style={{
-                backgroundColor: "#0777FF",
-                color: "white",
-                width: "15rem",
-                height: "3rem",
-                borderRadius: "0.5rem",
-                fontSize: "1.2rem",
-                fontWeight: "bold",
-              }}
-            >
-              Verify OTP
-            </Button>
-          </form>
-        </GridItem>
-      </Grid>
+              <Text
+                style={{
+                  color: "black",
+                  fontWeight: "600",
+                }}
+                fontSize={{ base: "1.2rem", md: "1.2rem", lg: "1.4rem" }}
+              >
+                Welcome to Parivaar App
+              </Text>
+
+              <Text style={{ paddingTop: "0.5rem" }}>
+                Enter the OTP sent to your registered phone number
+              </Text>
+              <form onSubmit={handleSubmit}>
+                <Box style={{ paddingTop: "1rem" }}>
+                  <HStack spacing="1rem">
+                    <PinInput otp>
+                      {[...Array(6)].map((_, index) => (
+                        <PinInputField
+                          key={index}
+                          onChange={(value) => handleChange(value, index)}
+                          borderRadius="0.25rem"
+                          borderColor="#ddd"
+                          borderWidth="2px"
+                          fontSize="1.5rem"
+                          textAlign="center"
+                          width="3rem"
+                          height="3rem"
+                        />
+                      ))}
+                    </PinInput>
+                  </HStack>
+                </Box>
+                <Button
+                  disabled={!isOtpValid}
+                  type="submit"
+                  isLoading={loading}
+                  style={{
+                    backgroundColor: "#0777FF",
+                    color: "white",
+                    width: "100%",
+                    marginTop: "1.5rem",
+                    height: "3rem",
+                    borderRadius: "0.5rem",
+                    fontSize: "1.2rem",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Verify OTP
+                </Button>
+              </form>
+              <Text
+                style={{
+                  color: "#767070",
+                  fontSize: "1rem",
+                  fontWeight: "400",
+                  paddingTop: "0.8rem",
+                  paddingBottom: "0.5rem",
+                }}
+                noOfLines={2}
+              >
+                We have sent an OTP to your registered phone number
+              </Text>
+            </Box>
+          </Box>
+        </Box>
+      </Box>
     </>
   );
 };

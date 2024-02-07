@@ -7,6 +7,7 @@ import { Image, Center, Text } from "@chakra-ui/react";
 import { getCommunityDetailsForId } from "../../../api/directoryApi";
 import MemberSearchFiltterComponent from "../MemberSearchFilterComponent";
 import { useDebounce } from "use-debounce";
+import { SidePane } from "../../../components/SidePane";
 import SearchFilterComponent from "../SearchFilterComponents";
 export default function ExecutiveMembers({ communityId }) {
   const { id } = useParams();

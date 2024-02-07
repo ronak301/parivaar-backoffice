@@ -88,7 +88,10 @@ export default function MemberList() {
   if (error) return <Text>Error!!</Text>;
 
   return (
-    <CommonBox title={`All Family Members - ${data?.totalMembers}`}>
+    <CommonBox
+      title={`All Family Members - ${data?.totalMembers}`}
+      height="80vh"
+    >
       <Modal isCentered isOpen={isOpen} onClose={onClose}>
         {overlay}
         <ModalContent>

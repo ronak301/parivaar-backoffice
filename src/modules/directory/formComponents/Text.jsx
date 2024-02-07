@@ -19,8 +19,7 @@ const Text = ({ text, register, errors, req = "false", field }) => {
         )}
         width={"100%"}
         type="text"
-        p={2}
-        
+        p={1.5}
         borderRadius={"0.375rem"}
         backgroundColor={"#F5F7F9"}
         border={"0.6px solid #F0F0F0"}
