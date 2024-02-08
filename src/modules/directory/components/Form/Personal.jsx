@@ -8,22 +8,18 @@ import { updateUser } from "../../../../api/authApi";
 import { storage } from "../../../../api/firebase/firebase";
 import { ref as fireref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useRef } from "react";
-import { AiOutlineUpload, AiOutlineClose, CiImageOff } from "react-icons/ai";
-import addimg from "../../../../assets/addimg.png";
+import { AiOutlineUpload, AiOutlineClose } from "react-icons/ai";
+import addimg from "../../../../api/836.jpg";
 import imageCompression from "browser-image-compression";
-
 import { Input, Image, IconButton } from "@chakra-ui/react";
-
 import { FormLabel } from "@chakra-ui/react";
 import Select0 from "../../formComponents/Select0";
 import { useParams } from "react-router-dom";
 import { useToast } from "@chakra-ui/react";
 
-import ReactImagePickerEditor from "react-image-picker-editor";
 import "react-image-picker-editor/dist/index.css";
 import { useStateWithCallback } from "../../../../components/useStateWithCallback";
 import { searchUser } from "../../../../api/directoryApi";
-import { set } from "lodash";
 
 const Personal = React.forwardRef(
   ({ field, setPersonal, setPersonalSubmit }, ref) => {
@@ -97,11 +93,15 @@ const Personal = React.forwardRef(
       if (isDirty || imageChange) {
         console.log("data is", data);
         let phoneNumber = data?.phone;
+
         console.log("phone number is", phoneNumber);
         const res = await searchUser(phoneNumber);
         if (
           res?.data?.data?.count > 0 &&
-          phoneNumber !== field?.find((item) => item.field === "phone")?.value
+          phoneNumber !==
+            field?.find((item) => item.field === "phone")?.value &&
+          phoneNumber !== null &&
+          phoneNumber !== ""
         ) {
           toast({
             title: "Phone Number already exist in database",
@@ -129,6 +129,10 @@ const Personal = React.forwardRef(
             uploadingImage(imageSrc, path, data);
           }
         } else {
+          if (data?.phone === "") {
+            data.phone = null;
+          }
+
           await updateUser(memberId, {
             ...data,
           });
@@ -291,6 +295,7 @@ const Personal = React.forwardRef(
                   <Phone
                     text={item.text}
                     field={item.field}
+                    req={item.req}
                     errors={errors}
                     register={register}
                   />

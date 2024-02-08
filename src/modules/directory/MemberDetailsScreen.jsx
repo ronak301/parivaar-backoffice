@@ -46,6 +46,7 @@ export default function MemberDetailsScreen() {
     businessRef.current?.click();
     addressRef.current?.click();
   };
+  const [relation, setRelation] = useState(null);
 
   const field = [
     {
@@ -72,7 +73,7 @@ export default function MemberDetailsScreen() {
       field: "phone",
       text: "Phone",
       type: "phone",
-      req: "true",
+      req: relation === "HEAD" ? true : false,
       value: data?.data?.phone || null,
     },
     {
@@ -225,7 +226,6 @@ export default function MemberDetailsScreen() {
     },
     { key: "Full Address", value: data?.data?.address?.fullAddress || "---" },
   ];
-  const [relation, setRelation] = useState(null);
 
   React.useEffect(() => {
     const fetchDeatils = async () => {
@@ -586,7 +586,9 @@ export default function MemberDetailsScreen() {
         </Box>
       </CommonBox>
       <Box paddingTop={"2rem"} paddingBottom={"5rem"}>
-        <CommonBox title={"Family Members"}>
+        <CommonBox
+          title={relation === "HEAD" ? "Family Members" : "Family Head"}
+        >
           <List
             columns={["Name", "Phone Number", "Relation Type"]}
             data={data?.data?.relatives}

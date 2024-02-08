@@ -71,12 +71,12 @@ export default function CommonBox({
                   Approved
                 </Badge>
               )}{" "}
-              {relation === "HEAD" && (
+              {relation && (
                 <Badge
                   colorScheme="purple"
                   style={{ padding: "0.2rem", marginLeft: "0.2rem" }}
                 >
-                  Family Head
+                  {relation === "HEAD" ? "Family Head" : "Family Member"}
                 </Badge>
               )}
             </Text>
