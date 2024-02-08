@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Button, Grid, GridItem, Text } from "@chakra-ui/react";
-import login from "../../assets/re.png";
+import { Button, Grid, GridItem, Text, Divider } from "@chakra-ui/react";
+
 import {
   Image,
   FormLabel,
@@ -26,7 +26,6 @@ const SubmitForm = ({ setSuccess, setLoading, setPhoneNumber, loading }) => {
     console.log(data);
     console.log(data.phoneNumber);
     setPhoneNumber(data.phoneNumber);
-
     const submitOtp = async () => {
       const response = await sendOtp(data.phoneNumber);
       console.log(response);
@@ -55,33 +54,20 @@ const SubmitForm = ({ setSuccess, setLoading, setPhoneNumber, loading }) => {
   });
   return (
     <>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        style={{
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: "1rem",
-        }}
-      >
-        <Box
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            padding: "2rem",
-            gap: "2rem",
-          }}
-        >
+      <form onSubmit={handleSubmit(onSubmit)} style={{ paddingTop: "0.3rem" }}>
+        <Box>
           <FormControl isRequired isInvalid={errors.phoneNumber}>
-            <FormLabel>Enter Phone Number</FormLabel>
+            <FormLabel
+              style={{ paddingBottom: "0.2rem" }}
+              fontSize={{ base: "0.85rem", md: "0.85rem", lg: "1.1rem" }}
+            >
+              Enter Phone Number
+            </FormLabel>
             <InputGroup>
               <InputLeftAddon children="+91" />
               <Input
                 type="tel"
-                placeholder="00000-00000"
+                placeholder="Phone Number"
                 {...register("phoneNumber", {
                   required: "Phone number is required",
                   pattern: {
@@ -90,13 +76,14 @@ const SubmitForm = ({ setSuccess, setLoading, setPhoneNumber, loading }) => {
                   },
                 })}
                 style={{
-                  width: "15rem",
-                  fontSize: "1.2rem",
+                  width: "100%",
+
                   paddingInline: "1rem",
                   fontWeight: "400",
                   fontFamily: "Arial",
                   background: "#F5F7F9",
                 }}
+                fontSize={{ base: "1rem", md: "1rem", lg: "1.2rem" }}
               />
             </InputGroup>
             <FormErrorMessage>
@@ -104,17 +91,18 @@ const SubmitForm = ({ setSuccess, setLoading, setPhoneNumber, loading }) => {
             </FormErrorMessage>
           </FormControl>
         </Box>
-
         <Button
           type="submit"
           isLoading={loading}
           loadingText="Loading"
           spinnerPlacement="start"
           style={{
+            marginTop: "2.5rem",
+            height: "3rem",
+            width: "100%",
+            borderRadius: "0.5rem",
             backgroundColor: "#0777FF",
             color: "white",
-            width: "30%",
-            borderRadius: "0.5rem",
           }}
         >
           Get Otp
@@ -135,88 +123,118 @@ const LoginPage = () => {
     }
   }, [success, phoneNumber, navigate]);
   return (
-    <>
-      <>
-        <Grid templateColumns="repeat(2, 1fr)" gap={0}>
-          <GridItem overflowY="auto" width={"100%"} h="100%">
-            <Image src={login} alt="login" />
-          </GridItem>
-          <GridItem
-            w="100%"
-            h="100%"
+    <Box style={{ overflowY: "hidden", height: "95vh" }}>
+      <Box
+        style={{
+          height: "9.5vh",
+          position: "sticky",
+          display: "flex",
+          alignItems: "center",
+          border: "1px solid #EAEAEA",
+          top: "0",
+        }}
+        paddingInline={{ base: "1rem", md: "1rem", lg: "2.5rem" }}
+      >
+        <Box
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-start",
+          }}
+          gap={{ base: "0.3rem", md: "0.3rem", lg: "0.7rem" }}
+        >
+          <Image
+            boxSize={{ base: "40px", md: "40px", lg: "60px" }}
+            objectFit="cover"
+            borderRadius={"100px"}
+            src={Logo}
+            alt="logo"
+          />
+          <Text
+            style={{
+              color: "#0777FF",
+              fontWeight: "900",
+            }}
+            fontSize={{ base: "1rem", md: "1.1rem", lg: "1.3rem" }}
+          >
+            Parivaar
+          </Text>
+        </Box>
+      </Box>
+      <Box
+        style={{
+          height: "100vh",
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+
+          alignItems: "center",
+        }}
+      >
+        <Box
+          style={{
+            border: "1px solid #999696",
+            borderRadius: "1rem",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+
+            paddingTop: "1rem",
+            paddingBottom: "1.3rem",
+          }}
+          w={[350, 350, 550]}
+          h={[330, 330, 350]}
+        >
+          <Box
             style={{
               display: "flex",
               flexDirection: "column",
-
-              justifyContent: "space-between",
-              width: "100%",
+              gap: "0.5rem",
               alignItems: "center",
+              width: "100%",
             }}
           >
-            <Box
+            <Text
               style={{
-                margin: "auto",
-                width: "100%",
-
-                height: "85%",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: "0rem",
-                padding: "2rem",
+                color: "#0777FF",
+                fontWeight: "800",
+                fontSize: "1.2rem",
               }}
             >
-              <Box style={{ textAlign: "center", marginTop: "5rem" }}>
-                <Text style={{ fontWeight: "600", fontSize: "2.3rem" }}>
-                  Welcome to Parivaar App
-                </Text>
-                <Box
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-
-                    paddingTop: "1rem",
-                  }}
-                >
-                  <Avatar src={Logo} size="xl" />
-                </Box>
-              </Box>
-
-              <Box
-                style={{
-                  padding: "0",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1rem",
-                  width: "109%",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start",
-                }}
-              >
-                <SubmitForm
-                  setSuccess={setSuccess}
-                  setLoading={setLoading}
-                  loading={loading}
-                  setPhoneNumber={setPhoneNumber}
-                />
-
-                <Box
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                ></Box>
-              </Box>
-              <Box style={{ textAlign: "center", paddingTop: "7rem" }}>
-                <Text>भारत से 🇮🇳 भारत के लिए ❤️</Text>
-              </Box>
-            </Box>
-          </GridItem>
-        </Grid>
-      </>
-    </>
+              Login
+            </Text>
+            <Divider color={"#EAEAEA"} width={"100%"} />
+          </Box>
+          <Box
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.2rem",
+              paddingTop: "1.8rem",
+              width: "100%",
+              paddingInline: "2.2rem",
+            }}
+          >
+            <Text
+              style={{
+                color: "black",
+                fontWeight: "600",
+              }}
+              fontSize={{ base: "1.2rem", md: "1.2rem", lg: "1.4rem" }}
+            >
+              Welcome to Parivaar App
+            </Text>
+            <SubmitForm
+              setSuccess={setSuccess}
+              setLoading={setLoading}
+              setPhoneNumber={setPhoneNumber}
+              loading={loading}
+            />
+          </Box>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

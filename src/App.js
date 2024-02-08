@@ -13,6 +13,7 @@ import LoginPage from "./modules/login/LoginPage.jsx";
 import VerifyOtp from "./modules/login/VerifyOtp.jsx";
 import PrivateRoutes from "./PrivateRoutes.js";
 import { Routes, Route } from "react-router-dom";
+import Logout from "./modules/login/Logout.jsx";
 
 // function App() {
 //   const router = createBrowserRouter([
@@ -65,6 +66,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route element={<PrivateRoutes />}>
+            <Route element={<Logout />} path="/logout" />
             <Route element={<Wrapper />} path="/">
               <Route element={<Dashboard />} path="/dashboard" />
 

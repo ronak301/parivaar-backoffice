@@ -1,3 +1,6 @@
+import { initializeApp } from "firebase/app";
+import { getStorage } from "firebase/storage";
+
 export const firebaseconfig = {
   apiKey: "AIzaSyBgf6DC3gN85UtOvdmp2DjzlWkOtPHSByE",
   authDomain: "parivaar-b9150.firebaseapp.com",
@@ -8,3 +11,5 @@ export const firebaseconfig = {
   appId: "1:365873922261:web:ca4bb121bd934d4e6d625c",
   measurementId: "G-84W5B4ZN6B",
 };
+export const app = initializeApp(firebaseconfig);
+export const storage = getStorage(app);

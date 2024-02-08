@@ -12,6 +12,7 @@ export const SidePane = ({ heading, children, footer, isOpen, onClose }) => {
   return (
     <>
       <Drawer isOpen={isOpen} onClose={onClose} size="md">
+        <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>{heading}</DrawerHeader>
