@@ -1,13 +1,13 @@
 import React from "react";
 import { Input, FormControl, FormLabel } from "@chakra-ui/react";
 
-const Phone = ({ text, register, errors, field }) => {
+const Phone = ({ text, register, errors, field, req }) => {
   return (
     <FormControl>
       <FormLabel color={"black"}>{text}</FormLabel>
       <Input
         {...register(field, {
-          required: `${text} is required`,
+          required: req && `${text} is required`,
           maxLength: {
             value: 10,
             message: `${text} should be 10 digits`,

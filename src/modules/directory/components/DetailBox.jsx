@@ -3,7 +3,6 @@ import { Box, Text } from "@chakra-ui/react";
 import moment from "moment";
 
 const DetailBox = ({ item, style, properties, fontSize }) => {
-  console.log("item", item);
   return (
     <Box
       style={{
