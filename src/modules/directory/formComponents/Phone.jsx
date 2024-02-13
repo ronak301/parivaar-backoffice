@@ -3,7 +3,7 @@ import { Input, FormControl, FormLabel } from "@chakra-ui/react";
 
 const Phone = ({ text, register, errors, field, req }) => {
   return (
-    <FormControl>
+    <FormControl style={{ width: "95%" }}>
       <FormLabel color={"black"}>{text}</FormLabel>
       <Input
         {...register(field, {

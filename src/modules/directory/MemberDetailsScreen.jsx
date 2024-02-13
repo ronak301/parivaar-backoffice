@@ -5,9 +5,12 @@ import Base from "../../components/Base";
 import Personal from "./components/Form/Personal";
 import { SidePane } from "../../components/SidePane";
 import { Button, useDisclosure, Box } from "@chakra-ui/react";
+
 import { useApi } from "../../api/useApi";
+import { Spinner } from "@chakra-ui/react";
 import { getMemberDetails } from "../../api/directoryApi";
 import Loading from "../../components/Loading";
+import { setUser } from "../../redux/userReducer";
 import DetailBox from "./components/DetailBox";
 import { useRef } from "react";
 import moment from "moment";
@@ -22,12 +25,21 @@ import BusinessForm from "./components/Form/BusinessForm";
 import AddressForm from "./components/Form/AddressForm";
 
 import { useToast } from "@chakra-ui/react";
+import AddMemberForm from "./components/AddMemberForm";
+import { useDispatch } from "react-redux";
 
 export default function MemberDetailsScreen() {
   const navigate = useNavigate();
   const toast = useToast();
   const { communityId, memberId } = useParams();
+  const dispatch = useDispatch();
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const {
+    isOpen: isOpen1,
+    onClose: onClose1,
+    onOpen: onOpen1,
+  } = useDisclosure();
+
   const [data, setData] = useState({});
   const businessRef = useRef(null);
   const personalRef = useRef(null);
@@ -39,9 +51,11 @@ export default function MemberDetailsScreen() {
   const [personalsubmit, setPersonalSubmit] = React.useState(false);
   const [businesssubmit, setBusinessSubmit] = React.useState(false);
   const [addresssubmit, setAddressSubmit] = React.useState(false);
+  const [loadingButton, setLoadingButton] = useState(false);
 
-  const { request, loading } = useApi(getMemberDetails);
+  const { request } = useApi(getMemberDetails);
   const handleFormSubmit = async () => {
+    setLoadingButton(true);
     personalRef.current?.click();
     businessRef.current?.click();
     addressRef.current?.click();
@@ -232,6 +246,7 @@ export default function MemberDetailsScreen() {
       const response = await request(memberId);
       if (response) {
         setData(response.data);
+        dispatch(setUser(response.data.data));
         const parent = response?.data?.data?.parent;
         if (parent === null) {
           setRelation("HEAD");
@@ -258,7 +273,7 @@ export default function MemberDetailsScreen() {
           duration: 4000,
           isClosable: true,
         });
-
+        setLoadingButton(false);
         onClose();
         window.location.reload();
         setPersonalSubmit(false);
@@ -294,7 +309,7 @@ export default function MemberDetailsScreen() {
     personal,
   ]);
 
-  if (loading) return <Loading />;
+  // if (loading) return <Loading />;
   console.log(relation);
 
   return (
@@ -333,7 +348,12 @@ export default function MemberDetailsScreen() {
             position: "sticky",
             color: "white",
           }}
+          isLoading={loadingButton}
           onClick={handleFormSubmit}
+          loadingText="Submitting"
+          colorScheme="teal"
+          variant="outline"
+          spinnerPlacement="end"
         >
           Submit
         </Button>
@@ -588,7 +608,19 @@ export default function MemberDetailsScreen() {
       <Box paddingTop={"2rem"} paddingBottom={"5rem"}>
         <CommonBox
           title={relation === "HEAD" ? "Family Members" : "Family Head"}
+          buttons={[
+            {
+              text: ` Add Family Member`,
+              backgroundColor: "white",
+              textColor: "#0777FF",
+              symbol: "+",
+              onClick: onOpen1,
+            },
+          ]}
         >
+          <SidePane isOpen={isOpen1} onClose={onClose1}>
+            <AddMemberForm isFamilyMember={true} />
+          </SidePane>
           <List
             columns={["Name", "Phone Number", "Relation Type"]}
             data={data?.data?.relatives}

@@ -3,7 +3,7 @@ import { FormControl, FormLabel } from "@chakra-ui/react";
 import { Select as Chakraselect } from "@chakra-ui/react";
 const Select0 = ({ text, register, options, field, onChange }) => {
   return (
-    <FormControl>
+    <FormControl style={{ width: "95%" }}>
       <FormLabel color={"black"}>{text}</FormLabel>
       <Chakraselect
         {...register(field)}
