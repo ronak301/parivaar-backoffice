@@ -16,12 +16,12 @@ export const SidePane = ({ heading, children, footer, isOpen, onClose }) => {
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>{heading}</DrawerHeader>
-          <DrawerBody>{children}</DrawerBody>
+          <DrawerBody style={{ overflowY: "hidden" }}>{children}</DrawerBody>
           <DrawerFooter>
             {footer}
             {/* <Button type="submit" form="my-form">
-              Save
-            </Button> */}
+                Save
+              </Button> */}
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

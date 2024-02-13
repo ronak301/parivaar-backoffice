@@ -8,7 +8,11 @@ import {
 
 const Text = ({ text, register, errors, req = "false", field }) => {
   return (
-    <FormControl isRequired={req} isInvalid={errors.text}>
+    <FormControl
+      style={{ width: "95%" }}
+      isRequired={req}
+      isInvalid={errors.text}
+    >
       <FormLabel color={"black"}>{text}</FormLabel>
       <Input
         {...register(

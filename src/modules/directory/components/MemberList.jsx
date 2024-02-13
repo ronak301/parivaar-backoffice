@@ -25,6 +25,8 @@ import List, { Row, RowCell } from "../../../components/List";
 import CommonBox from "../../../components/CommonBox";
 import MemberSearchFiltterComponent from "../MemberSearchFilterComponent";
 import { useDebounce } from "use-debounce";
+import { SidePane } from "../../../components/SidePane";
+import AddMemberForm from "./AddMemberForm.jsx";
 
 export default function MemberList() {
   const [data, setData] = React.useState([]);
@@ -38,6 +40,11 @@ export default function MemberList() {
   const communityId = id;
   const [query, setQuery] = React.useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpen1,
+    onOpen: onOpen1,
+    onClose: onClose1,
+  } = useDisclosure();
   const [overlay, setOverlay] = React.useState();
   // console.log("communityIdcommunityId", communityId);
 
@@ -91,7 +98,19 @@ export default function MemberList() {
     <CommonBox
       title={`All Family Members - ${data?.totalMembers}`}
       height="80vh"
+      buttons={[
+        {
+          text: `Add Member`,
+          backgroundColor: "white",
+          textColor: "#0777FF",
+          symbol: "+",
+          onClick: onOpen1,
+        },
+      ]}
     >
+      <SidePane isOpen={isOpen1} onClose={onClose1}>
+        <AddMemberForm />
+      </SidePane>
       <Modal isCentered isOpen={isOpen} onClose={onClose}>
         {overlay}
         <ModalContent>

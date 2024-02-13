@@ -24,16 +24,7 @@ import { searchUser } from "../../../../api/directoryApi";
 const Personal = React.forwardRef(
   ({ field, setPersonal, setPersonalSubmit }, ref) => {
     const toast = useToast();
-    const config2 = {
-      borderRadius: "3rem",
-      language: "en",
-      width: "100px",
-      height: "100px",
-      objectFit: "contain",
-      maxSize: "1",
-      hideEditBtn: true,
-      compressInitial: 1,
-    };
+
     const { communityId, memberId } = useParams();
     const [profilePicture, setProfilePicture] = useStateWithCallback(null);
 
@@ -55,6 +46,7 @@ const Personal = React.forwardRef(
 
     const uploadingImage = async (imageSrc, imagePath, data) => {
       try {
+        console.log("image is");
         console.log("image path is", imagePath);
         const imageRef = fireref(storage, imagePath);
         const options = {
@@ -76,12 +68,17 @@ const Personal = React.forwardRef(
         const downloadURL = await getDownloadURL(imageRef);
         setProfilePicture(downloadURL, (prevValue, newValue) => {
           console.log("profile picture is", newValue);
-          updateUser(memberId, {
+          const res = updateUser(memberId, {
             profilePicture: newValue,
             imagePath: imagePath,
             ...data,
           });
+          if (res) {
+            setPersonal(true);
+            setPersonalSubmit(true);
+          }
         });
+
         console.log("download url is", downloadURL);
         return downloadURL;
       } catch (error) {
@@ -92,8 +89,8 @@ const Personal = React.forwardRef(
     const onSubmit = async (data) => {
       if (isDirty || imageChange) {
         console.log("data is", data);
+        console.log("image is", imageChange);
         let phoneNumber = data?.phone;
-
         console.log("phone number is", phoneNumber);
         const res = await searchUser(phoneNumber);
         if (
@@ -133,12 +130,14 @@ const Personal = React.forwardRef(
             data.phone = null;
           }
 
-          await updateUser(memberId, {
+          const res = await updateUser(memberId, {
             ...data,
           });
+          if (res) {
+            setPersonal(true);
+            setPersonalSubmit(true);
+          }
         }
-        setPersonal(true);
-        setPersonalSubmit(true);
       } else {
         setPersonal(true);
         setPersonalSubmit(true);
