@@ -27,8 +27,11 @@ import AddressForm from "./components/Form/AddressForm";
 import { useToast } from "@chakra-ui/react";
 import AddMemberForm from "./components/AddMemberForm";
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { setSuccessReset } from "../../redux/successReducer";
 
 export default function MemberDetailsScreen() {
+  const { success } = useSelector((state) => state.success);
   const navigate = useNavigate();
   const toast = useToast();
   const { communityId, memberId } = useParams();
@@ -168,9 +171,16 @@ export default function MemberDetailsScreen() {
   ];
   const addressField = [
     {
+      field: "fullAddress",
+      text: "Full Address",
+      type: "text",
+      value: data?.data?.fullAddress?.locality || null,
+    },
+    {
       field: "locality",
       text: "Locality",
-      type: "text",
+      type: "select",
+      options: ["Udaipur"],
       value: data?.data?.address?.locality || null,
     },
     {
@@ -198,7 +208,7 @@ export default function MemberDetailsScreen() {
     { key: "Last Name", value: data?.data?.lastName || "---" },
     {
       key: "Date of Birth",
-      value: moment(data?.data?.dob).format("LL") || "---",
+      value: (data?.data?.dob && moment(data?.data?.dob).format("LL")) || "---",
     },
     { key: "Phone", value: data?.data?.phone || "---" },
     { key: "Blood Group", value: data?.data?.bloodGroup || "---" },
@@ -208,7 +218,10 @@ export default function MemberDetailsScreen() {
     { key: "Native Place", value: data?.data?.nativePlace || "---" },
     {
       key: "Wedding Date",
-      value: moment(data?.data?.weddingDate).format("LL") || "---",
+      value:
+        (data?.data?.weddingDate &&
+          moment(data?.data?.weddingDate).format("LL")) ||
+        "---",
     },
     { key: "Email", value: data?.data?.email || "---" },
     { key: "Name", value: data?.data?.business?.name || "---" },
@@ -241,26 +254,35 @@ export default function MemberDetailsScreen() {
     { key: "Full Address", value: data?.data?.address?.fullAddress || "---" },
   ];
 
-  React.useEffect(() => {
-    const fetchDeatils = async () => {
-      const response = await request(memberId);
-      if (response) {
-        setData(response.data);
-        dispatch(setUser(response.data.data));
-        const parent = response?.data?.data?.parent;
-        if (parent === null) {
-          setRelation("HEAD");
-        } else {
-          const parentId = response?.data?.data?.parent?.id;
-          const relatives = response?.data?.data?.relatives;
-          setRelation(
-            relatives.find((item) => item.id === parentId)?.relationship?.type
-          );
-        }
+  const fetchDeatils = async () => {
+    const response = await request(memberId);
+    if (response) {
+      setData(response.data);
+      dispatch(setUser(response.data.data));
+      const parent = response?.data?.data?.parent;
+      if (parent === null) {
+        setRelation("HEAD");
+      } else {
+        const parentId = response?.data?.data?.parent?.id;
+        const relatives = response?.data?.data?.relatives;
+        setRelation(
+          relatives.find((item) => item.id === parentId)?.relationship?.type
+        );
       }
-    };
+    }
+  };
+  React.useEffect(() => {
     fetchDeatils();
   }, [memberId]);
+
+  React.useEffect(() => {
+    if (success) {
+      onClose1();
+      dispatch(setSuccessReset());
+      fetchDeatils();
+    }
+  }, [success]);
+
   const [show, setShow] = useState(false);
 
   React.useEffect(() => {
@@ -275,7 +297,7 @@ export default function MemberDetailsScreen() {
         });
         setLoadingButton(false);
         onClose();
-        window.location.reload();
+        fetchDeatils();
         setPersonalSubmit(false);
         setBusinessSubmit(false);
         setAddressSubmit(false);
@@ -350,7 +372,7 @@ export default function MemberDetailsScreen() {
           }}
           isLoading={loadingButton}
           onClick={handleFormSubmit}
-          loadingText="Submitting"
+          loadingText="Updating User..."
           colorScheme="teal"
           variant="outline"
           spinnerPlacement="end"
@@ -379,6 +401,8 @@ export default function MemberDetailsScreen() {
         <Box
           style={{
             display: "flex",
+
+            width: "90%",
             justifyContent: "space-between",
           }}
         >
@@ -473,6 +497,7 @@ export default function MemberDetailsScreen() {
                 display: "flex",
                 alignItems: "flex-start",
                 justifyContent: "space-between",
+
                 paddingInline: "1rem",
                 width: "100%",
               }}
@@ -522,7 +547,13 @@ export default function MemberDetailsScreen() {
                   </Box>
                 </Box>
               )}
-              <Box style={{ display: "flex", justifyContent: "center" }}>
+              <Box
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  width: "80%",
+                }}
+              >
                 <Button size="sm" onClick={() => setShow(!show)} mt="1rem">
                   Show {show ? "Less" : "More"}
                 </Button>

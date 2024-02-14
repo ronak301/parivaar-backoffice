@@ -3,6 +3,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import authReducer from "./authReducer";
+import successReducer from "./successReducer";
 import userReducer from "./userReducer";
 
 const authPersistConfig = {
@@ -23,6 +24,7 @@ const store = configureStore({
   reducer: {
     auth: persistedAuthReducer,
     user: persistedUserReducer,
+    success: successReducer,
   },
 });
 

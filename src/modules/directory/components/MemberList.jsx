@@ -11,12 +11,14 @@ import {
   ModalOverlay,
   Text,
   useDisclosure,
+  Box,
 } from "@chakra-ui/react";
 import React, { useCallback } from "react";
 import {
   getCommunityMembersForCommunityId,
   removeFromCommunity,
 } from "../../../api/directoryApi";
+import { useDispatch } from "react-redux";
 import { camelCase, isEmpty, lowerCase } from "lodash";
 import Loading from "../../../components/Loading";
 import Nodata from "../../../components/Nodata";
@@ -26,13 +28,16 @@ import CommonBox from "../../../components/CommonBox";
 import MemberSearchFiltterComponent from "../MemberSearchFilterComponent";
 import { useDebounce } from "use-debounce";
 import { SidePane } from "../../../components/SidePane";
+import { useSelector } from "react-redux";
+import { setSuccessReset } from "../../../redux/successReducer.js";
 import AddMemberForm from "./AddMemberForm.jsx";
 
 export default function MemberList() {
   const [data, setData] = React.useState([]);
+  const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
-
+  const { success } = useSelector((state) => state.success);
   const [userToRemove, setUserToRemove] = React.useState(null);
   const [isRemovingUser, setIsRemovingUser] = React.useState(false);
   const navigate = useNavigate();
@@ -57,6 +62,13 @@ export default function MemberList() {
   const [debouncedText] = useDebounce(query?.replace(/\s/g, "").trim(), 500);
 
   const { skip, limit, ...restFilter } = filter;
+  React.useEffect(() => {
+    if (success) {
+      onClose1();
+      dispatch(setSuccessReset());
+      fetchData();
+    }
+  }, [success]);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -96,7 +108,7 @@ export default function MemberList() {
 
   return (
     <CommonBox
-      title={`All Family Members - ${data?.totalMembers}`}
+      title={`All Family Members`}
       height="80vh"
       buttons={[
         {
@@ -162,18 +174,24 @@ export default function MemberList() {
         pb={2}
         pt={2}
       >{`Showing ${data?.members?.count} members`}</Text>
-      <List
-        columns={["Name", "Business/Job", "Number", "Guardian Name", ""]}
-        data={data?.members?.rows}
-        renderRow={({ item }) => {
-          return (
-            <Row
-              onClick={() => {
-                const url = `/dashboard/community/${communityId}/member/${item?.id}`;
-                navigate(url);
-              }}
-            >
-              {/* <RowCell>
+      {data?.members?.count === 0 ? (
+        <Box style={{ height: "50vh" }}>
+          <Nodata />
+        </Box>
+      ) : (
+        <>
+          <List
+            columns={["Name", "Business/Job", "Number", "Guardian Name", ""]}
+            data={data?.members?.rows}
+            renderRow={({ item }) => {
+              return (
+                <Row
+                  onClick={() => {
+                    const url = `/dashboard/community/${communityId}/member/${item?.id}`;
+                    navigate(url);
+                  }}
+                >
+                  {/* <RowCell>
                 {item?.profilePicture ? (
                   <Image src={item?.profilePicture} w={6} h={6} rounded={999} />
                 ) : (
@@ -186,29 +204,33 @@ export default function MemberList() {
                   </Center>
                 )}
               </RowCell> */}
-              <RowCell
-                value={`${lowerCase(`${item?.firstName} ${item?.lastName}`)}`}
-              />
-              <RowCell value={`${item?.business?.name || ""}`} />
-              <RowCell value={item?.phone} />
-              <RowCell value={item?.guardianName} />
-              <RowCell>
-                <Button
-                  size={"sm"}
-                  onClick={(e) => {
-                    e?.stopPropagation();
-                    setUserToRemove(item);
-                    setOverlay(<Overlay />);
-                    onOpen();
-                  }}
-                >
-                  Remove
-                </Button>
-              </RowCell>
-            </Row>
-          );
-        }}
-      />
+                  <RowCell
+                    value={`${lowerCase(
+                      `${item?.firstName} ${item?.lastName}`
+                    )}`}
+                  />
+                  <RowCell value={`${item?.business?.name || ""}`} />
+                  <RowCell value={item?.phone} />
+                  <RowCell value={item?.guardianName} />
+                  <RowCell>
+                    <Button
+                      size={"sm"}
+                      onClick={(e) => {
+                        e?.stopPropagation();
+                        setUserToRemove(item);
+                        setOverlay(<Overlay />);
+                        onOpen();
+                      }}
+                    >
+                      Remove
+                    </Button>
+                  </RowCell>
+                </Row>
+              );
+            }}
+          />
+        </>
+      )}
     </CommonBox>
   );
 }

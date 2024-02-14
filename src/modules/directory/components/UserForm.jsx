@@ -9,15 +9,22 @@ import { IconButton, Button, Spinner } from "@chakra-ui/react";
 import { ref as fireref, uploadBytes, getDownloadURL } from "firebase/storage";
 import imageCompression from "browser-image-compression";
 import FieldForm from "./Form/FieldForm";
-import { addToCommunity, createUser } from "../../../api/directoryApi";
+import { setSuccess } from "../../../redux/successReducer";
+import { useDispatch } from "react-redux";
+import {
+  addToCommunity,
+  createBusiness,
+  createRelation,
+  createUser,
+} from "../../../api/directoryApi";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useRef } from "react";
 const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
   const [imageSrc, setImageSrc] = React.useState();
-  console.log(isFamilyMember);
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
-  console.log(user);
+  //   console.log(user);
   const { id } = useParams();
   const { communityId } = useParams();
   const uploadIconRef = useRef(null);
@@ -53,6 +60,9 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
   };
   const onSubmit = async (data) => {
     setLoading(true);
+    if (phoneNumber === "") {
+      phoneNumber = null;
+    }
 
     try {
       Object.keys(data).forEach((key) => {
@@ -71,7 +81,14 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
         phone,
         weddingDate,
         bloodGroup,
+        name,
+        description,
+        website,
+        bphone,
       } = data;
+
+      const business = { name, description, phone: bphone, website };
+
       const personal = {
         firstName,
         lastName,
@@ -83,6 +100,7 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
         weddingDate,
         bloodGroup,
       };
+
       const address = { fullAddress, pincode, city, locality, state };
 
       var profilePicture = null;
@@ -112,14 +130,21 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
         address: address,
       });
       console.log(userCre);
+
       if (userCre) {
+        await createBusiness({
+          ownerId: userCre?.data?.id,
+          ...business,
+        });
         if (isFamilyMember) {
           await addToCommunity(communityId, userCre?.data?.id);
+          await createRelation(user?.id, userCre?.data?.id, data.type);
         } else {
           await addToCommunity(id, userCre?.data?.id);
         }
 
-        toast({
+        dispatch(setSuccess());
+        await toast({
           status: "success",
           title: "Member Created",
           description: "Member Created Successfully",
@@ -144,6 +169,20 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
       text: "Last Name",
       type: "text",
       req: "true",
+    },
+    isFamilyMember && {
+      field: "type",
+      text: "Relationship Type",
+      type: "select",
+      options: [
+        "Son",
+        "Daughter",
+        "Husband",
+        "Wife",
+        "Sister",
+        "Brother",
+        "Father",
+      ],
     },
     {
       field: "dob",
@@ -226,7 +265,8 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
     {
       field: "locality",
       text: "Locality",
-      type: "text",
+      type: "select",
+      options: ["Udaipur"],
     },
     {
       field: "state",
