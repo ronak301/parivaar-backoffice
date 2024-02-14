@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Text as Head, Button } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import Phone from "../formComponents/Phone";
@@ -6,6 +6,7 @@ import UserForm from "./UserForm.jsx";
 import { searchUser } from "../../../api/directoryApi";
 import { useToast } from "@chakra-ui/react";
 import { Spinner } from "@chakra-ui/react";
+import { useSelector } from "react-redux";
 const AddMemberForm = ({ isFamilyMember = false }) => {
   const toast = useToast();
 
@@ -15,11 +16,18 @@ const AddMemberForm = ({ isFamilyMember = false }) => {
     formState: { errors, isDirty },
   } = useForm({});
   const [phoneNumber, setPhoneumber] = useState(null);
+
   const [loading, setLoading] = useState(false);
   const onSubmit = async (data) => {
     try {
       setLoading(true);
+      if (isFamilyMember && data.phone === "") {
+        setPhoneumber(data.phone);
+        setLoading(false);
+        return;
+      }
       const isExist = await searchUser(data.phone);
+
       if (isExist?.data?.data?.count > 0) {
         toast({
           title: "Error",
@@ -36,7 +44,8 @@ const AddMemberForm = ({ isFamilyMember = false }) => {
       console.log(err);
     }
   };
-  if (phoneNumber) {
+
+  if (phoneNumber !== null) {
     return (
       <UserForm phoneNumber={phoneNumber} isFamilyMember={isFamilyMember} />
     );
@@ -67,7 +76,7 @@ const AddMemberForm = ({ isFamilyMember = false }) => {
             <Phone
               text={"Phone"}
               field={"phone"}
-              req={true}
+              req={!isFamilyMember}
               errors={errors}
               register={register}
             />
