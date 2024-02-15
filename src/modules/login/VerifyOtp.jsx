@@ -113,8 +113,7 @@ const VerifyOtp = () => {
             border: "1px solid #EAEAEA",
             top: "0",
           }}
-          paddingInline={{ base: "1rem", md: "1rem", lg: "2.5rem" }}
-        >
+          paddingInline={{ base: "1rem", md: "1rem", lg: "2.5rem" }}>
           <Box
             style={{
               display: "flex",
@@ -122,8 +121,7 @@ const VerifyOtp = () => {
               alignItems: "center",
               justifyContent: "flex-start",
             }}
-            gap={{ base: "0.3rem", md: "0.3rem", lg: "0.7rem" }}
-          >
+            gap={{ base: "0.3rem", md: "0.3rem", lg: "0.7rem" }}>
             <Image
               boxSize={{ base: "40px", md: "40px", lg: "60px" }}
               objectFit="cover"
@@ -136,8 +134,7 @@ const VerifyOtp = () => {
                 color: "#0777FF",
                 fontWeight: "900",
               }}
-              fontSize={{ base: "1rem", md: "1.1rem", lg: "1.3rem" }}
-            >
+              fontSize={{ base: "1rem", md: "1.1rem", lg: "1.3rem" }}>
               Parivaar
             </Text>
           </Box>
@@ -148,13 +145,12 @@ const VerifyOtp = () => {
             width: "100%",
             display: "flex",
             justifyContent: "center",
-
-            alignItems: "center",
-          }}
-        >
+          }}>
           <Box
             style={{
-              border: "1px solid #999696",
+              marginTop: "8rem",
+              boxShadow: "0px 0px 10px 0px #d3d3d3",
+              border: "1px solid #eaeaea",
               borderRadius: "1rem",
               display: "flex",
               flexDirection: "column",
@@ -164,8 +160,7 @@ const VerifyOtp = () => {
               paddingBottom: "1.3rem",
             }}
             w={[380, 350, 550]}
-            h={[400, 380, 350]}
-          >
+            h={[400, 380, 350]}>
             <Box
               style={{
                 display: "flex",
@@ -173,15 +168,13 @@ const VerifyOtp = () => {
                 gap: "0.5rem",
                 alignItems: "center",
                 width: "100%",
-              }}
-            >
+              }}>
               <Text
                 style={{
                   color: "#0777FF",
                   fontWeight: "800",
                   fontSize: "1.2rem",
-                }}
-              >
+                }}>
                 OTP Verify
               </Text>
               <Divider color={"#EAEAEA"} width={"100%"} />
@@ -194,15 +187,13 @@ const VerifyOtp = () => {
                 paddingTop: "1rem",
                 width: "100%",
                 paddingInline: "2.2rem",
-              }}
-            >
+              }}>
               <Text
                 style={{
                   color: "black",
                   fontWeight: "600",
                 }}
-                fontSize={{ base: "1.2rem", md: "1.2rem", lg: "1.4rem" }}
-              >
+                fontSize={{ base: "1.2rem", md: "1.2rem", lg: "1.4rem" }}>
                 Welcome to Parivaar App
               </Text>
 
@@ -242,8 +233,7 @@ const VerifyOtp = () => {
                     borderRadius: "0.5rem",
                     fontSize: "1.2rem",
                     fontWeight: "bold",
-                  }}
-                >
+                  }}>
                   Verify OTP
                 </Button>
               </form>
@@ -255,8 +245,7 @@ const VerifyOtp = () => {
                   paddingTop: "0.8rem",
                   paddingBottom: "0.5rem",
                 }}
-                noOfLines={2}
-              >
+                noOfLines={2}>
                 We have sent an OTP to your registered phone number
               </Text>
             </Box>

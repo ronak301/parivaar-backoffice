@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
+import { collection, getDocs, getFirestore } from "firebase/firestore";
 
 export const firebaseconfig = {
   apiKey: "AIzaSyBgf6DC3gN85UtOvdmp2DjzlWkOtPHSByE",
@@ -12,4 +13,17 @@ export const firebaseconfig = {
   measurementId: "G-84W5B4ZN6B",
 };
 export const app = initializeApp(firebaseconfig);
+
 export const storage = getStorage(app);
+
+export const firebaseDB = getFirestore(app);
+
+export const getFirebaseAppRemoteConfig = () => {
+  return getDocs(collection(firebaseDB, "config")).then((snapshot) => {
+    const doc = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }))?.[0];
+    return doc;
+  });
+};

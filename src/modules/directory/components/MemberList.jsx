@@ -1,7 +1,5 @@
 import {
   Button,
-  Center,
-  Image,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -31,6 +29,7 @@ import { SidePane } from "../../../components/SidePane";
 import { useSelector } from "react-redux";
 import { setSuccessReset } from "../../../redux/successReducer.js";
 import AddMemberForm from "./AddMemberForm.jsx";
+import { useConfigManager } from "../../../hooks/useConfig.ts";
 
 export default function MemberList() {
   const [data, setData] = React.useState([]);
@@ -100,6 +99,8 @@ export default function MemberList() {
     />
   );
 
+  const { config } = useConfigManager();
+
   if (isEmpty(data) && loading) return <Loading />;
 
   if (isEmpty(data)) return <Nodata />;
@@ -118,8 +119,7 @@ export default function MemberList() {
           symbol: "+",
           onClick: onOpen1,
         },
-      ]}
-    >
+      ]}>
       <SidePane isOpen={isOpen1} onClose={onClose1}>
         <AddMemberForm />
       </SidePane>
@@ -156,8 +156,7 @@ export default function MemberList() {
                 } finally {
                   setIsRemovingUser(false);
                 }
-              }}
-            >
+              }}>
               Remove
             </Button>
           </ModalFooter>
@@ -172,8 +171,7 @@ export default function MemberList() {
       <Text
         mx={8}
         pb={2}
-        pt={2}
-      >{`Showing ${data?.members?.count} members`}</Text>
+        pt={2}>{`Showing ${data?.members?.count} members`}</Text>
       {data?.members?.count === 0 ? (
         <Box style={{ height: "50vh" }}>
           <Nodata />
@@ -181,7 +179,7 @@ export default function MemberList() {
       ) : (
         <>
           <List
-            columns={["Name", "Business/Job", "Number", "Guardian Name", ""]}
+            columns={["Name", "Number", "Full Address", "Locality", ""]}
             data={data?.members?.rows}
             renderRow={({ item }) => {
               return (
@@ -189,29 +187,11 @@ export default function MemberList() {
                   onClick={() => {
                     const url = `/dashboard/community/${communityId}/member/${item?.id}`;
                     navigate(url);
-                  }}
-                >
-                  {/* <RowCell>
-                {item?.profilePicture ? (
-                  <Image src={item?.profilePicture} w={6} h={6} rounded={999} />
-                ) : (
-                  <Center w={6} h={6} bg="green.300" borderRadius={999}>
-                    <Text
-                      color="white"
-                      fontSize={8}>{`${item?.firstName?.charAt(
-                      0
-                    )}${item?.lastName?.charAt(0)}`}</Text>
-                  </Center>
-                )}
-              </RowCell> */}
-                  <RowCell
-                    value={`${lowerCase(
-                      `${item?.firstName} ${item?.lastName}`
-                    )}`}
-                  />
-                  <RowCell value={`${item?.business?.name || ""}`} />
+                  }}>
+                  <RowCell value={`${item?.firstName} ${item?.lastName}`} />
                   <RowCell value={item?.phone} />
-                  <RowCell value={item?.guardianName} />
+                  <RowCell value={`${item?.address?.fullAddress || ""}`} />
+                  <RowCell value={item?.address?.locality} />
                   <RowCell>
                     <Button
                       size={"sm"}
@@ -220,8 +200,7 @@ export default function MemberList() {
                         setUserToRemove(item);
                         setOverlay(<Overlay />);
                         onOpen();
-                      }}
-                    >
+                      }}>
                       Remove
                     </Button>
                   </RowCell>

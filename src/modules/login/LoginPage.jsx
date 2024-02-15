@@ -59,12 +59,11 @@ const SubmitForm = ({ setSuccess, setLoading, setPhoneNumber, loading }) => {
           <FormControl isRequired isInvalid={errors.phoneNumber}>
             <FormLabel
               style={{ paddingBottom: "0.2rem" }}
-              fontSize={{ base: "0.85rem", md: "0.85rem", lg: "1.1rem" }}
-            >
+              fontSize={{ base: "0.85rem", md: "0.85rem", lg: "14" }}>
               Enter Phone Number
             </FormLabel>
             <InputGroup>
-              <InputLeftAddon children="+91" />
+              <InputLeftAddon fontSize={14} children="+91" />
               <Input
                 type="tel"
                 placeholder="Phone Number"
@@ -72,12 +71,12 @@ const SubmitForm = ({ setSuccess, setLoading, setPhoneNumber, loading }) => {
                   required: "Phone number is required",
                   pattern: {
                     value: /^[0-9]{10}$/,
-                    message: "Invalid Phone Number Format",
+                    message: "Please enter 10 digit phone number",
                   },
                 })}
                 style={{
                   width: "100%",
-
+                  fontSize: 14,
                   paddingInline: "1rem",
                   fontWeight: "400",
                   fontFamily: "Arial",
@@ -103,9 +102,8 @@ const SubmitForm = ({ setSuccess, setLoading, setPhoneNumber, loading }) => {
             borderRadius: "0.5rem",
             backgroundColor: "#0777FF",
             color: "white",
-          }}
-        >
-          Get Otp
+          }}>
+          Get OTP
         </Button>
       </form>
     </>
@@ -123,7 +121,7 @@ const LoginPage = () => {
     }
   }, [success, phoneNumber, navigate]);
   return (
-    <Box style={{ overflowY: "hidden", height: "95vh" }}>
+    <Box style={{ overflowY: "hidden", height: "100vh" }}>
       <Box
         style={{
           height: "9.5vh",
@@ -133,8 +131,7 @@ const LoginPage = () => {
           border: "1px solid #EAEAEA",
           top: "0",
         }}
-        paddingInline={{ base: "1rem", md: "1rem", lg: "2.5rem" }}
-      >
+        paddingInline={{ base: "1rem", md: "1rem", lg: "2.5rem" }}>
         <Box
           style={{
             display: "flex",
@@ -142,8 +139,7 @@ const LoginPage = () => {
             alignItems: "center",
             justifyContent: "flex-start",
           }}
-          gap={{ base: "0.3rem", md: "0.3rem", lg: "0.7rem" }}
-        >
+          gap={{ base: "0.3rem", md: "0.3rem", lg: "0.7rem" }}>
           <Image
             boxSize={{ base: "40px", md: "40px", lg: "60px" }}
             objectFit="cover"
@@ -156,8 +152,7 @@ const LoginPage = () => {
               color: "#0777FF",
               fontWeight: "900",
             }}
-            fontSize={{ base: "1rem", md: "1.1rem", lg: "1.3rem" }}
-          >
+            fontSize={{ base: "1rem", md: "1.1rem", lg: "1.3rem" }}>
             Parivaar
           </Text>
         </Box>
@@ -168,24 +163,21 @@ const LoginPage = () => {
           width: "100%",
           display: "flex",
           justifyContent: "center",
-
-          alignItems: "center",
-        }}
-      >
+        }}>
         <Box
           style={{
-            border: "1px solid #999696",
+            marginTop: "8rem",
+            boxShadow: "0px 0px 10px 0px #d3d3d3",
+            border: "1px solid #eaeaea",
             borderRadius: "1rem",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-
             paddingTop: "1rem",
             paddingBottom: "1.3rem",
           }}
           w={[350, 350, 550]}
-          h={[330, 330, 350]}
-        >
+          h={[330, 330, 350]}>
           <Box
             style={{
               display: "flex",
@@ -193,15 +185,13 @@ const LoginPage = () => {
               gap: "0.5rem",
               alignItems: "center",
               width: "100%",
-            }}
-          >
+            }}>
             <Text
               style={{
                 color: "#0777FF",
                 fontWeight: "800",
                 fontSize: "1.2rem",
-              }}
-            >
+              }}>
               Login
             </Text>
             <Divider color={"#EAEAEA"} width={"100%"} />
@@ -214,15 +204,13 @@ const LoginPage = () => {
               paddingTop: "1.8rem",
               width: "100%",
               paddingInline: "2.2rem",
-            }}
-          >
+            }}>
             <Text
               style={{
                 color: "black",
                 fontWeight: "600",
               }}
-              fontSize={{ base: "1.2rem", md: "1.2rem", lg: "1.4rem" }}
-            >
+              fontSize={{ base: "1.2rem", md: "1.2rem", lg: "1.4rem" }}>
               Welcome to Parivaar App
             </Text>
             <SubmitForm
