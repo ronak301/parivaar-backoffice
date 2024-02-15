@@ -14,6 +14,11 @@ import VerifyOtp from "./modules/login/VerifyOtp.jsx";
 import PrivateRoutes from "./PrivateRoutes.js";
 import { Routes, Route } from "react-router-dom";
 import Logout from "./modules/login/Logout.jsx";
+import { useLayoutEffect } from "react";
+import { Helmet } from "react-helmet";
+
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 // function App() {
 //   const router = createBrowserRouter([
@@ -59,38 +64,46 @@ import Logout from "./modules/login/Logout.jsx";
 
 //   return <RouterProvider router={router} />;
 // }
-
+const Wrap = ({ children }) => {
+  const location = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+  return children;
+};
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <Routes>
-          <Route element={<PrivateRoutes />}>
-            <Route element={<Logout />} path="/logout" />
-            <Route element={<Wrapper />} path="/">
-              <Route element={<Dashboard />} path="/dashboard" />
+        <Wrap>
+          <Routes>
+            <Route element={<PrivateRoutes />}>
+              <Route element={<Logout />} path="/logout" />
+              <Route element={<Wrapper />} path="/">
+                <Route element={<Dashboard />} path="/dashboard" />
 
-              <Route
-                element={<CommunityDetailScreen />}
-                path="/dashboard/community/:id"
-              />
-              <Route
-                element={<MemberDetailsScreen />}
-                path="/dashboard/community/:communityId/member/:memberId"
-              />
-              <Route element={<AllUsers />} path="/all-users" />
-              <Route element={<LeadsScreen />} path="/leads" />
+                <Route
+                  element={<CommunityDetailScreen />}
+                  path="/dashboard/community/:id"
+                />
+                <Route
+                  element={<MemberDetailsScreen />}
+                  path="/dashboard/community/:communityId/member/:memberId"
+                />
+                <Route element={<AllUsers />} path="/all-users" />
+                <Route element={<LeadsScreen />} path="/leads" />
+              </Route>
             </Route>
-          </Route>
-          <Route
-            element={<InviteMember />}
-            path="/community/:id/add-member/invite"
-          />
-          <Route element={<LoginPage />} path="/login" />
-          <Route element={<VerifyOtp />} path="/login/verify" />
-          <Route element={<SearchUser />} path="/search/user" />
-          <Route element={<UserDetail />} path="/search/user/:phoneNumber" />
-        </Routes>
+            <Route
+              element={<InviteMember />}
+              path="/community/:id/add-member/invite"
+            />
+            <Route element={<LoginPage />} path="/login" />
+            <Route element={<VerifyOtp />} path="/login/verify" />
+            <Route element={<SearchUser />} path="/search/user" />
+            <Route element={<UserDetail />} path="/search/user/:phoneNumber" />
+          </Routes>
+        </Wrap>
       </BrowserRouter>
     </div>
   );

@@ -7,10 +7,10 @@ import { SidePane } from "../../components/SidePane";
 import { Button, useDisclosure, Box } from "@chakra-ui/react";
 
 import { useApi } from "../../api/useApi";
-import { Spinner } from "@chakra-ui/react";
+
 import { getMemberDetails } from "../../api/directoryApi";
-import Loading from "../../components/Loading";
-import { setUser } from "../../redux/userReducer";
+
+import EditUserForm from "./components/Form/EditUserForm.jsx";
 import DetailBox from "./components/DetailBox";
 import { useRef } from "react";
 import moment from "moment";
@@ -44,25 +44,9 @@ export default function MemberDetailsScreen() {
   } = useDisclosure();
 
   const [data, setData] = useState({});
-  const businessRef = useRef(null);
-  const personalRef = useRef(null);
-  const addressRef = useRef(null);
-
-  const [personal, setPersonal] = React.useState(false);
-  const [business, setBusiness] = React.useState(false);
-  const [address, setAddress] = React.useState(false);
-  const [personalsubmit, setPersonalSubmit] = React.useState(false);
-  const [businesssubmit, setBusinessSubmit] = React.useState(false);
-  const [addresssubmit, setAddressSubmit] = React.useState(false);
-  const [loadingButton, setLoadingButton] = useState(false);
 
   const { request } = useApi(getMemberDetails);
-  const handleFormSubmit = async () => {
-    setLoadingButton(true);
-    personalRef.current?.click();
-    businessRef.current?.click();
-    addressRef.current?.click();
-  };
+
   const [relation, setRelation] = useState(null);
 
   const field = [
@@ -157,7 +141,7 @@ export default function MemberDetailsScreen() {
       value: data?.data?.business?.description || null,
     },
     {
-      field: "phone",
+      field: "bphone",
       text: "Phone",
       type: "text",
       value: data?.data?.business?.phone || null,
@@ -174,13 +158,13 @@ export default function MemberDetailsScreen() {
       field: "fullAddress",
       text: "Full Address",
       type: "text",
-      value: data?.data?.fullAddress?.locality || null,
+      value: data?.data?.address?.fullAddress || "---",
     },
     {
       field: "locality",
       text: "Locality",
       type: "select",
-      options: ["Udaipur"],
+      options: ["Udaipur", "HiranMagrisector3"],
       value: data?.data?.address?.locality || null,
     },
     {
@@ -253,132 +237,65 @@ export default function MemberDetailsScreen() {
     },
     { key: "Full Address", value: data?.data?.address?.fullAddress || "---" },
   ];
+  const [familyHead, setFamilyHead] = useState(null);
+  const [businessExist, setBusinessExist] = useState(null);
+  const [isFamilyMember, setIsFamilyMember] = useState(true);
 
   const fetchDeatils = async () => {
     const response = await request(memberId);
     if (response) {
       setData(response.data);
-      dispatch(setUser(response.data.data));
+      if (response?.data?.data?.business) {
+        setBusinessExist(response?.data?.data?.business?.id);
+      }
+      console.log("user in member screen", response.data);
+      const userId = response?.data?.data?.id;
       const parent = response?.data?.data?.parent;
       if (parent === null) {
         setRelation("HEAD");
+        setIsFamilyMember(false);
       } else {
         const parentId = response?.data?.data?.parent?.id;
-        const relatives = response?.data?.data?.relatives;
+        const respons = await request(parentId);
+        setFamilyHead(respons?.data?.data);
         setRelation(
-          relatives.find((item) => item.id === parentId)?.relationship?.type
+          respons?.data?.data?.relatives?.find((item) => item?.id === userId)
+            ?.relationship?.type
         );
       }
     }
   };
+  // better way??
   React.useEffect(() => {
     fetchDeatils();
-  }, [memberId]);
-
-  React.useEffect(() => {
     if (success) {
+      fetchDeatils();
+      onClose();
       onClose1();
       dispatch(setSuccessReset());
-      fetchDeatils();
     }
-  }, [success]);
+  }, [memberId, success]);
 
   const [show, setShow] = useState(false);
 
-  React.useEffect(() => {
-    if (personalsubmit && businesssubmit && addresssubmit) {
-      if (personal && business && address) {
-        toast({
-          title: "Updated User success",
-          description: "Successfully updated the user profile",
-          status: "success",
-          duration: 4000,
-          isClosable: true,
-        });
-        setLoadingButton(false);
-        onClose();
-        fetchDeatils();
-        setPersonalSubmit(false);
-        setBusinessSubmit(false);
-        setAddressSubmit(false);
-        setAddress(false);
-        setBusiness(false);
-        setPersonal(false);
-      } else {
-        toast({
-          title: "Updated User Error",
-          description: "There was an error updating the user profile",
-          status: "error",
-          duration: 4000,
-          isClosable: true,
-        });
-        onClose();
-        setTimeout(() => window.location.reload(), 2000);
-        setPersonalSubmit(false);
-        setBusinessSubmit(false);
-        setAddressSubmit(false);
-        setAddress(false);
-        setBusiness(false);
-        setPersonal(false);
-      }
-    }
-  }, [
-    addresssubmit,
-    businesssubmit,
-    personalsubmit,
-    address,
-    business,
-    personal,
-  ]);
-
   // if (loading) return <Loading />;
-  console.log(relation);
+
+  // scroll to top on load not working don t know why??
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  // }, [memberId]);
+  // console.log("familyHead is ", familyHead);
 
   return (
     <Base>
       <SidePane isOpen={isOpen} onClose={onClose}>
-        <Box style={{ overflowY: "scroll", height: "90%", width: "100%" }}>
-          <Personal
-            ref={personalRef}
-            field={field}
-            setPersonal={setPersonal}
-            setPersonalSubmit={setPersonalSubmit}
-          />
-          <AddressForm
-            ref={addressRef}
-            field={addressField}
-            id={data?.data?.address?.id || null}
-            setAddress={setAddress}
-            setAddressSubmit={setAddressSubmit}
-          />
-          <BusinessForm
-            setBusiness={setBusiness}
-            ref={businessRef}
-            setBusinessSubmit={setBusinessSubmit}
-            id={data?.data?.business?.id || null}
-            field={businessField}
-          />
-        </Box>
-        <Button
-          style={{
-            borderRadius: "1rem",
-            border: "1px solid #0777FF",
-            backgroundColor: "#0777FF",
-            width: "100%",
-            p: "1rem",
-            marginTop: "2.5rem",
-            position: "sticky",
-            color: "white",
-          }}
-          isLoading={loadingButton}
-          onClick={handleFormSubmit}
-          loadingText="Updating User..."
-          colorScheme="teal"
-          variant="outline"
-          spinnerPlacement="end"
-        >
-          Submit
-        </Button>
+        <EditUserForm
+          field={field}
+          businessField={businessField}
+          isFamilyMember={isFamilyMember}
+          addressField={addressField}
+          businessExist={businessExist}
+        />
       </SidePane>
       <CommonBox
         title={
@@ -401,7 +318,6 @@ export default function MemberDetailsScreen() {
         <Box
           style={{
             display: "flex",
-
             width: "90%",
             justifyContent: "space-between",
           }}
@@ -409,12 +325,14 @@ export default function MemberDetailsScreen() {
           <Box
             style={{
               display: "flex",
-              flexDirection: "column",
 
+              height: show ? "100%" : "35rem",
+              flexDirection: "column",
+              overflowY: "hidden",
               padding: "1rem",
               alignItems: "flex-start",
               overflowX: "hidden",
-              height: "40rem",
+
               borderRadius: "10px",
               width: "100%",
             }}
@@ -513,125 +431,130 @@ export default function MemberDetailsScreen() {
                 properties={["Last Name", "Phone"]}
               />
             </Box>
-            <Box
-              style={{
-                width: "100%",
-                marginInline: "auto",
-                marginTop: "1rem",
-              }}
-            >
-              {show && (
+            {show && (
+              <>
                 <Box
                   style={{
                     width: "100%",
+                    marginInline: "auto",
+                    marginTop: "1rem",
+                  }}
+                >
+                  <Box
+                    style={{
+                      width: "100%",
 
+                      display: "flex",
+                      alignItems: "center",
+                      padding: "1rem",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Box>
+                      <DetailBox
+                        item={details}
+                        style={{}}
+                        properties={["Guardian Name", "Gender", "Education"]}
+                      />
+                    </Box>
+                    <Box>
+                      <DetailBox
+                        item={details}
+                        s
+                        properties={["Native Place", "Wedding Date", "Email"]}
+                      />
+                    </Box>
+                  </Box>
+                </Box>
+
+                <Divider
+                  orientation="horizontal"
+                  style={{
+                    color: "#EAEAEA",
+                    paddingTop: "1rem",
+                    paddingBottom: "1rem",
+                  }}
+                />
+
+                <Text
+                  style={{
+                    fontSize: "1.2rem",
+                    fontWeight: "600",
+                    paddingInline: "1rem",
+                    paddingTop: "1rem",
+                  }}
+                >
+                  Address Information
+                </Text>
+                <Box
+                  style={{
                     display: "flex",
-                    alignItems: "center",
-                    padding: "1rem",
+                    alignItems: "flex-start",
+                    paddingInline: "1rem",
+                    width: "100%",
                     justifyContent: "space-between",
                   }}
                 >
-                  <Box>
-                    <DetailBox
-                      item={details}
-                      style={{}}
-                      properties={["Guardian Name", "Gender", "Education"]}
-                    />
-                  </Box>
-                  <Box>
-                    <DetailBox
-                      item={details}
-                      s
-                      properties={["Native Place", "Wedding Date", "Email"]}
-                    />
-                  </Box>
+                  <DetailBox
+                    item={details}
+                    properties={["Pincode", "City", "Full Address"]}
+                  />
+                  <DetailBox
+                    item={details}
+                    properties={["Locality", "State"]}
+                  />
                 </Box>
-              )}
-              <Box
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  width: "80%",
-                }}
-              >
-                <Button size="sm" onClick={() => setShow(!show)} mt="1rem">
-                  Show {show ? "Less" : "More"}
-                </Button>
-              </Box>
-            </Box>
+                <Divider
+                  orientation="horizontal"
+                  style={{
+                    color: "#EAEAEA",
+                    paddingTop: "1rem",
+                    paddingBottom: "1rem",
+                  }}
+                />
+                <Text
+                  style={{
+                    fontSize: "1.2rem",
+                    fontWeight: "600",
+                    paddingInline: "1rem",
+                    paddingTop: "1rem",
+                  }}
+                >
+                  Business Information
+                </Text>
+                <Box
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    width: "100%",
+                    justifyContent: "space-between",
 
-            <Divider
-              orientation="horizontal"
-              style={{
-                color: "#EAEAEA",
-                paddingTop: "1rem",
-                paddingBottom: "1rem",
-              }}
-            />
-
-            <Text
-              style={{
-                fontSize: "1.2rem",
-                fontWeight: "600",
-                paddingInline: "1rem",
-                paddingTop: "1rem",
-              }}
-            >
-              Address Information
-            </Text>
+                    paddingInline: "1rem",
+                  }}
+                >
+                  <DetailBox
+                    item={details}
+                    style={{}}
+                    properties={["Name", "Website"]}
+                  />
+                  <DetailBox
+                    item={details}
+                    style={{}}
+                    properties={["Business Phone", "Description"]}
+                  />
+                </Box>
+              </>
+            )}
             <Box
               style={{
                 display: "flex",
-                alignItems: "flex-start",
-                paddingInline: "1rem",
-                width: "100%",
-                justifyContent: "space-between",
+                justifyContent: "center",
+                width: "80%",
               }}
             >
-              <DetailBox
-                item={details}
-                properties={["Pincode", "City", "Full Address"]}
-              />
-              <DetailBox item={details} properties={["Locality", "State"]} />
-            </Box>
-            <Divider
-              orientation="horizontal"
-              style={{
-                color: "#EAEAEA",
-                paddingTop: "1rem",
-                paddingBottom: "1rem",
-              }}
-            />
-            <Text
-              style={{
-                fontSize: "1.2rem",
-                fontWeight: "600",
-                paddingInline: "1rem",
-                paddingTop: "1rem",
-              }}
-            >
-              Business Information
-            </Text>
-            <Box
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                width: "100%",
-                justifyContent: "space-between",
-
-                paddingInline: "1rem",
-              }}
-            >
-              <DetailBox
-                item={details}
-                style={{}}
-                properties={["Name", "Website"]}
-              />
-              <DetailBox
-                item={details}
-                style={{}}
-                properties={["Business Phone", "Description"]}
-              />
+              <Button size="sm" onClick={() => setShow(!show)} mt="1rem">
+                Show {show ? "Less" : "More"}
+              </Button>
             </Box>
           </Box>
         </Box>
@@ -652,24 +575,50 @@ export default function MemberDetailsScreen() {
           <SidePane isOpen={isOpen1} onClose={onClose1}>
             <AddMemberForm isFamilyMember={true} />
           </SidePane>
-          <List
-            columns={["Name", "Phone Number", "Relation Type"]}
-            data={data?.data?.relatives}
-            renderRow={({ item }) => {
-              return (
-                <Row
-                  onClick={() => {
-                    const url = `/dashboard/community/${communityId}/member/${item?.id}`;
-                    navigate(url);
-                  }}
-                >
-                  <RowCell value={item?.firstName + "" + item?.lastName} />
-                  <RowCell value={item?.phone} />
-                  <RowCell value={item?.relationship?.type} />
-                </Row>
-              );
-            }}
-          />
+          {relation !== "HEAD" ? (
+            <>
+              <List
+                columns={["Name", "Phone Number", "Relation Type"]}
+                data={[familyHead]}
+                renderRow={({ item }) => {
+                  return (
+                    <Row
+                      onClick={() => {
+                        const url = `/dashboard/community/${communityId}/member/${item?.id}`;
+
+                        navigate(url);
+                      }}
+                    >
+                      <RowCell value={item?.firstName + "" + item?.lastName} />
+                      <RowCell value={item?.phone} />
+                      <RowCell value={"Family Head"} />
+                    </Row>
+                  );
+                }}
+              />
+            </>
+          ) : (
+            <>
+              <List
+                columns={["Name", "Phone Number", "Relation Type"]}
+                data={data?.data?.relatives}
+                renderRow={({ item }) => {
+                  return (
+                    <Row
+                      onClick={() => {
+                        const url = `/dashboard/community/${communityId}/member/${item?.id}`;
+                        navigate(url);
+                      }}
+                    >
+                      <RowCell value={item?.firstName + "" + item?.lastName} />
+                      <RowCell value={item?.phone} />
+                      <RowCell value={item?.relationship?.type} />
+                    </Row>
+                  );
+                }}
+              />
+            </>
+          )}
         </CommonBox>
       </Box>
     </Base>

@@ -35,9 +35,8 @@ const VerifyOtp = () => {
   console.log("otp is", otp);
   const [showAlert, setShowAlert] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     setLoading(true);
     if (isOtpValid) {
       setShowAlert(false);
@@ -60,7 +59,7 @@ const VerifyOtp = () => {
           });
         }
       };
-      verify();
+      await verify();
       setLoading(false);
     } else {
       toast({
