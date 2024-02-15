@@ -271,6 +271,7 @@ export default function MemberDetailsScreen() {
     if (success) {
       fetchDeatils();
       onClose();
+      onClose1();
       dispatch(setSuccessReset());
     }
   }, [memberId, success]);
