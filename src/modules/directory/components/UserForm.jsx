@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useToast } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import addimg from "../../../api/836.jpg";
@@ -16,6 +16,8 @@ import {
   createBusiness,
   createRelation,
   createUser,
+  getMemberDetails,
+  searchUser,
 } from "../../../api/directoryApi";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -23,10 +25,21 @@ import { useRef } from "react";
 const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
   const [imageSrc, setImageSrc] = React.useState();
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.user);
+  const [user, setUser] = useState(null);
+
   //   console.log(user);
   const { id } = useParams();
-  const { communityId } = useParams();
+  // id in case of member
+  const { communityId, memberId } = useParams();
+  // this in case of family member
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const response = await getMemberDetails(memberId);
+      setUser(response?.data?.data);
+    };
+    fetchUser();
+  }, [memberId]);
   const uploadIconRef = useRef(null);
   const toast = useToast();
   const {
@@ -110,11 +123,9 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
         const { downloadURL, imagePath } = await uploadImage(imageSrc);
         profilePicture = downloadURL;
         imagePat = imagePath;
-        console.log("inside image upload", profilePicture, imagePath);
       }
       var parentNode = null;
       var root = user?.root?.id;
-      console.log(user?.id);
 
       if (isFamilyMember) {
         parentNode = user?.id;
@@ -129,7 +140,6 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
         rootNode: root,
         address: address,
       });
-      console.log(userCre);
 
       if (userCre) {
         await createBusiness({
@@ -146,8 +156,10 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
         dispatch(setSuccess());
         await toast({
           status: "success",
-          title: "Member Created",
-          description: "Member Created Successfully",
+          title: `${isFamilyMember ? "Family" : ""} Member Created`,
+          description: ` ${
+            isFamilyMember ? "Family" : ""
+          }Member Created Successfully`,
           duration: 4000,
           isClosable: true,
         });
@@ -317,7 +329,7 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
             paddingBottom: "0.25rem",
           }}
         >
-          Add Member
+          {!isFamilyMember ? "Add Member" : "Add Family Member"}
         </Head>
       </Box>
       <form
@@ -451,7 +463,7 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
             isLoading={loading}
             spinner={<Spinner size="md" />}
           >
-            + Add Member
+            {isFamilyMember ? "+ Add Family Member" : "+ Add Member"}
           </Button>
         </Box>
       </form>
