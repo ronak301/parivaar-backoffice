@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import addimg from "../../../api/836.jpg";
 import { storage } from "../../../api/firebase/firebase";
 import { Box, Text as Head, Input, FormLabel, Image } from "@chakra-ui/react";
-import { AiOutlineUpload, AiOutlineClose } from "react-icons/ai";
+
 import { IconButton, Button, Spinner } from "@chakra-ui/react";
 import { ref as fireref, uploadBytes, getDownloadURL } from "firebase/storage";
 import imageCompression from "browser-image-compression";
@@ -17,12 +17,13 @@ import {
   createRelation,
   createUser,
   getMemberDetails,
-  searchUser,
 } from "../../../api/directoryApi";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { useRef } from "react";
+
+import UploadImage from "./Form/UploadImage";
+import { useConfigManager } from "../../../hooks/useConfig.ts";
 const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
+  const { config } = useConfigManager();
   const [imageSrc, setImageSrc] = React.useState();
   const dispatch = useDispatch();
   const [user, setUser] = useState(null);
@@ -37,10 +38,13 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
     const fetchUser = async () => {
       const response = await getMemberDetails(memberId);
       setUser(response?.data?.data);
+      console.log("in ftech user");
     };
-    fetchUser();
+    if (memberId) {
+      fetchUser();
+    }
   }, [memberId]);
-  const uploadIconRef = useRef(null);
+
   const toast = useToast();
   const {
     register,
@@ -95,6 +99,7 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
         weddingDate,
         bloodGroup,
         name,
+        guardianName,
         description,
         website,
         bphone,
@@ -111,6 +116,7 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
         nativePlace,
         phone,
         weddingDate,
+        guardianName,
         bloodGroup,
       };
 
@@ -154,7 +160,7 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
         }
 
         dispatch(setSuccess());
-        await toast({
+        toast({
           status: "success",
           title: `${isFamilyMember ? "Family" : ""} Member Created`,
           description: ` ${
@@ -186,15 +192,8 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
       field: "type",
       text: "Relationship Type",
       type: "select",
-      options: [
-        "Son",
-        "Daughter",
-        "Husband",
-        "Wife",
-        "Sister",
-        "Brother",
-        "Father",
-      ],
+      options: config?.FamilyMemberRelationshipTypes,
+      required: true,
     },
     {
       field: "dob",
@@ -217,8 +216,8 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
       field: "gender",
       text: "Gender",
       type: "select",
-
-      options: ["Male", "Female", "Other"],
+      required: true,
+      options: config?.Gender,
     },
     {
       field: "weddingDate",
@@ -234,8 +233,8 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
       field: "bloodGroup",
       text: "Blood Group",
       type: "select",
-
-      options: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+      required: true,
+      options: config?.BloodGroups,
     },
     {
       field: "profile_picture",
@@ -278,45 +277,31 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
       field: "locality",
       text: "Locality",
       type: "select",
-      options: ["Udaipur"],
+      required: true,
+      options: config?.Localities,
     },
     {
       field: "state",
       text: "State",
-      type: "text",
+      type: "select",
+      required: true,
+      options: config?.State,
     },
     {
       field: "city",
       text: "City",
-      type: "text",
+      type: "select",
+      required: true,
+      options: config?.Cities,
     },
     {
       field: "pincode",
       text: "Pincode",
-      type: "text",
+      type: "pincode",
     },
   ];
   const [imageChange, setImageChange] = useState(false);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setImageChange(true);
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const imageData = reader.result;
-        setImageSrc(imageData);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-  const handleRemoveImage = () => {
-    setImageChange(true);
-    setImageSrc(null);
-  };
-  const handleUploadClick = () => {
-    uploadIconRef.current.click();
-  };
   const [loading, setLoading] = useState(false);
 
   return (
@@ -342,89 +327,14 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
           flexDirection: "column",
         }}
       >
-        <Box style={{ overflowY: "scroll" }}>
-          <Box
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              paddingBottom: "1.2rem",
-            }}
-          >
-            <FormLabel color={"black"}>Profile Picture</FormLabel>
-            <Box
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "1rem",
-              }}
-            >
-              {
-                <Box
-                  position="relative"
-                  width="100px"
-                  height="100px"
-                  marginBottom={"1rem"}
-                  padding={"0.5rem"}
-                >
-                  {imageSrc ? (
-                    <Image
-                      boxSize="100%"
-                      borderRadius="50%"
-                      objectFit="cover"
-                      src={imageSrc}
-                      onClick={handleUploadClick}
-                      marginBottom={"0.5rem"}
-                    />
-                  ) : (
-                    <Image
-                      boxSize="100%"
-                      objectFit="cover"
-                      src={addimg}
-                      onClick={handleUploadClick}
-                      marginBottom={"0.5rem"}
-                    />
-                  )}
-                  <Box
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      gap: "2rem",
-                      marginBottom: "1rem",
-                    }}
-                  >
-                    <IconButton
-                      icon={<AiOutlineClose />}
-                      aria-label="Remove Image"
-                      onClick={handleRemoveImage}
-                      size="sm"
-                      colorScheme="red"
-                      variant="ghost"
-                    />
-                    <IconButton
-                      icon={<AiOutlineUpload />}
-                      aria-label="Upload Image"
-                      size="sm"
-                      variant="ghost"
-                      onClick={handleUploadClick}
-                    />
-                  </Box>
-                </Box>
-              }
-              <Input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                ref={uploadIconRef}
-                height="0%"
-                width="0%"
-                position="absolute"
-                opacity="0"
-                aria-hidden="true"
-              />
-            </Box>
-          </Box>
+        <Box style={{ overflowY: "scroll", paddingTop: "1rem" }}>
+          <UploadImage
+            setImageChange={setImageChange}
+            setImageSrc={setImageSrc}
+            imageSrc={imageSrc}
+            imageChange={imageChange}
+          />
           <FieldForm field={field} register={register} errors={errors} />
-
           <FieldForm
             field={addressField}
             register={register}

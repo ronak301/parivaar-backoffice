@@ -84,7 +84,7 @@ export default function CommonBox({
         </Box>
 
         {buttons && (
-          <Box style={{ display: "flex" }}>
+          <Box style={{ display: "flex", gap: "1rem" }}>
             {buttons.map((button, index) => (
               <Button
                 onClick={button.onClick || ""}

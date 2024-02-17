@@ -1,25 +1,47 @@
 import React from "react";
-import { FormControl, FormLabel } from "@chakra-ui/react";
+import { FormControl, FormLabel, FormErrorMessage } from "@chakra-ui/react";
 import { Select as Chakraselect } from "@chakra-ui/react";
-const Select0 = ({ text, register, options, field, onChange }) => {
+import { mappedValue } from "../../../utils/mappLogic";
+const Select0 = ({
+  text,
+  register,
+  options,
+  field,
+  errors,
+  dvalue,
+  required,
+}) => {
+  dvalue = mappedValue(options, dvalue);
+
   return (
-    <FormControl style={{ width: "95%" }}>
+    <FormControl
+      style={{ width: "95%" }}
+      isInvalid={errors[field]}
+      isRequired={required}
+    >
       <FormLabel color={"black"}>{text}</FormLabel>
       <Chakraselect
-        {...register(field)}
+        {...register(field, { required: required && `${text} is required` })}
+        // placeholder={dvalue}
         width={"100%"}
-        p={2}
         borderRadius={"0.375rem"}
         backgroundColor={"#F5F7F9"}
         border={"0.6px solid #F0F0F0"}
-        onChange={onChange}
       >
+        {dvalue && (
+          <option value={dvalue} disabled hidden>
+            {dvalue}
+          </option>
+        )}
         {options?.map((option, key) => (
-          <option key={key} value={option}>
-            {option}
+          <option key={key} value={option.id}>
+            {option.label}
           </option>
         ))}
       </Chakraselect>
+      <FormErrorMessage>
+        {errors[field] && errors[field].message}
+      </FormErrorMessage>
     </FormControl>
   );
 };
