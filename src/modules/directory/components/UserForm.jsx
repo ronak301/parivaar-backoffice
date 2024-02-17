@@ -183,6 +183,11 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
       req: "true",
     },
     {
+      field: "email",
+      text: "Email",
+      type: "mail",
+    },
+    {
       field: "lastName",
       text: "Last Name",
       type: "text",
