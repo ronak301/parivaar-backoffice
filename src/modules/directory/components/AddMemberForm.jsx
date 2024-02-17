@@ -82,7 +82,7 @@ const AddMemberForm = ({ isFamilyMember = false }) => {
           });
           dispatch(setSuccess());
         }
-        setPhoneNumber(data.phone);
+        setPhoneNumber(data?.phone);
         setLoading(false);
         return;
       }

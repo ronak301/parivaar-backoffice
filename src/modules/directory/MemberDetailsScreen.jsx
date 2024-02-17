@@ -37,7 +37,7 @@ export default function MemberDetailsScreen() {
   const { success } = useSelector((state) => state.success);
   const navigate = useNavigate();
   const toast = useToast();
-  const [isFamilyMember, setIsFamilyMember] = useState(true);
+
   const [loading, setLoading] = useState(false);
   const { communityId, memberId } = useParams();
   const { config } = useConfigManager();
@@ -52,8 +52,6 @@ export default function MemberDetailsScreen() {
   } = useDisclosure();
 
   const [data, setData] = useState({});
-
-  const [relation, setRelation] = useState("Family Member");
 
   const field = [
     {
@@ -87,7 +85,7 @@ export default function MemberDetailsScreen() {
       field: "phone",
       text: "Phone",
       type: "phone",
-      req: !isFamilyMember ? true : false,
+      req: data?.data?.parent === null ? true : false,
       value: data?.data?.phone || null,
     },
     {
@@ -273,8 +271,6 @@ export default function MemberDetailsScreen() {
     },
     { key: "Full Address", value: data?.data?.address?.fullAddress || "---" },
   ];
-  const [familyHead, setFamilyHead] = useState(null);
-  const [businessExist, setBusinessExist] = useState(null);
 
   const fetchDeatils = async () => {
     const response = await getMemberDetails(memberId);
@@ -286,20 +282,6 @@ export default function MemberDetailsScreen() {
       setLoading(true);
       fetchDeatils().then((res) => {
         setData(res.data);
-        if (res?.data?.data?.business) {
-          setBusinessExist(res?.data?.data?.business?.id);
-        }
-        const userId = res?.data?.data?.id;
-        const parent = res?.data?.data?.parent;
-        if (parent === null) {
-          setRelation("HEAD");
-          console.log("relation is", relation);
-          console.log("relation is", relation);
-          setIsFamilyMember(false);
-        } else {
-          setFamilyHead(res?.data?.data?.root);
-          setIsFamilyMember(true);
-        }
         setLoading(false);
       });
     }
@@ -310,25 +292,11 @@ export default function MemberDetailsScreen() {
       setLoading(true);
       fetchDeatils().then((res) => {
         setData(res.data);
-        if (res?.data?.data?.business) {
-          setBusinessExist(res?.data?.data?.business?.id);
-        }
-        const userId = res?.data?.data?.id;
-        const parent = res?.data?.data?.parent;
-
-        if (res && parent === null) {
-          setRelation("HEAD");
-          console.log("relation is", relation);
-          console.log("relation is", relation);
-          setIsFamilyMember(false);
-        } else {
-          setFamilyHead(res?.data?.data?.root);
-        }
+        setLoading(false);
       });
       onClose();
       onClose1();
       dispatch(setSuccessReset());
-      setLoading(false);
     }
   }, [success]);
 
@@ -346,10 +314,10 @@ export default function MemberDetailsScreen() {
         <EditUserForm
           field={field}
           businessField={businessField}
-          isFamilyMember={isFamilyMember}
+          isFamilyMember={data?.data?.parent === null ? false : true}
           addressId={data?.data?.address?.id}
           addressField={addressField}
-          businessExist={businessExist}
+          businessExist={data?.data?.business?.id}
         />
       </SidePane>
       <CommonBox
@@ -584,16 +552,16 @@ export default function MemberDetailsScreen() {
       </CommonBox>
       <Box paddingTop={"2rem"} paddingBottom={"5rem"}>
         <CommonBox
-          title={relation === "HEAD" ? "Family Members" : "Family Head"}
+          title={data?.data?.parent !== null ? "FAMILY HEAD" : "FAMILY MEMBER"}
         >
           <SidePane isOpen={isOpen1} onClose={onClose1}>
             <AddMemberForm isFamilyMember={true} />
           </SidePane>
-          {relation !== "HEAD" ? (
+          {data?.data?.parent !== null ? (
             <>
               <List
                 columns={["Name", "Phone Number", "Relation Type"]}
-                data={[familyHead]}
+                data={[data?.data?.parent]}
                 renderRow={({ item }) => {
                   return (
                     <Row
