@@ -4,6 +4,8 @@ import Text from "../../formComponents/Text";
 import Phone from "../../formComponents/Phone";
 import Select0 from "../../formComponents/Select0";
 import DateInput from "../../formComponents/Date";
+import Pincode from "../../formComponents/Pincode";
+import Email from "../../formComponents/Mail";
 
 const FieldForm = ({ field, register, errors, header }) => {
   return (
@@ -15,7 +17,12 @@ const FieldForm = ({ field, register, errors, header }) => {
       }}
     >
       {header && (
-        <Box width={"95%"} marginInline={"auto"}>
+        <Box
+          width={"95%"}
+          marginInline={"auto"}
+          paddingBottom={"0.5rem"}
+          paddingTop={"0.5rem"}
+        >
           <Head
             style={{
               fontSize: "1.25rem",
@@ -28,7 +35,7 @@ const FieldForm = ({ field, register, errors, header }) => {
         </Box>
       )}
       {field?.map((item, index) => (
-        <>
+        <Box>
           <Box
             style={{
               padding: "0.11rem",
@@ -46,6 +53,7 @@ const FieldForm = ({ field, register, errors, header }) => {
               />
             )}
           </Box>
+
           <Box
             style={{
               padding: "0.11rem",
@@ -55,6 +63,40 @@ const FieldForm = ({ field, register, errors, header }) => {
           >
             {item.type === "phone" && (
               <Phone
+                text={item.text}
+                field={item.field}
+                req={item.req}
+                errors={errors}
+                register={register}
+              />
+            )}
+          </Box>
+          <Box
+            style={{
+              padding: "0.11rem",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            {item.type === "mail" && (
+              <Email
+                text={item.text}
+                field={item.field}
+                req={item.req}
+                errors={errors}
+                register={register}
+              />
+            )}
+          </Box>
+          <Box
+            style={{
+              padding: "0.11rem",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            {item.type === "pincode" && (
+              <Pincode
                 text={item.text}
                 field={item.field}
                 req={item.req}
@@ -88,13 +130,16 @@ const FieldForm = ({ field, register, errors, header }) => {
             {item.type === "select" && (
               <Select0
                 register={register}
+                errors={errors}
+                required={item.required}
                 field={item.field}
+                dvalue={item.value}
                 text={item.text}
                 options={item.options}
               />
             )}
           </Box>
-        </>
+        </Box>
       ))}
     </Box>
   );

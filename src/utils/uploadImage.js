@@ -32,8 +32,9 @@ export const uniquePhone = async (phoneNumber, isFamilyMember) => {
   if (isFamilyMember && phoneNumber === null) {
     return true;
   }
-
+  console.log(phoneNumber);
   const res = await searchUser(phoneNumber);
+  console.log(res);
   if (res?.data?.data?.count > 0) {
     return false;
   } else {

@@ -1,17 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import CommonBox from "../../components/CommonBox";
 import Base from "../../components/Base";
 import Personal from "./components/Form/Personal";
 import { SidePane } from "../../components/SidePane";
 import { Button, useDisclosure, Box } from "@chakra-ui/react";
-
-import { useApi } from "../../api/useApi";
+import { Link } from "react-router-dom";
 
 import { getMemberDetails } from "../../api/directoryApi";
-
 import EditUserForm from "./components/Form/EditUserForm.jsx";
 import DetailBox from "./components/DetailBox";
+import Loading from "../../components/Loading";
+import { filtercommunityRelatives } from "../../utils/filtercommunityRelatives.js";
 import { useRef } from "react";
 import moment from "moment";
 
@@ -28,13 +28,21 @@ import { useToast } from "@chakra-ui/react";
 import AddMemberForm from "./components/AddMemberForm";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { useConfigManager } from "../../hooks/useConfig.ts";
 import { setSuccessReset } from "../../redux/successReducer";
+import { mappedValue } from "../../utils/mappLogic.js";
+import { weburl } from "../../utils/websiteurl.js";
 
 export default function MemberDetailsScreen() {
   const { success } = useSelector((state) => state.success);
   const navigate = useNavigate();
   const toast = useToast();
+  const [isFamilyMember, setIsFamilyMember] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { communityId, memberId } = useParams();
+  const { config } = useConfigManager();
+  console.log("config", config);
+
   const dispatch = useDispatch();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const {
@@ -45,9 +53,7 @@ export default function MemberDetailsScreen() {
 
   const [data, setData] = useState({});
 
-  const { request } = useApi(getMemberDetails);
-
-  const [relation, setRelation] = useState(null);
+  const [relation, setRelation] = useState("Family Member");
 
   const field = [
     {
@@ -64,6 +70,13 @@ export default function MemberDetailsScreen() {
       req: "true",
       value: data?.data?.lastName || null,
     },
+
+    {
+      field: "email",
+      text: "Email",
+      type: "mail",
+      value: data?.data?.email || null,
+    },
     {
       field: "dob",
       text: "Date of Birth",
@@ -74,7 +87,7 @@ export default function MemberDetailsScreen() {
       field: "phone",
       text: "Phone",
       type: "phone",
-      req: relation === "HEAD" ? true : false,
+      req: !isFamilyMember ? true : false,
       value: data?.data?.phone || null,
     },
     {
@@ -95,7 +108,7 @@ export default function MemberDetailsScreen() {
       text: "Gender",
       type: "select",
       value: data?.data?.gender || null,
-      options: ["Male", "Female", "Other"],
+      options: config?.Gender,
     },
     {
       field: "weddingDate",
@@ -114,7 +127,7 @@ export default function MemberDetailsScreen() {
       text: "Blood Group",
       type: "select",
       value: data?.data?.bloodGroup || null,
-      options: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+      options: config?.BloodGroups,
     },
     {
       field: "profile_picture",
@@ -158,31 +171,33 @@ export default function MemberDetailsScreen() {
       field: "fullAddress",
       text: "Full Address",
       type: "text",
-      value: data?.data?.address?.fullAddress || "---",
+      value: data?.data?.address?.fullAddress || null,
     },
     {
       field: "locality",
       text: "Locality",
       type: "select",
-      options: ["Udaipur", "HiranMagrisector3"],
+      options: config?.Localities,
       value: data?.data?.address?.locality || null,
     },
     {
       field: "state",
       text: "State",
-      type: "text",
+      type: "select",
+      options: config?.State,
       value: data?.data?.address?.state || null,
     },
     {
       field: "city",
       text: "City",
-      type: "text",
+      type: "select",
+      options: config?.Cities,
       value: data?.data?.address?.city || null,
     },
     {
       field: "pincode",
       text: "Pincode",
-      type: "text",
+      type: "pincode",
       value: data?.data?.address?.pincode || null,
     },
   ];
@@ -195,9 +210,15 @@ export default function MemberDetailsScreen() {
       value: (data?.data?.dob && moment(data?.data?.dob).format("LL")) || "---",
     },
     { key: "Phone", value: data?.data?.phone || "---" },
-    { key: "Blood Group", value: data?.data?.bloodGroup || "---" },
+    {
+      key: "Blood Group",
+      value: mappedValue(config?.BloodGroups, data?.data?.bloodGroup) || "---",
+    },
     { key: "Guardian Name", value: data?.data?.guardianName || "---" },
-    { key: "Gender", value: data?.data?.gender || "---" },
+    {
+      key: "Gender",
+      value: mappedValue(config?.Gender, data?.data?.gender) || "---",
+    },
     { key: "Education", value: data?.data?.education || "---" },
     { key: "Native Place", value: data?.data?.nativePlace || "---" },
     {
@@ -212,20 +233,22 @@ export default function MemberDetailsScreen() {
     { key: "Description", value: data?.data?.business?.description || "---" },
     {
       key: "Pincode",
+
       value: data?.data?.address?.pincode || "---",
     },
 
     {
       key: "City",
-      value: data?.data?.address?.city || "---",
+      value: mappedValue(config?.Cities, data?.data?.address?.city) || "---",
     },
     {
       key: "Locality",
-      value: data?.data?.address?.locality || "---",
+      value:
+        mappedValue(config?.Localities, data?.data?.address?.locality) || "---",
     },
     {
       key: "State",
-      value: data?.data?.address?.state || "---",
+      value: mappedValue(config?.State, data?.data?.address?.state) || "---",
     },
     {
       key: "Business Phone",
@@ -233,59 +256,90 @@ export default function MemberDetailsScreen() {
     },
     {
       key: "Website",
-      value: data?.data?.business?.website || "---",
+      value: data?.data?.business?.website ? (
+        <Link
+          to={weburl(data?.data?.business?.website)}
+          style={{
+            textDecoration: "none",
+            color: "blue",
+          }}
+          target="_blank"
+        >
+          {data?.data?.business?.website}
+        </Link>
+      ) : (
+        "---"
+      ),
     },
     { key: "Full Address", value: data?.data?.address?.fullAddress || "---" },
   ];
   const [familyHead, setFamilyHead] = useState(null);
   const [businessExist, setBusinessExist] = useState(null);
-  const [isFamilyMember, setIsFamilyMember] = useState(true);
 
   const fetchDeatils = async () => {
-    const response = await request(memberId);
-    if (response) {
-      setData(response.data);
-      if (response?.data?.data?.business) {
-        setBusinessExist(response?.data?.data?.business?.id);
-      }
-      console.log("user in member screen", response.data);
-      const userId = response?.data?.data?.id;
-      const parent = response?.data?.data?.parent;
-      if (parent === null) {
-        setRelation("HEAD");
-        setIsFamilyMember(false);
-      } else {
-        const parentId = response?.data?.data?.parent?.id;
-        const respons = await request(parentId);
-        setFamilyHead(respons?.data?.data);
-        setRelation(
-          respons?.data?.data?.relatives?.find((item) => item?.id === userId)
-            ?.relationship?.type
-        );
-      }
-    }
+    const response = await getMemberDetails(memberId);
+    return response;
   };
   // better way??
   React.useEffect(() => {
-    fetchDeatils();
+    if (memberId !== undefined && memberId !== null) {
+      setLoading(true);
+      fetchDeatils().then((res) => {
+        setData(res.data);
+        if (res?.data?.data?.business) {
+          setBusinessExist(res?.data?.data?.business?.id);
+        }
+        const userId = res?.data?.data?.id;
+        const parent = res?.data?.data?.parent;
+        if (parent === null) {
+          setRelation("HEAD");
+          console.log("relation is", relation);
+          console.log("relation is", relation);
+          setIsFamilyMember(false);
+        } else {
+          setFamilyHead(res?.data?.data?.root);
+          setIsFamilyMember(true);
+        }
+        setLoading(false);
+      });
+    }
+  }, [memberId]);
+
+  React.useEffect(() => {
     if (success) {
-      fetchDeatils();
+      setLoading(true);
+      fetchDeatils().then((res) => {
+        setData(res.data);
+        if (res?.data?.data?.business) {
+          setBusinessExist(res?.data?.data?.business?.id);
+        }
+        const userId = res?.data?.data?.id;
+        const parent = res?.data?.data?.parent;
+
+        if (res && parent === null) {
+          setRelation("HEAD");
+          console.log("relation is", relation);
+          console.log("relation is", relation);
+          setIsFamilyMember(false);
+        } else {
+          setFamilyHead(res?.data?.data?.root);
+        }
+      });
       onClose();
       onClose1();
       dispatch(setSuccessReset());
+      setLoading(false);
     }
-  }, [memberId, success]);
+  }, [success]);
 
   const [show, setShow] = useState(false);
-
   // if (loading) return <Loading />;
-
   // scroll to top on load not working don t know why??
   // useEffect(() => {
   //   window.scrollTo(0, 0);
   // }, [memberId]);
   // console.log("familyHead is ", familyHead);
-
+  if (loading) return <Loading />;
   return (
     <Base>
       <SidePane isOpen={isOpen} onClose={onClose}>
@@ -293,6 +347,7 @@ export default function MemberDetailsScreen() {
           field={field}
           businessField={businessField}
           isFamilyMember={isFamilyMember}
+          addressId={data?.data?.address?.id}
           addressField={addressField}
           businessExist={businessExist}
         />
@@ -309,10 +364,17 @@ export default function MemberDetailsScreen() {
             symbol: "+",
             onClick: onOpen,
           },
+          {
+            text: ` Add Family Member`,
+            backgroundColor: "white",
+            textColor: "#0777FF",
+            symbol: "+",
+            onClick: onOpen1,
+          },
         ]}
         style={{ display: "flex", flexDirection: "row" }}
         isSuperAdmin={data?.data?.isSuperAdmin || false}
-        relation={relation}
+        relation={data?.data?.parent === null ? "HEAD" : "FAMILY MEMBER"}
         approvalStatus={data?.data?.approvalStatus || false}
       >
         <Box
@@ -370,45 +432,6 @@ export default function MemberDetailsScreen() {
                 }}
               />
             </Box>
-            {relation !== "HEAD" && (
-              <Box
-                style={{
-                  display: "flex",
-                  width: "100%",
-                  height: "100%",
-                  flexDirection: "column",
-                  gap: "5px",
-                  paddingInline: "1rem",
-                  justifyContent: "center",
-                  alignItems: "flex-start",
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: 500,
-                    lineHeight: "24px",
-                    width: "15rem",
-                    fontFamily: "Arial",
-                    color: "#666666",
-                  }}
-                >
-                  Relation Type
-                </Text>
-                <Text
-                  style={{
-                    fontSize: "16px",
-                    fontWeight: 500,
-                    lineHeight: "18px",
-                    fontFamily: "Arial",
-                    width: "100%",
-                    color: "#000000",
-                  }}
-                >
-                  {relation}
-                </Text>
-              </Box>
-            )}
 
             <Box
               style={{
@@ -562,15 +585,6 @@ export default function MemberDetailsScreen() {
       <Box paddingTop={"2rem"} paddingBottom={"5rem"}>
         <CommonBox
           title={relation === "HEAD" ? "Family Members" : "Family Head"}
-          buttons={[
-            {
-              text: ` Add Family Member`,
-              backgroundColor: "white",
-              textColor: "#0777FF",
-              symbol: "+",
-              onClick: onOpen1,
-            },
-          ]}
         >
           <SidePane isOpen={isOpen1} onClose={onClose1}>
             <AddMemberForm isFamilyMember={true} />
@@ -585,7 +599,6 @@ export default function MemberDetailsScreen() {
                     <Row
                       onClick={() => {
                         const url = `/dashboard/community/${communityId}/member/${item?.id}`;
-
                         navigate(url);
                       }}
                     >
@@ -601,7 +614,10 @@ export default function MemberDetailsScreen() {
             <>
               <List
                 columns={["Name", "Phone Number", "Relation Type"]}
-                data={data?.data?.relatives}
+                data={filtercommunityRelatives(
+                  data?.data?.relatives,
+                  communityId
+                )}
                 renderRow={({ item }) => {
                   return (
                     <Row

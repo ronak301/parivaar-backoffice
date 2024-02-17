@@ -27,6 +27,33 @@ export default function List({
       setSortDirection(!sortDirection);
     }
   };
+  if (data?.length === 0) {
+    return (
+      <>
+        <TableContainer maxH={200} borderRadius={8} mx={8} borderWidth={1}>
+          <Table variant="simple" borderRadius={8} height={"200px"}>
+            <Thead scrollBehavior={"auto"}></Thead>
+            <Tbody>
+              <Tr>
+                <Td colSpan={columns.length}>
+                  <Text
+                    textAlign="center"
+                    fontSize="xl"
+                    fontWeight="bold"
+                    color="gray.500"
+                    p={4}
+                  >
+                    No data available
+                  </Text>
+                </Td>
+              </Tr>
+            </Tbody>
+          </Table>
+        </TableContainer>
+      </>
+    );
+  }
+
   return (
     <TableContainer
       overflowY="auto"

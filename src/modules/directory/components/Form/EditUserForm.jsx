@@ -8,20 +8,30 @@ import FieldForm from "./FieldForm";
 import { updateUser } from "../../../../api/authApi";
 import { uploadImage, uniquePhone } from "../../../../utils/uploadImage";
 
-import { createBusiness, updateBusiness } from "../../../../api/directoryApi";
+import {
+  createBusiness,
+  updateAddress,
+  updateBusiness,
+} from "../../../../api/directoryApi";
 import { useDispatch } from "react-redux";
 import { setSuccess } from "../../../../redux/successReducer";
+import { checkChange } from "../../../../utils/checkChange";
+import { renameKey } from "../../../../utils/checkChange";
 
 const EditUserForm = ({
   field,
   businessField,
   addressField,
   businessExist,
+  addressId,
   isFamilyMember,
 }) => {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const { communityId, memberId } = useParams();
+  console.log("is Family Member", isFamilyMember);
+  console.log("business exist", businessExist);
+  console.log("address id", addressId);
 
   const dispatch = useDispatch();
   const [profilePicture, setProfilePicture] = useState(null);
@@ -50,10 +60,13 @@ const EditUserForm = ({
   });
 
   const [imageChange, setImageChange] = useState(false);
-  const [imageSrc, setImageSrc] = useState(null);
+  const [imageSrc, setImageSrc] = useState(
+    field.find((item) => item.field === "profile_picture")?.value
+  );
   // all data
 
   const personal = field.map((item) => item.field);
+
   const business = businessField.map((item) => item.field);
   const address = addressField.map((item) => item.field);
 
@@ -89,30 +102,42 @@ const EditUserForm = ({
         addressData[key] = data[key];
       }
     });
-    console.log("business is", businessData);
+
+    // key issue
+    const businessDatacheck = renameKey(businessData, "phone", "bphone");
 
     //
-    var isDirty = true;
+
+    //
+
     var path = personalData?.path;
     var profilePicture = personalData?.profile_picture;
-    if (isDirty) {
-      //1) image upload->
-      if (imageChange) {
-        // path
-        if (path === null) {
-          path = `/user/ + ${Date().toString()}`;
-        }
-        profilePicture = await uploadImage(imageSrc, path);
+
+    //1) image upload->
+    if (imageChange) {
+      // path
+      if (path === null) {
+        path = `/user/ + ${Date().toString()}`;
       }
+      profilePicture = await uploadImage(imageSrc, path);
+    }
 
-      //2) update user
+    //2) update user
 
-      let per = personalData;
-      delete per.path;
-      delete per.profile_picture;
-      //
-      try {
-        if (!uniquePhone(personalData.phone, isFamilyMember)) {
+    let per = { ...personalData };
+    delete per.path;
+    delete per.profile_picture;
+    //
+
+    try {
+      if (!checkChange(field, personalData) || imageChange) {
+        let ph1 = personalData["phone"];
+        let ph2 = field.find((item) => item.field === "phone").value;
+
+        const isUnique = await uniquePhone(personalData.phone, isFamilyMember);
+
+        if (ph1 !== ph2 && !isUnique) {
+          console.log("phone Number already exist in database");
           toast({
             title: "Phone Number already exist in database",
             description:
@@ -120,21 +145,29 @@ const EditUserForm = ({
             status: "error",
             duration: 4000,
           });
+          dispatch(setSuccess());
+          setLoading(false);
           return;
         }
-
+        console.log("personal data is", personalData);
         await updateUser(memberId, {
           profilePicture: profilePicture,
           imagePath: path,
           ...per,
           ...addressData,
         });
-      } catch (error) {
-        console.log(error.message);
       }
+      if (!checkChange(addressField, addressData)) {
+        console.log("address changed");
+        await updateAddress(addressId, addressData);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
 
-      // Business->  1)exist 2)does not exist
-
+    // Business->  1)exist 2)does not exist
+    if (!checkChange(businessField, businessDatacheck)) {
+      console.log("business change");
       if (businessExist) {
         console.log("business exist", businessExist);
         try {
@@ -147,17 +180,14 @@ const EditUserForm = ({
         // create new business
         await createBusiness({ ownerId: memberId, ...businessData });
       }
-    } else {
-      console.log("no change in data");
     }
-
     toast({
-      title: "Updated User success",
-      description: "Successfully updated the user profile",
+      title: "User Edited Successfully",
+      description: "User has been edited successfully",
       status: "success",
       duration: 4000,
-      isClosable: true,
     });
+
     dispatch(setSuccess());
     setLoading(false);
     console.log("data is", data);
@@ -169,7 +199,6 @@ const EditUserForm = ({
         style={{
           fontSize: "1.25rem",
           fontWeight: "600",
-
           marginBottom: "2rem",
         }}
       >
@@ -184,8 +213,18 @@ const EditUserForm = ({
         />
 
         <FieldForm field={field} register={register} errors={errors} />
-        <FieldForm field={addressField} register={register} errors={errors} />
-        <FieldForm field={businessField} register={register} errors={errors} />
+        <FieldForm
+          header={"Address"}
+          field={addressField}
+          register={register}
+          errors={errors}
+        />
+        <FieldForm
+          header={"Business"}
+          field={businessField}
+          register={register}
+          errors={errors}
+        />
       </Box>
       <Button
         style={{

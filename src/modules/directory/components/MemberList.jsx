@@ -27,13 +27,17 @@ import MemberSearchFiltterComponent from "../MemberSearchFilterComponent";
 import { useDebounce } from "use-debounce";
 import { SidePane } from "../../../components/SidePane";
 import { useSelector } from "react-redux";
-import { setSuccessReset } from "../../../redux/successReducer.js";
+import {
+  setCloseReset,
+  setSuccessReset,
+} from "../../../redux/successReducer.js";
 import AddMemberForm from "./AddMemberForm.jsx";
 import { useConfigManager } from "../../../hooks/useConfig.ts";
 
 export default function MemberList() {
   const [data, setData] = React.useState([]);
   const dispatch = useDispatch();
+  const { close } = useSelector((state) => state.success);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
   const { success } = useSelector((state) => state.success);
@@ -68,6 +72,15 @@ export default function MemberList() {
       fetchData();
     }
   }, [success]);
+  React.useEffect(() => {
+    if (close) {
+      onClose1();
+      dispatch(setCloseReset());
+    }
+  }, [close]);
+
+  // succes->true close and toast
+  // close-> close only
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -119,7 +132,8 @@ export default function MemberList() {
           symbol: "+",
           onClick: onOpen1,
         },
-      ]}>
+      ]}
+    >
       <SidePane isOpen={isOpen1} onClose={onClose1}>
         <AddMemberForm />
       </SidePane>
@@ -156,7 +170,8 @@ export default function MemberList() {
                 } finally {
                   setIsRemovingUser(false);
                 }
-              }}>
+              }}
+            >
               Remove
             </Button>
           </ModalFooter>
@@ -171,7 +186,8 @@ export default function MemberList() {
       <Text
         mx={8}
         pb={2}
-        pt={2}>{`Showing ${data?.members?.count} members`}</Text>
+        pt={2}
+      >{`Showing ${data?.members?.count} members`}</Text>
       {data?.members?.count === 0 ? (
         <Box style={{ height: "50vh" }}>
           <Nodata />
@@ -187,7 +203,8 @@ export default function MemberList() {
                   onClick={() => {
                     const url = `/dashboard/community/${communityId}/member/${item?.id}`;
                     navigate(url);
-                  }}>
+                  }}
+                >
                   <RowCell value={`${item?.firstName} ${item?.lastName}`} />
                   <RowCell value={item?.phone} />
                   <RowCell value={`${item?.address?.fullAddress || ""}`} />
@@ -200,7 +217,8 @@ export default function MemberList() {
                         setUserToRemove(item);
                         setOverlay(<Overlay />);
                         onOpen();
-                      }}>
+                      }}
+                    >
                       Remove
                     </Button>
                   </RowCell>

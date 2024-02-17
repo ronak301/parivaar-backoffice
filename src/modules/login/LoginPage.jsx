@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Grid, GridItem, Text, Divider } from "@chakra-ui/react";
+import { Button, Text, Divider } from "@chakra-ui/react";
 
 import {
   Image,
@@ -11,7 +11,7 @@ import { Box } from "@chakra-ui/react";
 import { Input } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
 import Logo from "../../assets/head.jpg";
-import { Avatar } from "@chakra-ui/react";
+
 import { useForm } from "react-hook-form";
 import { sendOtp } from "../../api/authApi";
 import { useNavigate } from "react-router-dom";
@@ -59,7 +59,8 @@ const SubmitForm = ({ setSuccess, setLoading, setPhoneNumber, loading }) => {
           <FormControl isRequired isInvalid={errors.phoneNumber}>
             <FormLabel
               style={{ paddingBottom: "0.2rem" }}
-              fontSize={{ base: "0.85rem", md: "0.85rem", lg: "14" }}>
+              fontSize={{ base: "0.85rem", md: "0.85rem", lg: "14" }}
+            >
               Enter Phone Number
             </FormLabel>
             <InputGroup>
@@ -102,7 +103,8 @@ const SubmitForm = ({ setSuccess, setLoading, setPhoneNumber, loading }) => {
             borderRadius: "0.5rem",
             backgroundColor: "#0777FF",
             color: "white",
-          }}>
+          }}
+        >
           Get OTP
         </Button>
       </form>
@@ -131,7 +133,8 @@ const LoginPage = () => {
           border: "1px solid #EAEAEA",
           top: "0",
         }}
-        paddingInline={{ base: "1rem", md: "1rem", lg: "2.5rem" }}>
+        paddingInline={{ base: "1rem", md: "1rem", lg: "2.5rem" }}
+      >
         <Box
           style={{
             display: "flex",
@@ -139,7 +142,8 @@ const LoginPage = () => {
             alignItems: "center",
             justifyContent: "flex-start",
           }}
-          gap={{ base: "0.3rem", md: "0.3rem", lg: "0.7rem" }}>
+          gap={{ base: "0.3rem", md: "0.3rem", lg: "0.7rem" }}
+        >
           <Image
             boxSize={{ base: "40px", md: "40px", lg: "60px" }}
             objectFit="cover"
@@ -152,7 +156,8 @@ const LoginPage = () => {
               color: "#0777FF",
               fontWeight: "900",
             }}
-            fontSize={{ base: "1rem", md: "1.1rem", lg: "1.3rem" }}>
+            fontSize={{ base: "1rem", md: "1.1rem", lg: "1.3rem" }}
+          >
             Parivaar
           </Text>
         </Box>
@@ -163,7 +168,8 @@ const LoginPage = () => {
           width: "100%",
           display: "flex",
           justifyContent: "center",
-        }}>
+        }}
+      >
         <Box
           style={{
             marginTop: "8rem",
@@ -177,7 +183,8 @@ const LoginPage = () => {
             paddingBottom: "1.3rem",
           }}
           w={[350, 350, 550]}
-          h={[330, 330, 350]}>
+          h={[330, 330, 350]}
+        >
           <Box
             style={{
               display: "flex",
@@ -185,13 +192,15 @@ const LoginPage = () => {
               gap: "0.5rem",
               alignItems: "center",
               width: "100%",
-            }}>
+            }}
+          >
             <Text
               style={{
                 color: "#0777FF",
                 fontWeight: "800",
                 fontSize: "1.2rem",
-              }}>
+              }}
+            >
               Login
             </Text>
             <Divider color={"#EAEAEA"} width={"100%"} />
@@ -204,13 +213,15 @@ const LoginPage = () => {
               paddingTop: "1.8rem",
               width: "100%",
               paddingInline: "2.2rem",
-            }}>
+            }}
+          >
             <Text
               style={{
                 color: "black",
                 fontWeight: "600",
               }}
-              fontSize={{ base: "1.2rem", md: "1.2rem", lg: "1.4rem" }}>
+              fontSize={{ base: "1.2rem", md: "1.2rem", lg: "1.4rem" }}
+            >
               Welcome to Parivaar App
             </Text>
             <SubmitForm
