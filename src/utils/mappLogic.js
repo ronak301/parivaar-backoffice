@@ -6,3 +6,12 @@ export const mappedValue = (options, dvalue) => {
   });
   return dvalue;
 };
+export const reversedMappedValue = (options, dvalue) => {
+  options?.forEach(({ id, label }) => {
+    if (label === dvalue) {
+      dvalue = id;
+    }
+  });
+
+  return dvalue;
+};

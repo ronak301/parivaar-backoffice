@@ -8,8 +8,8 @@ const Pincode = ({ text, register, errors, field, req }) => {
       <Input
         {...register(field, {
           required: req && `${text} is required`,
-          maxLength: {
-            value: 6,
+          pattern: {
+            value: /^[0-9]{6}$/,
             message: `${text} should be 6 digits`,
           },
         })}

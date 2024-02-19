@@ -85,56 +85,60 @@ export default function CommonBox({
 
         {buttons && (
           <Box style={{ display: "flex", gap: "1rem" }}>
-            {buttons.map((button, index) => (
-              <Button
-                onClick={button.onClick || ""}
-                key={index}
-                style={{
-                  padding: "1rem",
-                  backgroundColor: button.backgroundColor || "#FFFFFF",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexDirection: "row",
-                  borderRadius: "1.125rem",
-                  border: button.border || "1px solid #0777FF",
-                  gap: "6px",
-                  ...button.style,
-                }}
-              >
-                {button.icon && <Box>{button.icon}</Box>}
-                <Box
+            {buttons
+              .filter((button) => {
+                return Object.keys(button).length !== 0;
+              })
+              .map((button, index) => (
+                <Button
+                  onClick={button.onClick || ""}
+                  key={index}
                   style={{
+                    padding: "1rem",
+                    backgroundColor: button.backgroundColor || "#FFFFFF",
                     display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "center",
                     alignItems: "center",
-                    gap: "0.4rem",
+                    justifyContent: "center",
+                    flexDirection: "row",
+                    borderRadius: "1.125rem",
+                    border: button.border || "1px solid #0777FF",
+                    gap: "6px",
+                    ...button.style,
                   }}
                 >
-                  <Text
+                  {button?.icon && <Box>{button?.icon}</Box>}
+                  <Box
                     style={{
-                      color: button.textColor || "#0777FF",
-                      fontFamily: "Arial",
-                      fontSize: "0.75rem",
-                      fontWeight: 600,
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: "0.4rem",
                     }}
                   >
-                    {button.symbol}
-                  </Text>
-                  <Text
-                    style={{
-                      color: button.textColor || "#0777FF",
-                      fontFamily: "Arial",
-                      fontSize: "0.75rem",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {button.text || "Button"}
-                  </Text>
-                </Box>
-              </Button>
-            ))}
+                    <Text
+                      style={{
+                        color: button.textColor || "#0777FF",
+                        fontFamily: "Arial",
+                        fontSize: "0.75rem",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {button?.symbol}
+                    </Text>
+                    <Text
+                      style={{
+                        color: button.textColor || "#0777FF",
+                        fontFamily: "Arial",
+                        fontSize: "0.75rem",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {button?.text || "Button"}
+                    </Text>
+                  </Box>
+                </Button>
+              ))}
           </Box>
         )}
       </Box>

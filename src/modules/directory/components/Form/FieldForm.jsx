@@ -131,11 +131,11 @@ const FieldForm = ({ field, register, errors, header }) => {
               <Select0
                 register={register}
                 errors={errors}
-                required={item.required}
-                field={item.field}
-                dvalue={item.value}
-                text={item.text}
-                options={item.options}
+                required={item?.required}
+                field={item?.field}
+                dvalue={item?.value}
+                text={item?.text}
+                options={item?.options}
               />
             )}
           </Box>

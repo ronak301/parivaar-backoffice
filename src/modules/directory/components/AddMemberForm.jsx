@@ -27,6 +27,7 @@ const AddMemberForm = ({ isFamilyMember = false }) => {
     handleSubmit,
     formState: { errors, isDirty },
   } = useForm({});
+
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [existingUser, setExistingUser] = useState(null);
 
