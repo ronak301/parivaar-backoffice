@@ -17,11 +17,11 @@ import {
   removeFromCommunity,
 } from "../../../api/directoryApi";
 import { useDispatch } from "react-redux";
-import { camelCase, isEmpty, lowerCase } from "lodash";
+import { isEmpty, map } from "lodash";
 import Loading from "../../../components/Loading";
 import Nodata from "../../../components/Nodata";
-import { useNavigate, useParams } from "react-router-dom";
-import List, { Row, RowCell } from "../../../components/List";
+import { useParams } from "react-router-dom";
+import List from "../../../components/List";
 import CommonBox from "../../../components/CommonBox";
 import MemberSearchFiltterComponent from "../MemberSearchFilterComponent";
 import { useDebounce } from "use-debounce";
@@ -32,7 +32,7 @@ import {
   setSuccessReset,
 } from "../../../redux/successReducer.js";
 import AddMemberForm from "./AddMemberForm.jsx";
-import { useConfigManager } from "../../../hooks/useConfig.ts";
+import MemberItem from "./MemberItem.jsx";
 
 export default function MemberList() {
   const [data, setData] = React.useState([]);
@@ -43,7 +43,7 @@ export default function MemberList() {
   const { success } = useSelector((state) => state.success);
   const [userToRemove, setUserToRemove] = React.useState(null);
   const [isRemovingUser, setIsRemovingUser] = React.useState(false);
-  const navigate = useNavigate();
+
   const { id } = useParams();
   const communityId = id;
   const [query, setQuery] = React.useState("");
@@ -54,15 +54,17 @@ export default function MemberList() {
     onClose: onClose1,
   } = useDisclosure();
   const [overlay, setOverlay] = React.useState();
-  // console.log("communityIdcommunityId", communityId);
 
-  const [showOnlyFamilyHeads, setShowOnlyFamilyHeads] = React.useState(true);
+  const [showOnlyFamilyHeads, setShowOnlyFamilyHeads] = React.useState(false);
   const [filter, setFilter] = React.useState({
-    limit: 100,
+    limit: 10000,
     skip: 0,
+    isAccountManager: true,
+    parentNode: null,
   });
 
   const [debouncedText] = useDebounce(query?.replace(/\s/g, "").trim(), 500);
+  const [localityFilter, setLocalityFilter] = React.useState("");
 
   const { skip, limit, ...restFilter } = filter;
   React.useEffect(() => {
@@ -112,7 +114,24 @@ export default function MemberList() {
     />
   );
 
-  const { config } = useConfigManager();
+  let filteredByLocality = data?.members?.rows;
+
+  filteredByLocality = map(data?.members?.rows, (member) => {
+    if (
+      isEmpty(localityFilter) ||
+      member?.address?.locality === localityFilter
+    ) {
+      return member;
+    }
+  });
+
+  console.log(filteredByLocality, filteredByLocality?.length);
+
+  const filteredData = filteredByLocality?.filter((member) => {
+    if (!!member?.address?.fullAddress) {
+      return member;
+    }
+  });
 
   if (isEmpty(data) && loading) return <Loading />;
 
@@ -132,8 +151,7 @@ export default function MemberList() {
           symbol: "+",
           onClick: onOpen1,
         },
-      ]}
-    >
+      ]}>
       <SidePane isOpen={isOpen1} onClose={onClose1}>
         <AddMemberForm />
       </SidePane>
@@ -170,8 +188,7 @@ export default function MemberList() {
                 } finally {
                   setIsRemovingUser(false);
                 }
-              }}
-            >
+              }}>
               Remove
             </Button>
           </ModalFooter>
@@ -182,12 +199,13 @@ export default function MemberList() {
         showOnlyFamilyHeads={showOnlyFamilyHeads}
         setShowOnlyFamilyHeads={setShowOnlyFamilyHeads}
         setFilter={setFilter}
+        localityFilter={localityFilter}
+        setLocalityFilter={setLocalityFilter}
       />
       <Text
         mx={8}
         pb={2}
-        pt={2}
-      >{`Showing ${data?.members?.count} members`}</Text>
+        pt={2}>{`Showing ${filteredData?.length} members`}</Text>
       {data?.members?.count === 0 ? (
         <Box style={{ height: "50vh" }}>
           <Nodata />
@@ -195,34 +213,19 @@ export default function MemberList() {
       ) : (
         <>
           <List
-            columns={["Name", "Number", "Full Address", "Locality", ""]}
-            data={data?.members?.rows}
-            renderRow={({ item }) => {
+            columns={["Name", "Full Address", "Locality", ""]}
+            data={filteredData}
+            renderRow={({ item, index }) => {
               return (
-                <Row
-                  onClick={() => {
-                    const url = `/dashboard/community/${communityId}/member/${item?.id}`;
-                    navigate(url);
-                  }}
-                >
-                  <RowCell value={`${item?.firstName} ${item?.lastName}`} />
-                  <RowCell value={item?.phone} />
-                  <RowCell value={`${item?.address?.fullAddress || ""}`} />
-                  <RowCell value={item?.address?.locality} />
-                  <RowCell>
-                    <Button
-                      size={"sm"}
-                      onClick={(e) => {
-                        e?.stopPropagation();
-                        setUserToRemove(item);
-                        setOverlay(<Overlay />);
-                        onOpen();
-                      }}
-                    >
-                      Remove
-                    </Button>
-                  </RowCell>
-                </Row>
+                <MemberItem
+                  key={item?.id}
+                  item={item}
+                  setUserToRemove={setUserToRemove}
+                  setOverlay={setOverlay}
+                  onOpen={onOpen}
+                  Overlay={Overlay}
+                  index={index}
+                />
               );
             }}
           />
