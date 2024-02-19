@@ -11,6 +11,7 @@ import { useToast } from "@chakra-ui/react";
 import { updateCommunity } from "../../../api/directoryApi";
 
 import Loading from "../../../components/Loading";
+import Pincode from "../formComponents/Pincode";
 
 const EditCommunity = ({ field, onClose }) => {
   const toast = useToast();
@@ -115,6 +116,18 @@ const EditCommunity = ({ field, onClose }) => {
                   text={item.text}
                   field={item.field}
                   errors={errors}
+                  req={item.req || false}
+                  register={register}
+                />
+              )}
+            </Box>
+            <Box style={{ padding: "0.11rem" }}>
+              {item.type === "pincode" && (
+                <Pincode
+                  text={item.text}
+                  field={item.field}
+                  errors={errors}
+                  req={item.req || false}
                   register={register}
                 />
               )}
@@ -131,7 +144,9 @@ const EditCommunity = ({ field, onClose }) => {
                   field={item.field}
                   text={item.text}
                   options={item.options}
-                  onChange={item.onChange}
+                  errors={errors}
+                  required={item.req || false}
+                  dvalue={item.value}
                 />
               )}
             </Box>

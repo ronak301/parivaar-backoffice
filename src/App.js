@@ -8,10 +8,13 @@ import UserDetail from "./components/UserDetail.jsx";
 import InviteMember from "./modules/directory/InviteMember";
 import MemberDetailsScreen from "./modules/directory/MemberDetailsScreen";
 import AllUsers from "./modules/directory/components/AllUsers";
+
 import LeadsScreen from "./modules/leads/LeadsScreen";
 import LoginPage from "./modules/login/LoginPage.jsx";
 import VerifyOtp from "./modules/login/VerifyOtp.jsx";
 import PrivateRoutes from "./PrivateRoutes.js";
+import { Navigate } from "react-router-dom";
+
 import { Routes, Route } from "react-router-dom";
 import Logout from "./modules/login/Logout.jsx";
 import { useLayoutEffect } from "react";
@@ -79,7 +82,11 @@ function App() {
           <Routes>
             <Route element={<PrivateRoutes />}>
               <Route element={<Logout />} path="/logout" />
-              <Route element={<Wrapper />} path="/">
+              <Route element={<Wrapper />}>
+                <Route
+                  path="/"
+                  element={<Navigate to="/dashboard" replace={true} />}
+                />
                 <Route element={<Dashboard />} path="/dashboard" />
 
                 <Route

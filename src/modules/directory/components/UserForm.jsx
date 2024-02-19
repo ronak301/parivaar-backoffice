@@ -11,6 +11,7 @@ import imageCompression from "browser-image-compression";
 import FieldForm from "./Form/FieldForm";
 import { setSuccess } from "../../../redux/successReducer";
 import { useDispatch } from "react-redux";
+import { mappedValue, reversedMappedValue } from "../../../utils/mappLogic.js";
 import {
   addToCommunity,
   createBusiness,
@@ -21,9 +22,12 @@ import {
 import { useParams } from "react-router-dom";
 
 import UploadImage from "./Form/UploadImage";
+import { useSelector } from "react-redux";
 import { useConfigManager } from "../../../hooks/useConfig.ts";
 const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
   const { config } = useConfigManager();
+  const current_user = useSelector((state) => state.user.current_user);
+
   const [imageSrc, setImageSrc] = React.useState();
   const dispatch = useDispatch();
   const [user, setUser] = useState(null);
@@ -183,16 +187,17 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
       req: "true",
     },
     {
-      field: "email",
-      text: "Email",
-      type: "mail",
-    },
-    {
       field: "lastName",
       text: "Last Name",
       type: "text",
       req: "true",
     },
+    {
+      field: "email",
+      text: "Email",
+      type: "mail",
+    },
+
     isFamilyMember && {
       field: "type",
       text: "Relationship Type",
@@ -221,7 +226,7 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
       field: "gender",
       text: "Gender",
       type: "select",
-      required: true,
+      dvalue: "Female",
       options: config?.Gender,
     },
     {
@@ -237,8 +242,8 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
     {
       field: "bloodGroup",
       text: "Blood Group",
+      dvalue: "A_POSITIVE",
       type: "select",
-      required: true,
       options: config?.BloodGroups,
     },
     {
@@ -282,21 +287,30 @@ const UserForm = ({ phoneNumber, isFamilyMember = false }) => {
       field: "locality",
       text: "Locality",
       type: "select",
-      required: true,
+      value: isFamilyMember
+        ? reversedMappedValue(
+            config?.Localities,
+            current_user?.address?.locality
+          )
+        : config?.Localities[0]?.id,
       options: config?.Localities,
     },
     {
       field: "state",
       text: "State",
       type: "select",
-      required: true,
+      value: isFamilyMember
+        ? reversedMappedValue(config?.Localities, current_user?.address?.state)
+        : config?.State[0]?.id,
       options: config?.State,
     },
     {
       field: "city",
       text: "City",
+      value: isFamilyMember
+        ? reversedMappedValue(config?.Localities, current_user?.address?.city)
+        : config?.Cities[0]?.id,
       type: "select",
-      required: true,
       options: config?.Cities,
     },
     {

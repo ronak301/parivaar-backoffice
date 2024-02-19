@@ -27,6 +27,7 @@ const AddMemberForm = ({ isFamilyMember = false }) => {
     handleSubmit,
     formState: { errors, isDirty },
   } = useForm({});
+
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [existingUser, setExistingUser] = useState(null);
 
@@ -57,7 +58,6 @@ const AddMemberForm = ({ isFamilyMember = false }) => {
   const onSubmit = async (data) => {
     try {
       setLoading(true);
-
       //if  family Member add
       if (isFamilyMember) {
         // either phone Number can be empty or not
@@ -83,6 +83,7 @@ const AddMemberForm = ({ isFamilyMember = false }) => {
           });
           dispatch(setSuccess());
         }
+        setPhoneNumber(data?.phone);
         setLoading(false);
         return;
       }

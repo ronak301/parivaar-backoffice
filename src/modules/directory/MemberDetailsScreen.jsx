@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import CommonBox from "../../components/CommonBox";
 import Base from "../../components/Base";
-import Personal from "./components/Form/Personal";
+
 import { SidePane } from "../../components/SidePane";
 import { Button, useDisclosure, Box } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
@@ -12,7 +12,7 @@ import EditUserForm from "./components/Form/EditUserForm.jsx";
 import DetailBox from "./components/DetailBox";
 import Loading from "../../components/Loading";
 import { filtercommunityRelatives } from "../../utils/filtercommunityRelatives.js";
-import { useRef } from "react";
+
 import moment from "moment";
 
 import deafultImage from "../../api/836.jpg";
@@ -20,9 +20,6 @@ import { Divider, Text, Image } from "@chakra-ui/react";
 import List from "../../components/List";
 import { RowCell, Row } from "../../components/List";
 import { useNavigate } from "react-router-dom";
-
-import BusinessForm from "./components/Form/BusinessForm";
-import AddressForm from "./components/Form/AddressForm";
 
 import { useToast } from "@chakra-ui/react";
 import AddMemberForm from "./components/AddMemberForm";
@@ -32,12 +29,13 @@ import { useConfigManager } from "../../hooks/useConfig.ts";
 import { setSuccessReset } from "../../redux/successReducer";
 import { mappedValue } from "../../utils/mappLogic.js";
 import { weburl } from "../../utils/websiteurl.js";
+import { setCurrentUser } from "../../redux/userReducer.js";
 
 export default function MemberDetailsScreen() {
   const { success } = useSelector((state) => state.success);
   const navigate = useNavigate();
   const toast = useToast();
-  const [isFamilyMember, setIsFamilyMember] = useState(true);
+
   const [loading, setLoading] = useState(false);
   const { communityId, memberId } = useParams();
   const { config } = useConfigManager();
@@ -52,8 +50,6 @@ export default function MemberDetailsScreen() {
   } = useDisclosure();
 
   const [data, setData] = useState({});
-
-  const [relation, setRelation] = useState("Family Member");
 
   const field = [
     {
@@ -72,22 +68,22 @@ export default function MemberDetailsScreen() {
     },
 
     {
-      field: "email",
-      text: "Email",
-      type: "mail",
-      value: data?.data?.email || null,
-    },
-    {
       field: "dob",
       text: "Date of Birth",
       type: "date",
       value: data?.data?.dob || null,
     },
     {
+      field: "email",
+      text: "Email",
+      type: "mail",
+      value: data?.data?.email || null,
+    },
+    {
       field: "phone",
       text: "Phone",
       type: "phone",
-      req: !isFamilyMember ? true : false,
+      req: data?.data?.parent === null ? true : false,
       value: data?.data?.phone || null,
     },
     {
@@ -273,33 +269,19 @@ export default function MemberDetailsScreen() {
     },
     { key: "Full Address", value: data?.data?.address?.fullAddress || "---" },
   ];
-  const [familyHead, setFamilyHead] = useState(null);
-  const [businessExist, setBusinessExist] = useState(null);
 
   const fetchDeatils = async () => {
     const response = await getMemberDetails(memberId);
     return response;
   };
   // better way??
+
   React.useEffect(() => {
     if (memberId !== undefined && memberId !== null) {
       setLoading(true);
       fetchDeatils().then((res) => {
         setData(res.data);
-        if (res?.data?.data?.business) {
-          setBusinessExist(res?.data?.data?.business?.id);
-        }
-        const userId = res?.data?.data?.id;
-        const parent = res?.data?.data?.parent;
-        if (parent === null) {
-          setRelation("HEAD");
-          console.log("relation is", relation);
-          console.log("relation is", relation);
-          setIsFamilyMember(false);
-        } else {
-          setFamilyHead(res?.data?.data?.root);
-          setIsFamilyMember(true);
-        }
+        dispatch(setCurrentUser(res?.data?.data));
         setLoading(false);
       });
     }
@@ -310,29 +292,17 @@ export default function MemberDetailsScreen() {
       setLoading(true);
       fetchDeatils().then((res) => {
         setData(res.data);
-        if (res?.data?.data?.business) {
-          setBusinessExist(res?.data?.data?.business?.id);
-        }
-        const userId = res?.data?.data?.id;
-        const parent = res?.data?.data?.parent;
-
-        if (res && parent === null) {
-          setRelation("HEAD");
-          console.log("relation is", relation);
-          console.log("relation is", relation);
-          setIsFamilyMember(false);
-        } else {
-          setFamilyHead(res?.data?.data?.root);
-        }
+        setLoading(false);
+        dispatch(setCurrentUser(res?.data?.data));
       });
       onClose();
       onClose1();
       dispatch(setSuccessReset());
-      setLoading(false);
     }
   }, [success]);
 
   const [show, setShow] = useState(false);
+
   // if (loading) return <Loading />;
   // scroll to top on load not working don t know why??
   // useEffect(() => {
@@ -346,10 +316,10 @@ export default function MemberDetailsScreen() {
         <EditUserForm
           field={field}
           businessField={businessField}
-          isFamilyMember={isFamilyMember}
+          isFamilyMember={data?.data?.parent === null ? false : true}
           addressId={data?.data?.address?.id}
           addressField={addressField}
-          businessExist={businessExist}
+          businessExist={data?.data?.business?.id}
         />
       </SidePane>
       <CommonBox
@@ -364,13 +334,16 @@ export default function MemberDetailsScreen() {
             symbol: "+",
             onClick: onOpen,
           },
-          {
-            text: ` Add Family Member`,
-            backgroundColor: "white",
-            textColor: "#0777FF",
-            symbol: "+",
-            onClick: onOpen1,
-          },
+
+          data?.data?.parent === null
+            ? {
+                text: ` Add Family Member`,
+                backgroundColor: "white",
+                textColor: "#0777FF",
+                symbol: "+",
+                onClick: onOpen1,
+              }
+            : {},
         ]}
         style={{ display: "flex", flexDirection: "row" }}
         isSuperAdmin={data?.data?.isSuperAdmin || false}
@@ -483,7 +456,6 @@ export default function MemberDetailsScreen() {
                     <Box>
                       <DetailBox
                         item={details}
-                        s
                         properties={["Native Place", "Wedding Date", "Email"]}
                       />
                     </Box>
@@ -584,16 +556,16 @@ export default function MemberDetailsScreen() {
       </CommonBox>
       <Box paddingTop={"2rem"} paddingBottom={"5rem"}>
         <CommonBox
-          title={relation === "HEAD" ? "Family Members" : "Family Head"}
+          title={data?.data?.parent !== null ? "FAMILY HEAD" : "FAMILY MEMBER"}
         >
           <SidePane isOpen={isOpen1} onClose={onClose1}>
             <AddMemberForm isFamilyMember={true} />
           </SidePane>
-          {relation !== "HEAD" ? (
+          {data?.data?.parent !== null ? (
             <>
               <List
                 columns={["Name", "Phone Number", "Relation Type"]}
-                data={[familyHead]}
+                data={[data?.data?.parent]}
                 renderRow={({ item }) => {
                   return (
                     <Row
