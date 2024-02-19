@@ -1,4 +1,6 @@
 import {
+  Box,
+  Flex,
   Table,
   TableContainer,
   Tbody,
@@ -56,13 +58,13 @@ export default function List({
 
   return (
     <TableContainer
+      maxWidth={"100%"}
       overflowY="auto"
       maxH={500}
       borderRadius={8}
       mx={8}
       borderColor={"gray.200"}
-      borderWidth={1}
-    >
+      borderWidth={1}>
       <Table variant="simple" borderRadius={8}>
         <Thead scrollBehavior={"auto"}>
           <Tr h="28px" bg="black">
@@ -86,7 +88,11 @@ export default function List({
             ))}
           </Tr>
         </Thead>
-        <Tbody>{map(data, (item) => renderRow({ item }))}</Tbody>
+        <Tbody flex={1}>
+          {map(data, (item, index) => {
+            return renderRow({ item, index });
+          })}
+        </Tbody>
       </Table>
     </TableContainer>
   );
@@ -100,8 +106,7 @@ export const Row = ({ onClick, children, ...rest }) => {
       _hover={{
         cursor: "pointer",
         backgroundColor: "rgb(240,240,240)",
-      }}
-    >
+      }}>
       {children}
     </Tr>
   );
@@ -109,6 +114,8 @@ export const Row = ({ onClick, children, ...rest }) => {
 
 export const RowCell = ({ value, children, ...rest }) => {
   return (
-    <Td {...rest}>{children || <Text fontWeight={"500"}>{value}</Text>}</Td>
+    <Td maxWidth={"10rem"} {...rest}>
+      {children || <Text fontWeight={"500"}>{value}</Text>}
+    </Td>
   );
 };

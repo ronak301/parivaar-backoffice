@@ -31,8 +31,7 @@ export default function CommonBox({
       py={4}
       borderRadius={"lg"}
       shadow={"lg"}
-      overflowY={"auto"}
-    >
+      overflowY={"auto"}>
       <Box
         style={{
           width: "100%",
@@ -41,14 +40,12 @@ export default function CommonBox({
           alignItems: "center",
           justifyContent: "space-between",
           paddingRight: "4rem",
-        }}
-      >
+        }}>
         <Box style={{ display: "flex", alignItems: "center", padding: "1rem" }}>
           <Box>
             <ArrowBackIcon
               onClick={handleBackButtonClick}
-              style={{ fontSize: "1.2rem" }}
-            >
+              style={{ fontSize: "1.2rem" }}>
               Back
             </ArrowBackIcon>
           </Box>
@@ -58,24 +55,21 @@ export default function CommonBox({
               {isSuperAdmin === true && (
                 <Badge
                   colorScheme="blue"
-                  style={{ padding: "0.2rem", marginLeft: "0.5rem" }}
-                >
+                  style={{ padding: "0.2rem", marginLeft: "0.5rem" }}>
                   Super Admin
                 </Badge>
               )}{" "}
               {approvalStatus === "APPROVED" && (
                 <Badge
                   colorScheme="green"
-                  style={{ padding: "0.2rem", marginLeft: "0.2rem" }}
-                >
+                  style={{ padding: "0.2rem", marginLeft: "0.2rem" }}>
                   Approved
                 </Badge>
               )}{" "}
               {relation && (
                 <Badge
                   colorScheme="purple"
-                  style={{ padding: "0.2rem", marginLeft: "0.2rem" }}
-                >
+                  style={{ padding: "0.2rem", marginLeft: "0.2rem" }}>
                   {relation === "HEAD" ? "Family Head" : "Family Member"}
                 </Badge>
               )}
@@ -85,6 +79,7 @@ export default function CommonBox({
 
         {buttons && (
           <Box style={{ display: "flex", gap: "1rem" }}>
+
             {buttons
               .filter((button) => {
                 return Object.keys(button).length !== 0;
@@ -98,6 +93,7 @@ export default function CommonBox({
                     backgroundColor: button.backgroundColor || "#FFFFFF",
                     display: "flex",
                     alignItems: "center",
+
                     justifyContent: "center",
                     flexDirection: "row",
                     borderRadius: "1.125rem",
@@ -139,6 +135,31 @@ export default function CommonBox({
                   </Box>
                 </Button>
               ))}
+
+                    gap: "0.4rem",
+                  }}>
+                  <Text
+                    style={{
+                      color: button.textColor || "#0777FF",
+                      fontFamily: "Arial",
+                      fontSize: "0.75rem",
+                      fontWeight: 600,
+                    }}>
+                    {button.symbol}
+                  </Text>
+                  <Text
+                    style={{
+                      color: button.textColor || "#0777FF",
+                      fontFamily: "Arial",
+                      fontSize: "0.75rem",
+                      fontWeight: 600,
+                    }}>
+                    {button.text || "Button"}
+                  </Text>
+                </Box>
+              </Button>
+            ))}
+
           </Box>
         )}
       </Box>

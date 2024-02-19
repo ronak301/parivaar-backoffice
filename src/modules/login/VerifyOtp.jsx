@@ -1,15 +1,11 @@
 import React, { useState } from "react";
-import { Button, Grid, Text, Divider } from "@chakra-ui/react";
+import { Button, Text, Divider } from "@chakra-ui/react";
 import { HStack } from "@chakra-ui/react";
 import { verifyOtp } from "../../api/authApi";
 import { PinInput, PinInputField } from "@chakra-ui/react";
 import Logo from "../../assets/head.jpg";
 import { Box } from "@chakra-ui/react";
-import { Avatar } from "@chakra-ui/react";
-import { Alert, AlertIcon } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import login from "../../assets/re.png";
-import { GridItem } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { Image } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";
@@ -33,7 +29,7 @@ const VerifyOtp = () => {
     setOtp(updatedOtp.join(""));
   };
   console.log("otp is", otp);
-  const [showAlert, setShowAlert] = useState(false);
+  const [setShowAlert] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -80,25 +76,6 @@ const VerifyOtp = () => {
     }
   }, [success, navigate]);
 
-  /* <form
-  style={{
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: "2rem",
-    padding: "2rem",
-    width: "70%",
-    height: "100%",
-    margin: "auto",
-    marginTop: "0rem",
-    marginBottom: "5rem",
-  }}
-  onSubmit={(e) => {
-    e.preventDefault();
-    onSubmit();
-  }}
->*/
   const isOtpValid = otp.length === 6;
   console.log(isOtpValid);
   return (

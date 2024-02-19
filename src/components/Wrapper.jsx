@@ -9,7 +9,7 @@ import { Outlet } from "react-router-dom";
 export default function Wrapper() {
   return (
     <Flex style={{ position: "fixed", width: "100%" }}>
-      <Box w="20%" h="100vh">
+      <Box w="14%" h="100vh">
         <Sidebar>
           <SidebarItem
             icon={<LayoutDashboard size={20} />}
@@ -32,8 +32,7 @@ export default function Wrapper() {
               marginTop: "auto",
               borderTop: "1px solid white",
               paddingBottom: "8px",
-            }}
-          >
+            }}>
             <SidebarItem
               icon={<LogOut size={20} />}
               text="Logout"
